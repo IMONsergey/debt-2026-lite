@@ -1,0 +1,167 @@
+name: Сверка страницы
+
+on:
+  push:
+    branches:
+      - fix/identichnaya-stranitsa
+    paths:
+      - '.github/workflows/qa-fidelity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    name: Сравнение с основной страницей
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить файлы
+        uses: actions/checkout@v4
+      - name: Установить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Установить зависимости
+        run: |
+          npm ci
+          npm install --no-save --package-lock=false playwright@1.62.0
+          npx playwright install --with-deps chromium
+      - name: Собрать сайт
+        run: npm run build
+      - name: Сравнить геометрию
+        shell: bash
+        run: |
+          npm run preview -- --host 127.0.0.1 > /tmp/debt-preview.log 2>&1 &
+          PREVIEW_PID=$!
+          trap 'kill $PREVIEW_PID || true' EXIT
+          sleep 2
+
+          node --input-type=module <<'EOF'
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const viewports = [
+            { name: 'desktop-1440', width: 1440, height: 900, tolerance: 4 },
+            { name: 'desktop-1920', width: 1920, height: 1080, tolerance: 4 },
+            { name: 'tablet-1024', width: 1024, height: 900, tolerance: 5 },
+            { name: 'mobile-430', width: 430, height: 932, tolerance: 5 },
+            { name: 'mobile-390', width: 390, height: 844, tolerance: 5 },
+          ];
+
+          const selectors = [
+            '.hero-placeholder',
+            '.fixed-menu',
+            '.fixed-menu__brand',
+            '.hero-placeholder__meta',
+            '.hero-bottom',
+            '.hero-bottom p',
+            '.countdown',
+            '.mobile-hero-info',
+            '.venue-card',
+            '.venue-card__copy',
+            '.venue-card img',
+            '.route-link',
+            '.contact-link',
+            '.organizers-mark',
+            '.fixed-menu__cta',
+            '.ticker-strip',
+            '.hero-video-section',
+            '.hero-video-section h2',
+            '.hero-video-section__player',
+            '.gallery-section',
+            '.gallery-section h2',
+            '.gallery-carousel',
+            '.gallery-section__link',
+            '.hero-landing-footer',
+          ];
+
+          const round = (value) => Math.round(value * 10) / 10;
+
+          async function collect(page, url) {
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.evaluate(() => document.fonts?.ready);
+            await page.waitForTimeout(500);
+
+            return page.evaluate((selectors) => {
+              const data = {};
+              for (const selector of selectors) {
+                data[selector] = [...document.querySelectorAll(selector)].map((node) => {
+                  const rect = node.getBoundingClientRect();
+                  const style = getComputedStyle(node);
+                  return {
+                    left: rect.left,
+                    top: rect.top,
+                    width: rect.width,
+                    height: rect.height,
+                    display: style.display,
+                    fontSize: style.fontSize,
+                    lineHeight: style.lineHeight,
+                    paddingTop: style.paddingTop,
+                    paddingRight: style.paddingRight,
+                    paddingBottom: style.paddingBottom,
+                    paddingLeft: style.paddingLeft,
+                    gap: style.gap,
+                  };
+                });
+              }
+              return {
+                data,
+                width: document.documentElement.scrollWidth,
+                height: document.documentElement.scrollHeight,
+              };
+            }, selectors);
+          }
+
+          const failures = [];
+
+          for (const viewport of viewports) {
+            const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
+            const originalPage = await context.newPage();
+            const litePage = await context.newPage();
+
+            const original = await collect(originalPage, 'https://imonsergey.github.io/debttech2026/#/hero');
+            const lite = await collect(litePage, 'http://127.0.0.1:4173/debt-2026-lite/');
+
+            const pageHeightDelta = Math.abs(original.height - lite.height);
+            if (pageHeightDelta > 8) failures.push(`${viewport.name}: высота страницы отличается на ${round(pageHeightDelta)}px`);
+            if (original.width !== lite.width) failures.push(`${viewport.name}: ширина документа ${original.width} / ${lite.width}`);
+
+            for (const selector of selectors) {
+              const a = original.data[selector];
+              const b = lite.data[selector];
+              if (a.length !== b.length) {
+                failures.push(`${viewport.name}: ${selector} — количество ${a.length} / ${b.length}`);
+                continue;
+              }
+
+              for (let i = 0; i < a.length; i += 1) {
+                for (const key of ['left', 'top', 'width', 'height']) {
+                  const delta = Math.abs(a[i][key] - b[i][key]);
+                  if (delta > viewport.tolerance) {
+                    failures.push(`${viewport.name}: ${selector}[${i}] ${key} отличается на ${round(delta)}px (${round(a[i][key])} / ${round(b[i][key])})`);
+                  }
+                }
+                for (const key of ['display', 'fontSize', 'lineHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'gap']) {
+                  if (a[i][key] !== b[i][key]) {
+                    failures.push(`${viewport.name}: ${selector}[${i}] ${key} ${a[i][key]} / ${b[i][key]}`);
+                  }
+                }
+              }
+            }
+
+            console.log(`[сверка] ${viewport.name}: высота ${original.height}/${lite.height}, найдено ошибок ${failures.filter((item) => item.startsWith(viewport.name)).length}`);
+            await context.close();
+          }
+
+          await browser.close();
+
+          if (failures.length) {
+            console.error('\nНайдены отличия:');
+            for (const failure of failures.slice(0, 120)) console.error(`- ${failure}`);
+            if (failures.length > 120) console.error(`... ещё ${failures.length - 120}`);
+            process.exit(1);
+          }
+
+          console.log('Геометрия ключевых элементов совпадает во всех проверенных разрешениях.');
+          EOF
