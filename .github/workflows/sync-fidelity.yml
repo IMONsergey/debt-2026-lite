@@ -235,67 +235,17 @@ jobs:
           </html>
           EOF
 
-          cat > .github/workflows/pages.yml <<'EOF'
-          name: Публикация сайта
-
-          on:
-            push:
-              branches:
-                - main
-            workflow_dispatch:
-
-          permissions:
-            contents: read
-            pages: write
-            id-token: write
-
-          concurrency:
-            group: pages
-            cancel-in-progress: true
-
-          jobs:
-            deploy:
-              name: Публикация в GitHub Pages
-              runs-on: ubuntu-latest
-              environment:
-                name: github-pages
-                url: ${{ steps.deployment.outputs.page_url }}
-
-              steps:
-                - name: Получить файлы
-                  uses: actions/checkout@v4
-
-                - name: Установить Node.js
-                  uses: actions/setup-node@v4
-                  with:
-                    node-version: 22
-                    cache: npm
-
-                - name: Установить зависимости
-                  run: npm ci
-
-                - name: Собрать сайт
-                  run: npm run build
-
-                - name: Настроить GitHub Pages
-                  uses: actions/configure-pages@v5
-
-                - name: Подготовить сайт к публикации
-                  uses: actions/upload-pages-artifact@v4
-                  with:
-                    path: ./dist
-
-                - name: Опубликовать сайт
-                  id: deployment
-                  uses: actions/deploy-pages@v4
+          cat > .gitignore <<'EOF'
+          node_modules/
+          dist/
+          .DS_Store
           EOF
 
           npm install --package-lock-only --ignore-scripts
           npm ci
           npm run build
 
-          rm -rf source assets css js
-          rm -f .github/workflows/sync-fidelity.yml
+          rm -rf source assets css js node_modules dist
 
       - name: Сохранить изменения
         shell: bash
