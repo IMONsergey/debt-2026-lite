@@ -12,15 +12,13 @@ const galleryImages = [
   '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
 ];
 
-const assetUrl = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
-
 const content = {
   pageMode: 'hero-landing',
   site: {
     title: 'DEBT TECH 2026',
     date: '13 ноября 2026',
     city: 'Москва',
-    logo: assetUrl('assets/icons/debttech-logo.svg'),
+    logo: 'assets/icons/debttech-logo.svg',
   },
   menu: {
     groups: [],
@@ -37,19 +35,19 @@ const content = {
     sidebar: {
       venueTitle: 'TAU - пространство\nмузыкальных культур',
       venueAddress: 'Москва, Рязанский проспект, 8Ас10',
-      venueImage: assetUrl('assets/images/venue.webp'),
+      venueImage: 'assets/images/venue.webp',
       routeLabel: 'Смотреть на карте',
       routeHref: 'https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D0%A0%D1%8F%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%2C%208%D0%90%D1%8110',
       contactLabel: 'Контакты для связи',
       contactEmail: 'redchief@rvzrus.ru',
       organizersLabel: 'Организаторы',
-      organizersImage: assetUrl('assets/icons/organizers.svg'),
+      organizersImage: 'assets/icons/organizers.svg',
     },
   },
   hero: {
     title: 'DEBT TECH 2026',
-    backgroundImage: assetUrl('assets/images/hero-desktop.png'),
-    backgroundImageAdaptive: assetUrl('assets/images/hero-mobile.png'),
+    backgroundImage: 'assets/images/hero-desktop.png',
+    backgroundImageAdaptive: 'assets/images/hero-mobile.png',
     bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
     countdownLabel: 'Время до запуска',
     countdownTarget: '2026-11-13T00:00:00+03:00',
@@ -83,7 +81,7 @@ const content = {
     ctaLabel: 'Смотреть все фото',
     href: 'https://rvz.bitrix24.ru/~0IZ9x',
     items: galleryImages.map((name, index) => ({
-      image: assetUrl(`assets/images/gallery/${name}`),
+      image: `assets/images/gallery/${name}`,
       alt: `DEBT TECH 2025 — кадр ${index + 1}`,
     })),
   },
