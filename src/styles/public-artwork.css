@@ -1,0 +1,27 @@
+/*
+ * Complex decorative artwork behavior that is independent from layout geometry.
+ * The repository station PNG contains substantially more transparent framing than
+ * the Figma image fill, so the artwork itself needs visual scaling inside the
+ * already measured 1150px station box.
+ */
+
+@media (min-width: 1181px) {
+  .information-partners__station {
+    transform: translate(-50%, -50%) scale(9.25);
+    transform-origin: 50% 50%;
+  }
+}
+
+@media (min-width: 700px) and (max-width: 1180px) {
+  .information-partners__station {
+    transform: translate(-50%, -50%) scale(7.25);
+    transform-origin: 50% 50%;
+  }
+}
+
+@media (max-width: 699px) {
+  .information-partners__station {
+    transform: translate(-50%, -50%) scale(5.5);
+    transform-origin: 50% 50%;
+  }
+}
