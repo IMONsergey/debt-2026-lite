@@ -20,7 +20,7 @@ const content = {
     title: 'DEBT TECH 2026',
     date: '13 ноября 2026',
     city: 'Москва',
-    logo: assetUrl('assets/icons/debttech-logo.svg'),
+    logo: assetUrl('assets/debttech-logo.svg'),
   },
   menu: {
     groups: [],
@@ -48,8 +48,8 @@ const content = {
   },
   hero: {
     title: 'DEBT TECH 2026',
-    backgroundImage: assetUrl('assets/images/hero-desktop.png'),
-    backgroundImageAdaptive: assetUrl('assets/images/hero-mobile.png'),
+    backgroundImage: assetUrl('assets/hero-debttech-2026.png'),
+    backgroundImageAdaptive: assetUrl('assets/hero-debttech-2026-adaptive.png'),
     bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
     countdownLabel: 'Время до запуска',
     countdownTarget: '2026-11-13T00:00:00+03:00',
