@@ -1,0 +1,14 @@
+/* Keep the location copy aligned to the same left grid edge as the venue image on adaptive layouts. */
+@media (max-width: 1180px) {
+  .hero-only-view .mobile-hero-info .venue-card__copy {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 0 clamp(12px, 3vw, 18px) !important;
+  }
+
+  .hero-only-view .mobile-hero-info .venue-card__copy span,
+  .hero-only-view .mobile-hero-info .venue-card__copy strong {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+}

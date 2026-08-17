@@ -1,0 +1,29 @@
+.cosmos-pointer-effect {
+  position: fixed;
+  z-index: 4;
+  inset: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0.74;
+  contain: strict;
+}
+
+@media (max-width: 1180px) {
+  .cosmos-pointer-effect {
+    opacity: 0.58;
+  }
+}
+
+@media (max-width: 699px) {
+  .cosmos-pointer-effect {
+    opacity: 0.42;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmos-pointer-effect {
+    opacity: 0.34;
+  }
+}
