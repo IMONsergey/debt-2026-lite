@@ -1,0 +1,415 @@
+name: Сборка React-версии
+
+on:
+  push:
+    branches:
+      - react-rebuild
+    paths:
+      - '.github/workflows/react-rebuild-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    name: Собрать лендинг
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Получить репозиторий
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: react-rebuild
+
+      - name: Перенести актуальную версию страницы
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p /tmp/debttech-source
+          curl -fsSL --retry 4 https://codeload.github.com/IMONsergey/debttech2026/tar.gz/refs/heads/main -o /tmp/debttech.tar.gz
+          tar -xzf /tmp/debttech.tar.gz -C /tmp
+          mv /tmp/debttech2026-main/* /tmp/debttech-source/
+
+          cp -a assets /tmp/lite-assets
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} +
+
+          mkdir -p src/components src/lib src/styles src/assets/fonts public/assets/gallery
+
+          cp /tmp/lite-assets/images/gallery/* public/assets/gallery/
+          cp /tmp/lite-assets/images/hero-desktop.png public/assets/hero-debttech-2026.png
+          cp /tmp/lite-assets/images/hero-mobile.png public/assets/hero-debttech-2026-adaptive.png
+          cp /tmp/lite-assets/images/venue.webp public/assets/venue-tau-hero.webp
+          cp /tmp/lite-assets/icons/debttech-logo.svg public/assets/debttech-logo.svg
+          cp /tmp/lite-assets/icons/organizers.svg public/assets/organizers.svg
+          cp /tmp/lite-assets/icons/arrow-up.svg public/assets/arrow-up.svg
+          cp /tmp/lite-assets/icons/route-pin.svg public/assets/route-pin.svg
+          cp /tmp/lite-assets/fonts/bounded-regular.ttf src/assets/fonts/bounded-regular.ttf
+          cp /tmp/lite-assets/fonts/ibm-plex-sans-regular.ttf src/assets/fonts/ibm-plex-sans-regular.ttf
+          cp /tmp/lite-assets/fonts/ibm-plex-sans-semibold.ttf src/assets/fonts/ibm-plex-sans-semibold.ttf
+
+          for file in global.css site-fidelity.css public-artwork.css hero-only.css hero-only-media-fixes.css soft-reveal.css hero-mobile-grid-fix.css cosmos-effect.css; do
+            cp "/tmp/debttech-source/src/styles/$file" "src/styles/$file"
+          done
+
+          sed -i "s#../../Bounded/Bounded-Regular.ttf#../assets/fonts/bounded-regular.ttf#g" src/styles/*.css
+          sed -i "s#../../IBMPlexSans/IBMPlexSans-Regular.ttf#../assets/fonts/ibm-plex-sans-regular.ttf#g" src/styles/*.css
+          sed -i "s#../../IBMPlexSans/IBMPlexSans-SemiBold.ttf#../assets/fonts/ibm-plex-sans-semibold.ttf#g" src/styles/*.css
+
+          cp /tmp/debttech-source/src/components/CosmosPointerEffect.jsx src/components/CosmosPointerEffect.jsx
+          cp /tmp/debttech-source/src/lib/typography.js src/lib/typography.js
+          cp /tmp/debttech-source/src/lib/assetUrl.js src/lib/assetUrl.js
+
+          node <<'NODE'
+          const fs = require('fs');
+          const source = fs.readFileSync('/tmp/debttech-source/src/components/SitePage.jsx', 'utf8');
+
+          const take = (start, end) => {
+            const from = source.indexOf(start);
+            const to = end ? source.indexOf(end, from) : source.length;
+            if (from < 0 || to < 0) throw new Error(`Не найден блок: ${start}`);
+            return source.slice(from, to).trim();
+          };
+
+          let gallery = take('function GallerySection', 'function AboutSection');
+          let ticker = take('function TickerStrip', 'function useCountdown');
+          let countdown = take('function useCountdown');
+          gallery = gallery.replaceAll('src="/assets/arrow-up.svg"', "src={assetUrl('/assets/arrow-up.svg')}");
+
+          const page = `import { useEffect, useMemo, useRef, useState } from 'react';
+          import { FixedMenu, SidebarInfo } from './FixedMenu.jsx';
+          import { assetUrl } from '../lib/assetUrl.js';
+          import { typograf } from '../lib/typography.js';
+
+          export function LandingPage({ content }) {
+            const countdown = useCountdown(content.hero.countdownTarget, content.hero.countdown);
+
+            return (
+              <div className="app-shell">
+                <div className="site-grid">
+                  <FixedMenu site={content.site} menu={content.menu} />
+                  <main className="page-flow" aria-label="Debt Tech 2026">
+                    <section
+                      className="hero-placeholder"
+                      id="top"
+                      style={{
+                        '--hero-image': \`url("\${content.hero.backgroundImage}")\`,
+                        '--hero-image-adaptive': \`url("\${content.hero.backgroundImageAdaptive ?? content.hero.backgroundImage}")\`,
+                      }}
+                    >
+                      <h1 className="visually-hidden">{content.hero.title}</h1>
+                      <div className="hero-placeholder__meta">
+                        <span>{content.site.date}</span>
+                        <span>{typograf(content.site.city)}</span>
+                      </div>
+                      <div className="hero-bottom">
+                        <div className="hero-bottom__content desktop-content-area content-grid">
+                          <p>{typograf(content.hero.bottomTitle)}</p>
+                          <div className="countdown" aria-label={content.hero.countdownLabel}>
+                            <span className="countdown__label">{typograf(content.hero.countdownLabel)}</span>
+                            <div className="countdown__items">
+                              {countdown.map((item) => (
+                                <span className="countdown__item" key={\`\${item.value}-\${item.label}\`}>
+                                  <strong>{item.value}</strong>
+                                  <span>{typograf(item.label)}</span>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <SidebarInfo className="mobile-hero-info" menu={content.menu} />
+                        </div>
+                      </div>
+                    </section>
+                    <TickerStrip items={content.ticker?.items} />
+                    <HeroVideoSection video={content.heroVideo} />
+                    <GallerySection gallery={content.gallery} />
+                    <HeroLandingFooter logo={content.site.logo} footer={content.footer} />
+                  </main>
+                </div>
+              </div>
+            );
+          }
+
+          function HeroVideoSection({ video }) {
+            if (!video?.embedUrl) return null;
+            return (
+              <section className="hero-video-section" aria-labelledby="hero-video-title">
+                <h2 id="hero-video-title">{typograf(video.title)}</h2>
+                <div className="hero-video-section__player">
+                  <iframe
+                    src={video.embedUrl}
+                    title={video.title}
+                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </section>
+            );
+          }
+
+          function HeroLandingFooter({ logo, footer }) {
+            const privacyHref = footer?.privacyHref ?? '#privacy';
+            return (
+              <footer className="hero-landing-footer" id="privacy">
+                <a className="hero-landing-footer__brand" href="#top" aria-label="Наверх">
+                  <img src={logo} alt="DEBT TECH 2026" />
+                </a>
+                <div className="hero-landing-footer__meta">
+                  <span>{typograf(footer?.copyright ?? '© 2026. Все права защищены.')}</span>
+                  <a href={privacyHref} target="_blank" rel="noreferrer">
+                    {typograf(footer?.privacyLabel ?? 'Политика конфиденциальности и персональных данных')}
+                  </a>
+                </div>
+              </footer>
+            );
+          }
+
+          ${gallery}
+
+          ${ticker}
+
+          ${countdown}
+          `;
+          fs.writeFileSync('src/components/LandingPage.jsx', page);
+          NODE
+
+          cat > src/components/FixedMenu.jsx <<'EOF'
+          import { assetUrl } from '../lib/assetUrl.js';
+          import { typograf } from '../lib/typography.js';
+
+          export function FixedMenu({ site, menu }) {
+            return (
+              <aside className="fixed-menu" aria-label="Основное меню">
+                <a className="fixed-menu__brand" href="#top" aria-label={site.title}>
+                  <img src={site.logo} alt={site.title} />
+                </a>
+                <SidebarInfo className="fixed-menu__info" menu={menu} />
+              </aside>
+            );
+          }
+
+          export function SidebarInfo({ className = 'sidebar-info', menu }) {
+            const sidebar = menu.sidebar ?? {};
+            const routeIsExternal = /^https?:\/\//.test(sidebar.routeHref ?? '');
+            return (
+              <div className={className}>
+                <article className="venue-card">
+                  <div className="venue-card__copy">
+                    <span>{typograf(sidebar.venueTitle)}</span>
+                    <strong>{typograf(sidebar.venueAddress)}</strong>
+                  </div>
+                  <img src={sidebar.venueImage} alt="Пространство проведения DEBT TECH 2026" />
+                </article>
+                <a className="route-link" href={sidebar.routeHref} target={routeIsExternal ? '_blank' : undefined} rel={routeIsExternal ? 'noreferrer' : undefined}>
+                  <span>{typograf(sidebar.routeLabel)}</span>
+                  <img className="route-link__icon" src={assetUrl('/assets/route-pin.svg')} alt="" aria-hidden="true" />
+                </a>
+                <a className="contact-link" href={`mailto:${sidebar.contactEmail}`}>
+                  <span>{typograf(sidebar.contactLabel)}</span>
+                  <strong>{sidebar.contactEmail}</strong>
+                  <img className="contact-link__arrow" src={assetUrl('/assets/arrow-up.svg')} alt="" aria-hidden="true" />
+                </a>
+                <div className="organizers-mark">
+                  <span>{typograf(sidebar.organizersLabel)}</span>
+                  <img src={sidebar.organizersImage} alt={sidebar.organizersLabel} />
+                </div>
+                <SidebarCta cta={menu.cta} />
+                {menu.secondaryCta ? <SidebarCta cta={menu.secondaryCta} secondary /> : null}
+              </div>
+            );
+          }
+
+          function SidebarCta({ cta, secondary = false }) {
+            const className = `fixed-menu__cta${secondary ? ' fixed-menu__cta--secondary' : ''}`;
+            const isExternal = /^https?:\/\//.test(cta.href ?? '');
+            return (
+              <a className={className} href={cta.href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noreferrer' : undefined}>
+                <span>{typograf(cta.label)}</span>
+                <img className="fixed-menu__cta-icon" src={assetUrl('/assets/arrow-up.svg')} alt="" aria-hidden="true" />
+              </a>
+            );
+          }
+          EOF
+
+          cat > src/content.js <<'EOF'
+          import { assetUrl } from './lib/assetUrl.js';
+
+          const galleryFiles = [
+            '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
+            '06.webp', '07.webp', '08.webp', '09.webp', '10.jpg',
+            '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg',
+            '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
+          ];
+
+          export const content = {
+            pageMode: 'hero-landing',
+            site: {
+              title: 'Debt Tech 2026',
+              date: '13 ноября 2026',
+              city: 'Москва',
+              logo: assetUrl('/assets/debttech-logo.svg'),
+            },
+            menu: {
+              groups: [],
+              cta: { label: 'Ранняя регистрация', href: 'https://t.me/anna_joys' },
+              secondaryCta: { label: 'Забронировать стенд', href: 'https://t.me/anna_joys' },
+              sidebar: {
+                venueTitle: 'TAU - пространство\nмузыкальных культур',
+                venueAddress: 'Москва, Рязанский проспект, 8Ас10',
+                venueImage: assetUrl('/assets/venue-tau-hero.webp'),
+                routeLabel: 'Смотреть на карте',
+                routeHref: 'https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D0%A0%D1%8F%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%2C%208%D0%90%D1%8110',
+                contactLabel: 'Контакты для связи',
+                contactEmail: 'redchief@rvzrus.ru',
+                organizersLabel: 'ОРГАНИЗАТОРЫ',
+                organizersImage: assetUrl('/assets/organizers.svg'),
+              },
+            },
+            hero: {
+              title: 'Debt Tech 2026',
+              backgroundImage: assetUrl('/assets/hero-debttech-2026.png'),
+              backgroundImageAdaptive: assetUrl('/assets/hero-debttech-2026-adaptive.png'),
+              bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
+              countdownLabel: 'Время до запуска',
+              countdownTarget: '2026-11-13T00:00:00+03:00',
+              countdown: [
+                { value: '00', label: 'дней' },
+                { value: '00', label: 'часов' },
+                { value: '00', label: 'минут' },
+                { value: '00', label: 'секунд' },
+              ],
+            },
+            ticker: {
+              items: [
+                '800+ делегатов', '70+ спикеров', '50+ участников выставки', '3 сцены',
+                'Креативная вечерняя программа', 'Интерактивные зоны', 'Пресс-бар', 'Фуршет',
+                'VIP-резиденции', 'Afterparty',
+              ],
+            },
+            heroVideo: {
+              title: 'Как проходят наши конференции',
+              embedUrl: 'https://kinescope.io/embed/oJuPdsugHShm1c43oRbGCj?t=20&transparent=true&autoplay=true&muted=true',
+            },
+            gallery: {
+              title: 'Кадры с DEBT TECH 2025',
+              ctaLabel: 'Смотреть все фото',
+              href: 'https://rvz.bitrix24.ru/~0IZ9x',
+              items: galleryFiles.map((file, index) => ({
+                image: assetUrl(`/assets/gallery/${file}`),
+                alt: `DEBT TECH 2025 — кадр ${index + 1}`,
+              })),
+            },
+            footer: {
+              copyright: '© 2026 DEBT TECH. Все права защищены.',
+              privacyLabel: 'Политика конфиденциальности и персональных данных',
+              privacyHref: 'https://rvzrus.ru/politic',
+            },
+          };
+          EOF
+
+          cat > src/App.jsx <<'EOF'
+          import { useEffect } from 'react';
+          import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
+          import { LandingPage } from './components/LandingPage.jsx';
+          import { content } from './content.js';
+          import './styles/hero-only.css';
+          import './styles/hero-only-media-fixes.css';
+          import './styles/soft-reveal.css';
+
+          export default function App() {
+            useEffect(() => {
+              document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
+            }, []);
+            return (
+              <>
+                <CosmosPointerEffect />
+                <div className="hero-only-view"><LandingPage content={content} /></div>
+              </>
+            );
+          }
+          EOF
+
+          cat > src/main.jsx <<'EOF'
+          import React from 'react';
+          import { createRoot } from 'react-dom/client';
+          import App from './App.jsx';
+          import './styles/global.css';
+          import './styles/site-fidelity.css';
+          import './styles/public-artwork.css';
+          import './styles/hero-mobile-grid-fix.css';
+
+          createRoot(document.getElementById('root')).render(
+            <React.StrictMode><App /></React.StrictMode>,
+          );
+          EOF
+
+          cat > index.html <<'EOF'
+          <!doctype html>
+          <html lang="ru">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <meta name="theme-color" content="#01081f" />
+              <meta name="description" content="DEBT TECH 2026 — 13 ноября, Москва" />
+              <title>DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва</title>
+            </head>
+            <body>
+              <div id="root"></div>
+              <script type="module" src="/src/main.jsx"></script>
+            </body>
+          </html>
+          EOF
+
+          cat > package.json <<'EOF'
+          {
+            "name": "debt-2026-lite",
+            "version": "1.0.0",
+            "private": true,
+            "type": "module",
+            "scripts": {
+              "dev": "vite",
+              "build": "vite build",
+              "preview": "vite preview"
+            },
+            "dependencies": {
+              "@vitejs/plugin-react": "latest",
+              "react": "latest",
+              "react-dom": "latest",
+              "vite": "latest"
+            }
+          }
+          EOF
+
+          cat > vite.config.js <<'EOF'
+          import { defineConfig } from 'vite';
+          import react from '@vitejs/plugin-react';
+
+          export default defineConfig({
+            plugins: [react()],
+            base: '/debt-2026-lite/',
+          });
+          EOF
+
+          cat > .gitignore <<'EOF'
+          node_modules/
+          dist/
+          .DS_Store
+          EOF
+
+          npm install --package-lock-only --ignore-scripts
+          npm ci
+          npm run build
+
+          test -f dist/index.html
+          test -n "$(find dist/assets -maxdepth 1 -name '*.js' -print -quit)"
+          test -f dist/assets/hero-debttech-2026.png
+          test -f dist/assets/hero-debttech-2026-adaptive.png
+          test "$(find public/assets/gallery -type f | wc -l)" -eq 20
+
+          git config user.name "Sergei I'MON"
+          git config user.email "jabba.person@gmail.com"
+          git add -A
+          git commit -m "Перенести лендинг на React"
+          git push origin react-rebuild
