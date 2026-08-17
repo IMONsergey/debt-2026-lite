@@ -1,0 +1,36 @@
+name: Извлечение favicon
+
+on:
+  push:
+    branches:
+      - tmp/favicon-extract
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить файлы
+        uses: actions/checkout@v4
+
+      - name: Извлечь favicon
+        run: |
+          python - <<'PY'
+          import base64
+          import re
+          from pathlib import Path
+
+          html = Path('favicon-source.html').read_text(encoding='utf-8')
+          match = re.search(r'<link rel="icon"[^>]*href="data:image/png;base64,([^"]+)"', html)
+          if not match:
+              raise SystemExit('favicon не найден')
+          Path('favicon.png').write_bytes(base64.b64decode(match.group(1)))
+          PY
+
+      - name: Сохранить favicon
+        uses: actions/upload-artifact@v4
+        with:
+          name: favicon
+          path: favicon.png
