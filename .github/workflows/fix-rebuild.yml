@@ -1,0 +1,29 @@
+name: Исправление подготовки
+
+on:
+  push:
+    branches:
+      - react-rebuild
+    paths:
+      - '.github/workflows/fix-rebuild.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить репозиторий
+        uses: actions/checkout@v4
+        with:
+          ref: react-rebuild
+
+      - name: Исправить загрузку исходников
+        run: |
+          sed -i "s#git clone --depth 1 https://github.com/IMONsergey/debttech2026.git /tmp/debttech-source#git -c http.https://github.com/.extraheader= clone --depth 1 https://github.com/IMONsergey/debttech2026.git /tmp/debttech-source#" .github/workflows/react-rebuild.yml
+          git config user.name "Sergei I'MON"
+          git config user.email "jabba.person@gmail.com"
+          git add .github/workflows/react-rebuild.yml
+          git commit -m "Исправить загрузку исходников"
+          git push origin react-rebuild
