@@ -1,0 +1,224 @@
+/*
+  Lightweight element motion only.
+  No scroll observers, no scroll-linked animation and no animation of the hero background image.
+  Motion is limited to opacity/transform on small UI elements plus hover transitions.
+*/
+
+/* More air between the remaining left-rail items on the compact hero landing. */
+.hero-only-view .fixed-menu__info {
+  --menu-info-gap: clamp(18px, 2.15vh, 26px);
+  gap: var(--menu-info-gap);
+}
+
+.hero-only-view .venue-card + .route-link {
+  margin-top: 0;
+}
+
+/* One-time soft entrance for elements that are already visible when the page opens. */
+.hero-only-view .fixed-menu__brand,
+.hero-only-view .fixed-menu__info > *,
+.hero-only-view .hero-placeholder__meta,
+.hero-only-view .hero-bottom p,
+.hero-only-view .countdown {
+  animation: soft-element-enter 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-only-view .fixed-menu__brand {
+  animation-delay: 40ms;
+}
+
+.hero-only-view .fixed-menu__info > :nth-child(1) {
+  animation-delay: 90ms;
+}
+
+.hero-only-view .fixed-menu__info > :nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.hero-only-view .fixed-menu__info > :nth-child(3) {
+  animation-delay: 190ms;
+}
+
+.hero-only-view .fixed-menu__info > :nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.hero-only-view .fixed-menu__info > :nth-child(5) {
+  animation-delay: 290ms;
+}
+
+.hero-only-view .fixed-menu__info > :nth-child(6) {
+  animation-delay: 340ms;
+}
+
+.hero-only-view .hero-placeholder__meta {
+  animation-delay: 80ms;
+}
+
+.hero-only-view .hero-bottom p {
+  animation-delay: 150ms;
+}
+
+.hero-only-view .countdown {
+  animation-delay: 220ms;
+}
+
+/* Small ambient movement on compact UI only; large photos/video/hero background stay static. */
+.hero-only-view .fixed-menu__brand img,
+.hero-only-view .hero-landing-footer__brand img {
+  animation: soft-element-float 7s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+
+.hero-only-view .countdown__item {
+  animation: soft-card-breathe 5.8s ease-in-out infinite;
+}
+
+.hero-only-view .countdown__item:nth-child(2) {
+  animation-delay: -1.2s;
+}
+
+.hero-only-view .countdown__item:nth-child(3) {
+  animation-delay: -2.4s;
+}
+
+.hero-only-view .countdown__item:nth-child(4) {
+  animation-delay: -3.6s;
+}
+
+/* Smooth micro-interactions. */
+.hero-only-view .fixed-menu__cta,
+.hero-only-view .route-link,
+.hero-only-view .gallery-section__link,
+.hero-only-view .gallery-carousel__arrow,
+.hero-only-view .hero-landing-footer__brand {
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms ease,
+    border-color 260ms ease,
+    background-color 260ms ease;
+}
+
+.hero-only-view .fixed-menu__cta:hover,
+.hero-only-view .fixed-menu__cta:focus-visible,
+.hero-only-view .route-link:hover,
+.hero-only-view .route-link:focus-visible,
+.hero-only-view .gallery-section__link:hover,
+.hero-only-view .gallery-section__link:focus-visible {
+  transform: translate3d(0, -2px, 0);
+}
+
+.hero-only-view .hero-landing-footer__brand:hover,
+.hero-only-view .hero-landing-footer__brand:focus-visible {
+  transform: translate3d(0, -2px, 0) scale(1.015);
+}
+
+.hero-only-view .gallery-slide img {
+  transition:
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 420ms ease;
+}
+
+.hero-only-view .gallery-slide:hover img,
+.hero-only-view .gallery-slide:focus-visible img,
+.hero-only-view .gallery-slide.is-active img {
+  transform: scale(1.012);
+}
+
+.hero-only-view .fixed-menu__cta-icon,
+.hero-only-view .route-link__icon,
+.hero-only-view .gallery-section__link img {
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-only-view .fixed-menu__cta:hover .fixed-menu__cta-icon,
+.hero-only-view .fixed-menu__cta:focus-visible .fixed-menu__cta-icon,
+.hero-only-view .route-link:hover .route-link__icon,
+.hero-only-view .route-link:focus-visible .route-link__icon,
+.hero-only-view .gallery-section__link:hover img,
+.hero-only-view .gallery-section__link:focus-visible img {
+  transform: translate3d(2px, -2px, 0);
+}
+
+@keyframes soft-element-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes soft-element-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes soft-card-breathe {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate3d(0, -1px, 0);
+    opacity: 0.985;
+  }
+}
+
+@media (max-height: 900px) and (min-width: 1181px) {
+  .hero-only-view .fixed-menu__info {
+    --menu-info-gap: clamp(14px, 1.75vh, 20px);
+  }
+}
+
+@media (max-height: 760px) and (min-width: 1181px) {
+  .hero-only-view .fixed-menu__info {
+    --menu-info-gap: 12px;
+  }
+}
+
+@media (max-width: 699px) {
+  .hero-only-view .mobile-hero-info {
+    --menu-info-gap: 20px;
+    gap: 20px;
+  }
+
+  .hero-only-view .fixed-menu__brand img,
+  .hero-only-view .hero-landing-footer__brand img,
+  .hero-only-view .countdown__item {
+    animation-duration: 8s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-only-view .fixed-menu__brand,
+  .hero-only-view .fixed-menu__info > *,
+  .hero-only-view .hero-placeholder__meta,
+  .hero-only-view .hero-bottom p,
+  .hero-only-view .countdown,
+  .hero-only-view .fixed-menu__brand img,
+  .hero-only-view .hero-landing-footer__brand img,
+  .hero-only-view .countdown__item {
+    animation: none !important;
+  }
+
+  .hero-only-view .fixed-menu__cta,
+  .hero-only-view .route-link,
+  .hero-only-view .gallery-section__link,
+  .hero-only-view .gallery-carousel__arrow,
+  .hero-only-view .hero-landing-footer__brand,
+  .hero-only-view .gallery-slide img,
+  .hero-only-view .fixed-menu__cta-icon,
+  .hero-only-view .route-link__icon,
+  .hero-only-view .gallery-section__link img {
+    transition: none !important;
+  }
+}
