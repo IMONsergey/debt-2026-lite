@@ -41,11 +41,20 @@
   text-shadow: none !important;
 }
 
+/* The inline video block is replaced by the fixed widget, so the gallery needs its own top spacing. */
+.hero-only-view .gallery-section {
+  padding-top: clamp(88px, 7vw, 120px) !important;
+}
+
 @media (max-width: 1180px) {
   .hero-only-view .hero-video-section h2,
   .hero-only-view .gallery-section h2 {
     font-size: clamp(24px, 3.6vw, 34px) !important;
     line-height: 1.1 !important;
+  }
+
+  .hero-only-view .gallery-section {
+    padding-top: 72px !important;
   }
 }
 
@@ -54,5 +63,9 @@
   .hero-only-view .gallery-section h2 {
     font-size: clamp(20px, 6.4vw, 26px) !important;
     line-height: 1.08 !important;
+  }
+
+  .hero-only-view .gallery-section {
+    padding-top: 56px !important;
   }
 }
