@@ -61,13 +61,15 @@ export function VideoWidget({ video }) {
     <aside className={className} aria-label="Видео о конференции">
       {isOpen ? (
         <div className="video-widget__player">
-          <iframe
-            key="video-widget-main"
-            src={video.widgetUrl ?? video.embedUrl}
-            title={video.title}
-            allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
-            allowFullScreen
-          />
+          <div className="video-widget__media">
+            <iframe
+              key="video-widget-main"
+              src={video.widgetUrl ?? video.embedUrl}
+              title={video.title}
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+              allowFullScreen
+            />
+          </div>
           <button
             className="video-widget__close video-widget__close--player"
             type="button"
@@ -79,14 +81,16 @@ export function VideoWidget({ video }) {
         </div>
       ) : (
         <div className="video-widget__preview">
-          <iframe
-            key="video-widget-preview"
-            src={video.previewUrl}
-            title={`${video.title} — превью`}
-            allow="autoplay; encrypted-media"
-            tabIndex="-1"
-            aria-hidden="true"
-          />
+          <div className="video-widget__media">
+            <iframe
+              key="video-widget-preview"
+              src={video.previewUrl}
+              title={`${video.title} — превью`}
+              allow="autoplay; encrypted-media"
+              tabIndex="-1"
+              aria-hidden="true"
+            />
+          </div>
           <button
             className="video-widget__open"
             type="button"
