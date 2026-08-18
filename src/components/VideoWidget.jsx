@@ -63,7 +63,7 @@ export function VideoWidget({ video }) {
         <div className="video-widget__player">
           <iframe
             key="video-widget-main"
-            src={video.embedUrl}
+            src={video.widgetUrl ?? video.embedUrl}
             title={video.title}
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
             allowFullScreen
