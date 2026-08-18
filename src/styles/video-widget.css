@@ -7,7 +7,7 @@
 .video-widget {
   position: fixed;
   z-index: 9000;
-  top: 50.3svh;
+  top: calc(50.3svh + 32px);
   right: var(--edge, 38px);
   width: clamp(300px, 19vw, 360px);
   color: #fff;
