@@ -1,0 +1,174 @@
+/* Видео на этой версии страницы работает как фиксированный виджет в нижнем углу — по логике Tilda VD16. */
+.hero-only-view .hero-video-section {
+  display: none !important;
+}
+
+.video-widget {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9000;
+  width: 200px;
+  color: #fff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+.video-widget__preview,
+.video-widget__player {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  background: #01081f;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+  isolation: isolate;
+}
+
+.video-widget__preview iframe,
+.video-widget__player iframe {
+  position: absolute;
+  inset: -2px;
+  display: block;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border: 0;
+  background: #01081f;
+}
+
+.video-widget__preview iframe {
+  pointer-events: none;
+}
+
+.video-widget__open {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.video-widget__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 5, 20, 0.06);
+  transition: background 180ms ease;
+}
+
+.video-widget__open:hover::after,
+.video-widget__open:focus-visible::after {
+  background: rgba(0, 5, 20, 0.18);
+}
+
+.video-widget__play {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.58);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.22);
+}
+
+.video-widget__play::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 52%;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid #fff;
+  transform: translate(-42%, -50%);
+}
+
+.video-widget__close {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0 0 2px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font: 300 20px/1 Arial, sans-serif;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.video-widget__close:hover,
+.video-widget__close:focus-visible {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+  outline: none;
+}
+
+.video-widget__close--preview {
+  top: -8px;
+  right: -8px;
+}
+
+.video-widget__close--player {
+  top: 10px;
+  right: 10px;
+}
+
+.video-widget.is-open {
+  width: min(560px, calc(100vw - 48px));
+}
+
+.video-widget.is-open .video-widget__player {
+  animation: video-widget-open 220ms ease-out both;
+}
+
+@keyframes video-widget-open {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 699px) {
+  .video-widget {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 160px;
+  }
+
+  .video-widget.is-open {
+    width: calc(100vw - 28px);
+  }
+
+  .video-widget__preview,
+  .video-widget__player {
+    border-radius: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-widget.is-open .video-widget__player {
+    animation: none;
+  }
+
+  .video-widget__open::after,
+  .video-widget__close {
+    transition: none;
+  }
+}
