@@ -78,8 +78,8 @@ const content = {
   heroVideo: {
     title: 'Как проходят наши конференции',
     previewUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
-    embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=false&transparent=false',
-    sectionUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=true&transparent=true',
+    embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=true&transparent=true',
+    widgetUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=false&transparent=false',
   },
   gallery: {
     title: 'Кадры с DEBT TECH 2025',
