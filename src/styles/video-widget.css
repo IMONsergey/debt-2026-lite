@@ -35,6 +35,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
+  overflow: visible;
   background: #01081f;
   isolation: isolate;
   transition:
@@ -42,36 +43,39 @@
     box-shadow 320ms ease;
 }
 
-.video-widget__preview {
-  overflow: visible;
-}
-
-.video-widget__player {
-  overflow: hidden;
-  border-radius: 10px;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
-}
-
 .video-widget.is-hero .video-widget__preview {
-  border-radius: 0;
+  border-radius: 18px;
   box-shadow: none;
 }
 
-.video-widget.is-floating .video-widget__preview {
+.video-widget.is-floating .video-widget__preview,
+.video-widget__player {
   border-radius: 10px;
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
 }
 
-.video-widget__preview iframe,
-.video-widget__player iframe {
+.video-widget__media {
   position: absolute;
-  inset: -2px;
-  display: block;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  border: 0;
+  inset: 0;
+  overflow: hidden;
   border-radius: inherit;
   background: #01081f;
+  clip-path: inset(0 round inherit);
+  isolation: isolate;
+}
+
+.video-widget__media iframe {
+  position: absolute;
+  inset: -10px;
+  display: block;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: #01081f;
+  transform: translateZ(0);
 }
 
 .video-widget__preview iframe {
@@ -98,6 +102,7 @@
   content: '';
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   background: rgba(0, 5, 20, 0.04);
   transition: background 180ms ease;
 }
