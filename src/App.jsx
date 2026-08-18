@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
 import { SitePage } from './components/SitePage.jsx';
+import { VideoWidget } from './components/VideoWidget.jsx';
 import './styles/hero-only.css';
 import './styles/hero-only-media-fixes.css';
 import './styles/soft-reveal.css';
@@ -75,8 +76,9 @@ const content = {
     ],
   },
   heroVideo: {
-    title: 'Как проходят наши конференции',
-    embedUrl: 'https://kinescope.io/embed/oJuPdsugHShm1c43oRbGCj?t=20&transparent=true&autoplay=true&muted=true',
+    title: 'DEBT TECH 2026',
+    previewUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
+    embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=false&transparent=false',
   },
   gallery: {
     title: 'Кадры с DEBT TECH 2025',
@@ -105,6 +107,7 @@ export default function App() {
       <div className="hero-only-view">
         <SitePage content={content} />
       </div>
+      <VideoWidget video={content.heroVideo} />
     </>
   );
 }
