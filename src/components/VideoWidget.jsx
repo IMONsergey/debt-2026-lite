@@ -59,6 +59,8 @@ export function VideoWidget({ video }) {
 
   return (
     <aside className={className} aria-label="Видео о конференции">
+      <span className="video-widget__caption">Как проходят наши конференции</span>
+
       {isOpen ? (
         <div className="video-widget__player">
           <div className="video-widget__media">
