@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
@@ -41,20 +43,71 @@ export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVi
 }
 
 function SidebarVideo({ video }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
+
   if (!video?.embedUrl) return null;
 
   return (
-    <div className="desktop-sidebar-video">
-      <span className="desktop-sidebar-video__caption">{typograf(video.title)}</span>
-      <div className="desktop-sidebar-video__frame">
-        <iframe
-          src={video.embedUrl}
-          title={video.title}
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
-          allowFullScreen
-        />
+    <>
+      <div className="desktop-sidebar-video">
+        <span className="desktop-sidebar-video__caption">{typograf(video.title)}</span>
+        <div className="desktop-sidebar-video__frame">
+          <iframe
+            src={video.previewUrl ?? video.embedUrl}
+            title={`${video.title} — превью`}
+            allow="autoplay; encrypted-media"
+            tabIndex="-1"
+            aria-hidden="true"
+          />
+          <button
+            className="desktop-sidebar-video__open"
+            type="button"
+            aria-label="Открыть видео"
+            onClick={() => setIsOpen(true)}
+          >
+            <span className="desktop-sidebar-video__play" aria-hidden="true" />
+          </button>
+        </div>
       </div>
-    </div>
+
+      {isOpen && createPortal(
+        <div className="desktop-video-modal" role="dialog" aria-modal="true" aria-label={video.title} onClick={() => setIsOpen(false)}>
+          <button
+            className="desktop-video-modal__close"
+            type="button"
+            aria-label="Закрыть видео"
+            onClick={() => setIsOpen(false)}
+            autoFocus
+          />
+          <div className="desktop-video-modal__player" onClick={(event) => event.stopPropagation()}>
+            <iframe
+              src={video.widgetUrl ?? video.embedUrl}
+              title={video.title}
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+              allowFullScreen
+            />
+          </div>
+        </div>,
+        document.body,
+      )}
+    </>
   );
 }
 
