@@ -55,44 +55,10 @@ export function SitePage({ content }) {
 
 function VenueSection({ venue }) {
   const images = venue?.images ?? [];
-  const [activeIndex, setActiveIndex] = useState(0);
-  const viewportRef = useRef(null);
-  const slideRefs = useRef([]);
-  const scrollTimerRef = useRef(null);
-
-  useEffect(() => () => window.clearTimeout(scrollTimerRef.current), []);
 
   if (!venue || images.length === 0) return null;
 
   const routeIsExternal = /^https?:\/\//.test(venue.routeHref ?? '');
-
-  function selectSlide(index) {
-    const nextIndex = (index + images.length) % images.length;
-    setActiveIndex(nextIndex);
-    slideRefs.current[nextIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-  }
-
-  function handleScroll() {
-    window.clearTimeout(scrollTimerRef.current);
-    scrollTimerRef.current = window.setTimeout(() => {
-      const viewport = viewportRef.current;
-      if (!viewport) return;
-      const firstSlideOffset = slideRefs.current[0]?.offsetLeft ?? 0;
-
-      const nearestIndex = slideRefs.current.reduce((closestIndex, slide, index) => {
-        if (!slide) return closestIndex;
-        const closest = slideRefs.current[closestIndex];
-        if (!closest) return index;
-        const slideOffset = slide.offsetLeft - firstSlideOffset;
-        const closestOffset = closest.offsetLeft - firstSlideOffset;
-        return Math.abs(slideOffset - viewport.scrollLeft) < Math.abs(closestOffset - viewport.scrollLeft)
-          ? index
-          : closestIndex;
-      }, 0);
-
-      setActiveIndex(nearestIndex);
-    }, 80);
-  }
 
   return (
     <section className="venue-section" id="venue" aria-labelledby="venue-title">
@@ -116,48 +82,15 @@ function VenueSection({ venue }) {
           </a>
         </div>
 
-        <div className="venue-slider">
-          <div className="venue-slider__viewport" ref={viewportRef} onScroll={handleScroll}>
-            <div className="venue-slider__track">
-              {images.map((item, index) => (
-                <figure
-                  className="venue-slider__slide"
-                  key={item.image}
-                  ref={(node) => { slideRefs.current[index] = node; }}
-                >
-                  <img src={item.image} alt={item.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
-                </figure>
-              ))}
-            </div>
-          </div>
-
-          <div className="venue-slider__controls">
-            <div className="venue-slider__count" aria-live="polite">
-              <span>{String(activeIndex + 1).padStart(2, '0')}</span>
-              <span>/</span>
-              <span>{String(images.length).padStart(2, '0')}</span>
-            </div>
-            <div className="venue-slider__dots" aria-label="Выбор фотографии">
-              {images.map((item, index) => (
-                <button
-                  className={index === activeIndex ? 'is-active' : ''}
-                  type="button"
-                  key={item.image}
-                  onClick={() => selectSlide(index)}
-                  aria-label={`Показать фотографию ${index + 1}`}
-                  aria-current={index === activeIndex ? 'true' : undefined}
-                />
-              ))}
-            </div>
-            <div className="venue-slider__arrows">
-              <button type="button" onClick={() => selectSlide(activeIndex - 1)} aria-label="Предыдущая фотография">
-                <img className="venue-slider__arrow--previous" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
-              </button>
-              <button type="button" onClick={() => selectSlide(activeIndex + 1)} aria-label="Следующая фотография">
-                <img className="venue-slider__arrow--next" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+        <div className="venue-bento" aria-label="Фотографии места проведения">
+          {images.map((item, index) => (
+            <figure
+              className={`venue-bento__tile${index === 0 ? ' venue-bento__tile--primary' : ''}`}
+              key={item.image}
+            >
+              <img src={item.image} alt={item.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+            </figure>
+          ))}
         </div>
       </div>
     </section>
