@@ -8,7 +8,7 @@ export function SitePage({ content }) {
   return (
     <div className="app-shell">
       <div className="site-grid">
-        <FixedMenu site={content.site} menu={content.menu} />
+        <FixedMenu site={content.site} menu={content.menu} video={content.heroVideo} />
         <main className="page-flow" aria-label="Debt Tech 2026">
           <section
             className="hero-placeholder"
@@ -37,7 +37,7 @@ export function SitePage({ content }) {
                     ))}
                   </div>
                 </div>
-                <SidebarInfo className="mobile-hero-info" menu={content.menu} />
+                <SidebarInfo className="mobile-hero-info" menu={content.menu} video={content.heroVideo} />
               </div>
             </div>
           </section>

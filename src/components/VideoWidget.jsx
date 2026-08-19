@@ -4,6 +4,7 @@ import '../styles/video-widget.css';
 const DESKTOP_QUERY = '(min-width: 1181px)';
 
 export function VideoWidget({ video }) {
+  const [isAdaptive, setIsAdaptive] = useState(() => !window.matchMedia(DESKTOP_QUERY).matches);
   const [isOpen, setIsOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
@@ -16,6 +17,15 @@ export function VideoWidget({ video }) {
     const updateState = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
+        const adaptive = !media.matches;
+        setIsAdaptive(adaptive);
+
+        if (!adaptive) {
+          setAnchor(null);
+          setIsFloating(false);
+          return;
+        }
+
         const slots = [...document.querySelectorAll('[data-video-widget-slot]')];
         const slot = slots.find((item) => {
           const rect = item.getBoundingClientRect();
@@ -34,12 +44,7 @@ export function VideoWidget({ video }) {
           width: Math.round(rect.width),
         });
 
-        if (media.matches) {
-          const threshold = Math.max(150, Math.min(240, window.innerHeight * 0.22));
-          setIsFloating(window.scrollY > threshold);
-        } else {
-          setIsFloating(rect.top <= 18);
-        }
+        setIsFloating(rect.top <= 18);
       });
     };
 
@@ -67,7 +72,7 @@ export function VideoWidget({ video }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  if (!video || isHidden) return null;
+  if (!isAdaptive || !video || isHidden) return null;
 
   const className = [
     'video-widget',

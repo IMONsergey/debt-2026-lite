@@ -1,22 +1,26 @@
 import { typograf } from '../lib/typography.js';
 
-export function FixedMenu({ site, menu }) {
+export function FixedMenu({ site, menu, video }) {
   return (
     <aside className="fixed-menu" aria-label="Информация о конференции">
       <a className="fixed-menu__brand" href="#top" aria-label={site.title}>
         <img src={site.logo} alt={site.title} />
       </a>
-      <SidebarInfo className="fixed-menu__info" menu={menu} />
+      <SidebarInfo className="fixed-menu__info" menu={menu} video={video} desktopVideo />
     </aside>
   );
 }
 
-export function SidebarInfo({ className = 'sidebar-info', menu }) {
+export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVideo = false }) {
   const sidebar = menu.sidebar ?? {};
 
   return (
     <div className={className}>
-      <div className="video-widget-slot" data-video-widget-slot aria-hidden="true" />
+      {desktopVideo ? (
+        <SidebarVideo video={video} />
+      ) : (
+        <div className="video-widget-slot" data-video-widget-slot aria-hidden="true" />
+      )}
 
       <a className="contact-link" href={`mailto:${sidebar.contactEmail}`}>
         <span>{typograf(sidebar.contactLabel)}</span>
@@ -31,6 +35,24 @@ export function SidebarInfo({ className = 'sidebar-info', menu }) {
 
       <SidebarCta cta={menu.cta} />
       {menu.secondaryCta ? <SidebarCta cta={menu.secondaryCta} secondary /> : null}
+    </div>
+  );
+}
+
+function SidebarVideo({ video }) {
+  if (!video?.embedUrl) return null;
+
+  return (
+    <div className="desktop-sidebar-video">
+      <span className="desktop-sidebar-video__caption">{typograf(video.title)}</span>
+      <div className="desktop-sidebar-video__frame">
+        <iframe
+          src={video.embedUrl}
+          title={video.title}
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+          allowFullScreen
+        />
+      </div>
     </div>
   );
 }

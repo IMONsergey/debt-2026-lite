@@ -4,6 +4,45 @@
   margin-top: 24px;
 }
 
+.desktop-sidebar-video {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.desktop-sidebar-video__caption {
+  color: rgba(255, 255, 255, 0.88);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.desktop-sidebar-video__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: #01081f;
+  isolation: isolate;
+}
+
+.desktop-sidebar-video__frame iframe {
+  position: absolute;
+  inset: -8px;
+  display: block;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #01081f;
+}
+
 .video-widget {
   position: fixed;
   z-index: 9000;
@@ -239,6 +278,10 @@
 }
 
 @media (max-width: 1180px) {
+  .desktop-sidebar-video {
+    display: none;
+  }
+
   .mobile-hero-info .video-widget-slot {
     grid-column: 1 / 7;
     grid-row: 1 / span 2;
