@@ -261,6 +261,13 @@
   }
 }
 
+@media (min-width: 700px) and (max-width: 1180px) {
+  .mobile-hero-info .fixed-menu__cta--secondary {
+    grid-column: 7 / -1;
+    grid-row: 4;
+  }
+}
+
 @media (max-width: 699px) {
   .mobile-hero-info .video-widget-slot {
     grid-column: 1;

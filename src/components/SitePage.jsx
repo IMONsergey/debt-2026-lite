@@ -76,12 +76,15 @@ function VenueSection({ venue }) {
     scrollTimerRef.current = window.setTimeout(() => {
       const viewport = viewportRef.current;
       if (!viewport) return;
+      const firstSlideOffset = slideRefs.current[0]?.offsetLeft ?? 0;
 
       const nearestIndex = slideRefs.current.reduce((closestIndex, slide, index) => {
         if (!slide) return closestIndex;
         const closest = slideRefs.current[closestIndex];
         if (!closest) return index;
-        return Math.abs(slide.offsetLeft - viewport.scrollLeft) < Math.abs(closest.offsetLeft - viewport.scrollLeft)
+        const slideOffset = slide.offsetLeft - firstSlideOffset;
+        const closestOffset = closest.offsetLeft - firstSlideOffset;
+        return Math.abs(slideOffset - viewport.scrollLeft) < Math.abs(closestOffset - viewport.scrollLeft)
           ? index
           : closestIndex;
       }, 0);
