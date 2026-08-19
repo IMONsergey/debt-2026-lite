@@ -4,23 +4,31 @@ import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
 export function FixedMenu({ site, menu, video }) {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
   return (
-    <aside className="fixed-menu" aria-label="Информация о конференции">
+    <aside className={`fixed-menu${isVideoOpen ? ' is-video-open' : ''}`} aria-label="Информация о конференции">
       <a className="fixed-menu__brand" href="#top" aria-label={site.title}>
         <img src={site.logo} alt={site.title} />
       </a>
-      <SidebarInfo className="fixed-menu__info" menu={menu} video={video} desktopVideo />
+      <SidebarInfo
+        className="fixed-menu__info"
+        menu={menu}
+        video={video}
+        desktopVideo
+        onVideoOpenChange={setIsVideoOpen}
+      />
     </aside>
   );
 }
 
-export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVideo = false }) {
+export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVideo = false, onVideoOpenChange }) {
   const sidebar = menu.sidebar ?? {};
 
   return (
     <div className={className}>
       {desktopVideo ? (
-        <SidebarVideo video={video} />
+        <SidebarVideo video={video} onOpenChange={onVideoOpenChange} />
       ) : (
         <div className="video-widget-slot" data-video-widget-slot aria-hidden="true" />
       )}
@@ -42,8 +50,14 @@ export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVi
   );
 }
 
-function SidebarVideo({ video }) {
+function SidebarVideo({ video, onOpenChange }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen, onOpenChange]);
+
+  useEffect(() => () => onOpenChange?.(false), [onOpenChange]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -68,22 +82,25 @@ function SidebarVideo({ video }) {
     <>
       <div className="desktop-sidebar-video">
         <span className="desktop-sidebar-video__caption">{typograf(video.title)}</span>
-        <div className="desktop-sidebar-video__frame">
+        <div className={`desktop-sidebar-video__frame${isOpen ? ' is-open' : ''}`}>
           <iframe
             src={video.previewUrl ?? video.embedUrl}
-            title={`${video.title} — превью`}
-            allow="autoplay; encrypted-media"
-            tabIndex="-1"
-            aria-hidden="true"
+            title={video.title}
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+            allowFullScreen
+            tabIndex={isOpen ? undefined : '-1'}
+            aria-hidden={isOpen ? undefined : 'true'}
           />
-          <button
-            className="desktop-sidebar-video__open"
-            type="button"
-            aria-label="Открыть видео"
-            onClick={() => setIsOpen(true)}
-          >
-            <span className="desktop-sidebar-video__play" aria-hidden="true" />
-          </button>
+          {!isOpen ? (
+            <button
+              className="desktop-sidebar-video__open"
+              type="button"
+              aria-label="Открыть видео"
+              onClick={() => setIsOpen(true)}
+            >
+              <span className="desktop-sidebar-video__play" aria-hidden="true" />
+            </button>
+          ) : null}
         </div>
       </div>
 
@@ -96,14 +113,6 @@ function SidebarVideo({ video }) {
             onClick={() => setIsOpen(false)}
             autoFocus
           />
-          <div className="desktop-video-modal__player" onClick={(event) => event.stopPropagation()}>
-            <iframe
-              src={video.widgetUrl ?? video.embedUrl}
-              title={video.title}
-              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
-              allowFullScreen
-            />
-          </div>
         </div>,
         document.body,
       )}
