@@ -13,51 +13,67 @@ export function VideoWidget({ video }) {
   useEffect(() => {
     const media = window.matchMedia(DESKTOP_QUERY);
     let frame = 0;
+    let slot = null;
 
-    const updateState = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        const adaptive = !media.matches;
-        setIsAdaptive(adaptive);
-
-        if (!adaptive) {
-          setAnchor(null);
-          setIsFloating(false);
-          return;
-        }
-
-        const slots = [...document.querySelectorAll('[data-video-widget-slot]')];
-        const slot = slots.find((item) => {
-          const rect = item.getBoundingClientRect();
-          return rect.width > 0 && rect.height > 0 && window.getComputedStyle(item).display !== 'none';
-        });
-
-        if (!slot) {
-          setAnchor(null);
-          return;
-        }
-
-        const rect = slot.getBoundingClientRect();
-        setAnchor({
-          top: Math.round(rect.top),
-          left: Math.round(rect.left),
-          width: Math.round(rect.width),
-        });
-
-        setIsFloating(rect.top <= 18);
+    const findSlot = () => {
+      const slots = [...document.querySelectorAll('[data-video-widget-slot]')];
+      return slots.find((item) => {
+        const rect = item.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 && window.getComputedStyle(item).display !== 'none';
       });
     };
 
-    updateState();
-    window.addEventListener('scroll', updateState, { passive: true });
-    window.addEventListener('resize', updateState);
-    media.addEventListener?.('change', updateState);
+    const updateFloating = () => {
+      if (!slot || media.matches) return;
+
+      const rect = slot.getBoundingClientRect();
+      setIsFloating((current) => (current ? rect.top <= 64 : rect.top <= 18));
+    };
+
+    const handleScroll = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateFloating);
+    };
+
+    const measure = () => {
+      const adaptive = !media.matches;
+      setIsAdaptive(adaptive);
+
+      if (!adaptive) {
+        slot = null;
+        setAnchor(null);
+        setIsFloating(false);
+        return;
+      }
+
+      slot = findSlot();
+
+      if (!slot) {
+        setAnchor(null);
+        setIsFloating(false);
+        return;
+      }
+
+      const rect = slot.getBoundingClientRect();
+      setAnchor({
+        top: Math.round(rect.top + window.scrollY),
+        left: Math.round(rect.left + window.scrollX),
+        width: Math.round(rect.width),
+      });
+
+      updateFloating();
+    };
+
+    measure();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    media.addEventListener?.('change', measure);
 
     return () => {
       window.cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', updateState);
-      window.removeEventListener('resize', updateState);
-      media.removeEventListener?.('change', updateState);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', measure);
+      media.removeEventListener?.('change', measure);
     };
   }, []);
 

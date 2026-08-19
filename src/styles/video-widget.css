@@ -11,9 +11,7 @@
 }
 
 .desktop-sidebar-video__caption {
-  position: relative;
   width: max-content;
-  padding-left: 22px;
   color: #ffffff;
   font-family: 'IBM Plex Sans', Arial, sans-serif;
   font-size: 13px;
@@ -21,19 +19,6 @@
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-.desktop-sidebar-video__caption::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #43abff 0 28%, rgba(67, 171, 255, 0.2) 34% 100%);
-  box-shadow: 0 0 14px rgba(67, 171, 255, 0.82);
-  transform: translateY(-50%);
 }
 
 .desktop-sidebar-video__frame {
@@ -224,7 +209,7 @@
 }
 
 .video-widget {
-  position: fixed;
+  position: absolute;
   z-index: 9000;
   top: var(--video-anchor-top, 0);
   left: var(--video-anchor-left, 0);
@@ -252,11 +237,11 @@
   display: block;
   width: max-content;
   max-width: 100%;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 12px;
+  padding-left: 22px;
+  color: #ffffff;
+  font-size: clamp(13px, 4vw, 18px);
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.055em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 1;
@@ -264,7 +249,21 @@
   transition: opacity 180ms ease, transform 220ms ease, visibility 0s linear 0s;
 }
 
+.video-widget__caption::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #43abff 0 28%, rgba(67, 171, 255, 0.2) 34% 100%);
+  box-shadow: 0 0 14px rgba(67, 171, 255, 0.82);
+  transform: translateY(-50%);
+}
+
 .video-widget.is-floating {
+  position: fixed;
   top: calc(100svh - 136.5px);
   right: 24px;
   left: auto;
@@ -281,6 +280,7 @@
 }
 
 .video-widget.is-open {
+  position: fixed;
   top: calc(100svh - 339px);
   right: 24px;
   left: auto;
@@ -501,11 +501,6 @@
     grid-row: auto;
     width: 100%;
     margin-top: 24px;
-  }
-
-  .video-widget__caption {
-    font-size: 10px;
-    letter-spacing: 0.045em;
   }
 
   .video-widget.is-floating {
