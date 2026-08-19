@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
 import { SitePage } from './components/SitePage.jsx';
 import { VideoWidget } from './components/VideoWidget.jsx';
+import { assetUrl } from './lib/assets.js';
 import './styles/hero-only.css';
 import './styles/hero-only-media-fixes.css';
 import './styles/soft-reveal.css';
@@ -14,8 +15,6 @@ const galleryImages = [
   '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg',
   '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
 ];
-
-const assetUrl = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
 
 const content = {
   pageMode: 'hero-landing',
@@ -75,8 +74,8 @@ const content = {
   heroVideo: {
     title: 'Как это было в 2025',
     previewUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
-    embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=true&transparent=true',
-    widgetUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=false&transparent=false',
+    embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=true&transparent=true',
+    widgetUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=false&transparent=false',
   },
   venue: {
     title: 'Место проведения',

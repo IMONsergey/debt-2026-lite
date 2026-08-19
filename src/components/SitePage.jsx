@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FixedMenu, SidebarInfo } from './FixedMenu.jsx';
 import { typograf } from '../lib/typography.js';
+import { assetUrl } from '../lib/assets.js';
 
 export function SitePage({ content }) {
   const countdown = useCountdown(content.hero.countdownTarget, content.hero.countdown);
@@ -111,7 +112,7 @@ function VenueSection({ venue }) {
             rel={routeIsExternal ? 'noreferrer' : undefined}
           >
             <span>{typograf(venue.routeLabel)}</span>
-            <img src="assets/icons/route-pin.svg" alt="" aria-hidden="true" />
+            <img src={assetUrl('assets/icons/route-pin.svg')} alt="" aria-hidden="true" />
           </a>
         </div>
 
@@ -150,10 +151,10 @@ function VenueSection({ venue }) {
             </div>
             <div className="venue-slider__arrows">
               <button type="button" onClick={() => selectSlide(activeIndex - 1)} aria-label="Предыдущая фотография">
-                <img className="venue-slider__arrow--previous" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+                <img className="venue-slider__arrow--previous" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
               </button>
               <button type="button" onClick={() => selectSlide(activeIndex + 1)} aria-label="Следующая фотография">
-                <img className="venue-slider__arrow--next" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+                <img className="venue-slider__arrow--next" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -352,10 +353,10 @@ function GallerySection({ gallery }) {
         </div>
 
         <button className="gallery-carousel__arrow gallery-carousel__arrow--previous" type="button" onClick={() => moveSlide(-1)} aria-label="Предыдущий кадр">
-          <img className="gallery-arrow-icon gallery-arrow-icon--previous" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+          <img className="gallery-arrow-icon gallery-arrow-icon--previous" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
         </button>
         <button className="gallery-carousel__arrow gallery-carousel__arrow--next" type="button" onClick={() => moveSlide(1)} aria-label="Следующий кадр">
-          <img className="gallery-arrow-icon gallery-arrow-icon--next" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+          <img className="gallery-arrow-icon gallery-arrow-icon--next" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
         </button>
       </div>
 
@@ -366,7 +367,7 @@ function GallerySection({ gallery }) {
         rel={galleryLinkIsExternal ? 'noreferrer' : undefined}
       >
         <span>{typograf(gallery.ctaLabel)}</span>
-        <img src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+        <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
       </a>
 
       {lightboxIndex !== null && (
@@ -384,7 +385,7 @@ function GallerySection({ gallery }) {
         >
           <button className="gallery-lightbox__close" type="button" onClick={closeLightbox} aria-label="Закрыть галерею">×</button>
           <button className="gallery-lightbox__arrow gallery-lightbox__arrow--previous" type="button" onClick={() => moveLightbox(-1)} aria-label="Предыдущая фотография">
-            <img className="gallery-arrow-icon gallery-arrow-icon--previous" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+            <img className="gallery-arrow-icon gallery-arrow-icon--previous" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
           </button>
           <figure
             className="gallery-lightbox__figure"
@@ -408,7 +409,7 @@ function GallerySection({ gallery }) {
             <figcaption>{String(lightboxIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</figcaption>
           </figure>
           <button className="gallery-lightbox__arrow gallery-lightbox__arrow--next" type="button" onClick={() => moveLightbox(1)} aria-label="Следующая фотография">
-            <img className="gallery-arrow-icon gallery-arrow-icon--next" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+            <img className="gallery-arrow-icon gallery-arrow-icon--next" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
           </button>
         </div>
       )}

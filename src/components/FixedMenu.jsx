@@ -1,4 +1,5 @@
 import { typograf } from '../lib/typography.js';
+import { assetUrl } from '../lib/assets.js';
 
 export function FixedMenu({ site, menu, video }) {
   return (
@@ -25,7 +26,7 @@ export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVi
       <a className="contact-link" href={`mailto:${sidebar.contactEmail}`}>
         <span>{typograf(sidebar.contactLabel)}</span>
         <strong>{sidebar.contactEmail}</strong>
-        <img className="contact-link__arrow" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+        <img className="contact-link__arrow" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
       </a>
 
       <div className="organizers-mark">
@@ -69,7 +70,7 @@ function SidebarCta({ cta, secondary = false }) {
       rel={isExternal ? 'noreferrer' : undefined}
     >
       <span>{typograf(cta.label)}</span>
-      <img className="fixed-menu__cta-icon" src="assets/icons/arrow-up.svg" alt="" aria-hidden="true" />
+      <img className="fixed-menu__cta-icon" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
     </a>
   );
 }

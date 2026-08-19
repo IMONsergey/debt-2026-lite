@@ -2,13 +2,13 @@
   position: relative;
   width: var(--desktop-content-width);
   margin-left: calc(var(--desktop-content-left) - var(--edge));
-  padding: clamp(108px, 9vw, 152px) 0 clamp(112px, 9vw, 156px);
+  padding: clamp(84px, 7vw, 118px) 0 clamp(88px, 7.2vw, 124px);
   border-bottom: 1px solid rgba(67, 171, 255, 0.16);
 }
 
 .venue-section h2 {
   max-width: 980px;
-  margin: 0 0 clamp(52px, 5vw, 78px);
+  margin: 0 0 clamp(40px, 4vw, 60px);
   color: #fff;
   font-family: 'Unbounded', Arial, sans-serif;
   font-size: clamp(34px, 3vw, 56px);
@@ -33,7 +33,10 @@
 }
 
 .venue-section__date {
-  color: rgba(255, 255, 255, 0.64);
+  background: linear-gradient(90deg, #5394fb 0%, #0774da 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-family: 'IBM Plex Sans', Arial, sans-serif;
   font-size: clamp(15px, 1.25vw, 19px);
   font-weight: 600;
@@ -72,7 +75,7 @@
   gap: 28px;
   min-width: min(100%, 280px);
   min-height: 56px;
-  margin-top: auto;
+  margin-top: clamp(30px, 3vw, 44px);
   padding: 0 18px;
   border: 1px solid rgba(104, 193, 255, 0.38);
   border-radius: 7px;
@@ -123,7 +126,7 @@
 .venue-slider__slide {
   position: relative;
   width: 100%;
-  aspect-ratio: 1.5 / 1;
+  aspect-ratio: 1.65 / 1;
   flex: 0 0 100%;
   margin: 0;
   overflow: hidden;
@@ -223,11 +226,11 @@
   .venue-section {
     width: calc(100% - (var(--adaptive-inline, 24px) * 2));
     margin-left: var(--adaptive-inline, 24px);
-    padding: clamp(86px, 10vw, 124px) 0 clamp(90px, 10vw, 126px);
+    padding: clamp(72px, 8vw, 104px) 0 clamp(76px, 8vw, 108px);
   }
 
   .venue-section h2 {
-    margin-bottom: clamp(38px, 5vw, 58px);
+    margin-bottom: clamp(32px, 4vw, 46px);
     font-size: clamp(24px, 3.6vw, 34px);
     line-height: 1.1;
   }
@@ -250,18 +253,18 @@
   .venue-section {
     width: calc(100% - 36px);
     margin-left: 18px;
-    padding: 72px 0 82px;
+    padding: 62px 0 70px;
   }
 
   .venue-section h2 {
-    margin-bottom: 34px;
+    margin-bottom: 30px;
     font-size: clamp(20px, 6.4vw, 26px);
     line-height: 1.08;
   }
 
   .venue-section__layout {
     grid-template-columns: 1fr;
-    gap: 38px;
+    gap: 32px;
   }
 
   .venue-section__date {
@@ -284,7 +287,7 @@
   .venue-section__route {
     width: 100%;
     min-width: 0;
-    margin-top: 30px;
+    margin-top: 26px;
   }
 
   .venue-slider__slide {
