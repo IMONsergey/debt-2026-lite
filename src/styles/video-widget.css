@@ -11,13 +11,29 @@
 }
 
 .desktop-sidebar-video__caption {
-  color: rgba(255, 255, 255, 0.88);
+  position: relative;
+  width: max-content;
+  padding-left: 22px;
+  color: #ffffff;
   font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.055em;
+  line-height: 1;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.desktop-sidebar-video__caption::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #43abff 0 28%, rgba(67, 171, 255, 0.2) 34% 100%);
+  box-shadow: 0 0 14px rgba(67, 171, 255, 0.82);
+  transform: translateY(-50%);
 }
 
 .desktop-sidebar-video__frame {

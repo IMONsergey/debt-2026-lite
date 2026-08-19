@@ -877,19 +877,11 @@ button {
   overflow: hidden;
   border-top: 0;
   border-bottom: 0;
-  background: #01081f;
+  background: transparent;
 }
 
 .ticker-strip::before {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: clamp(52px, 5vw, 92px);
-  background: linear-gradient(90deg, #01081f 0%, rgba(1, 8, 31, 0.96) 44%, rgba(1, 8, 31, 0) 100%);
-  pointer-events: none;
+  display: none;
 }
 
 .ticker-strip__viewport {
