@@ -16,7 +16,7 @@
 
 /* One-time soft entrance for elements that are already visible when the page opens. */
 .hero-only-view .fixed-menu__brand,
-.hero-only-view .fixed-menu__info > *,
+.hero-only-view .fixed-menu__info > :not(.desktop-sidebar-video),
 .hero-only-view .hero-placeholder__meta,
 .hero-only-view .hero-bottom p,
 .hero-only-view .countdown {
