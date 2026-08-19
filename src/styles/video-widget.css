@@ -63,6 +63,12 @@
   width: min(560px, calc(100vw - 48px));
 }
 
+@media (min-width: 1181px) and (max-height: 760px) {
+  .video-widget.is-hero {
+    top: calc(50.3svh + 8px);
+  }
+}
+
 .video-widget__preview,
 .video-widget__player {
   position: relative;
