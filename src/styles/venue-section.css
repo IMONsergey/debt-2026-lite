@@ -1,0 +1,322 @@
+.venue-section {
+  position: relative;
+  width: var(--desktop-content-width);
+  margin-left: calc(var(--desktop-content-left) - var(--edge));
+  padding: clamp(108px, 9vw, 152px) 0 clamp(112px, 9vw, 156px);
+  border-bottom: 1px solid rgba(67, 171, 255, 0.16);
+}
+
+.venue-section h2 {
+  max-width: 980px;
+  margin: 0 0 clamp(52px, 5vw, 78px);
+  color: #fff;
+  font-family: 'Unbounded', Arial, sans-serif;
+  font-size: clamp(34px, 3vw, 56px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.venue-section__layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.78fr) minmax(0, 1.72fr);
+  gap: clamp(38px, 5vw, 82px);
+  align-items: start;
+}
+
+.venue-section__details {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.venue-section__date {
+  color: rgba(255, 255, 255, 0.64);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: clamp(15px, 1.25vw, 19px);
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.venue-section__address {
+  display: grid;
+  gap: 18px;
+  margin-top: clamp(38px, 4.3vw, 66px);
+  color: #fff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.venue-section__address strong {
+  max-width: 18em;
+  font-size: clamp(22px, 2vw, 34px);
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.venue-section__address span {
+  max-width: 22em;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 600;
+  line-height: 1.34;
+}
+
+.venue-section__route {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  min-width: min(100%, 280px);
+  min-height: 56px;
+  margin-top: auto;
+  padding: 0 18px;
+  border: 1px solid rgba(104, 193, 255, 0.38);
+  border-radius: 7px;
+  background: rgba(8, 59, 121, 0.22);
+  color: #fff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.venue-section__route:hover,
+.venue-section__route:focus-visible {
+  border-color: rgba(104, 193, 255, 0.68);
+  background: rgba(8, 82, 170, 0.32);
+  outline: none;
+}
+
+.venue-section__route img {
+  display: block;
+  width: 22px;
+  height: auto;
+  flex: 0 0 auto;
+}
+
+.venue-slider {
+  min-width: 0;
+}
+
+.venue-slider__viewport {
+  overflow-x: auto;
+  border: 1px solid rgba(104, 193, 255, 0.22);
+  border-radius: 10px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.venue-slider__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.venue-slider__track {
+  display: flex;
+}
+
+.venue-slider__slide {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.5 / 1;
+  flex: 0 0 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #03112f;
+  scroll-snap-align: start;
+}
+
+.venue-slider__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.venue-slider__controls {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.venue-slider__count {
+  display: flex;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.48);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.venue-slider__count span:first-child {
+  color: #fff;
+}
+
+.venue-slider__dots {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+}
+
+.venue-slider__dots button {
+  width: 34px;
+  height: 2px;
+  padding: 0;
+  border: 0;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 180ms ease, width 180ms ease;
+}
+
+.venue-slider__dots button.is-active {
+  width: 48px;
+  background: #43abff;
+}
+
+.venue-slider__arrows {
+  display: flex;
+  gap: 8px;
+}
+
+.venue-slider__arrows button {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.venue-slider__arrows button:hover,
+.venue-slider__arrows button:focus-visible {
+  border-color: rgba(67, 171, 255, 0.68);
+  background: rgba(67, 171, 255, 0.1);
+  outline: none;
+}
+
+.venue-slider__arrows img {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+
+.venue-slider__arrow--previous {
+  transform: rotate(-135deg);
+}
+
+.venue-slider__arrow--next {
+  transform: rotate(45deg);
+}
+
+@media (max-width: 1180px) {
+  .venue-section {
+    width: calc(100% - (var(--adaptive-inline, 24px) * 2));
+    margin-left: var(--adaptive-inline, 24px);
+    padding: clamp(86px, 10vw, 124px) 0 clamp(90px, 10vw, 126px);
+  }
+
+  .venue-section h2 {
+    margin-bottom: clamp(38px, 5vw, 58px);
+    font-size: clamp(24px, 3.6vw, 34px);
+    line-height: 1.1;
+  }
+
+  .venue-section__layout {
+    grid-template-columns: minmax(230px, 0.75fr) minmax(0, 1.55fr);
+    gap: clamp(28px, 4vw, 54px);
+  }
+
+  .venue-section__address {
+    margin-top: clamp(28px, 3.8vw, 44px);
+  }
+
+  .venue-section__address strong {
+    font-size: clamp(20px, 2.8vw, 28px);
+  }
+}
+
+@media (max-width: 699px) {
+  .venue-section {
+    width: calc(100% - 36px);
+    margin-left: 18px;
+    padding: 72px 0 82px;
+  }
+
+  .venue-section h2 {
+    margin-bottom: 34px;
+    font-size: clamp(20px, 6.4vw, 26px);
+    line-height: 1.08;
+  }
+
+  .venue-section__layout {
+    grid-template-columns: 1fr;
+    gap: 38px;
+  }
+
+  .venue-section__date {
+    font-size: 13px;
+  }
+
+  .venue-section__address {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .venue-section__address strong {
+    font-size: clamp(22px, 6.6vw, 28px);
+  }
+
+  .venue-section__address span {
+    font-size: 14px;
+  }
+
+  .venue-section__route {
+    width: 100%;
+    min-width: 0;
+    margin-top: 30px;
+  }
+
+  .venue-slider__slide {
+    aspect-ratio: 1.2 / 1;
+  }
+
+  .venue-slider__controls {
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .venue-slider__dots {
+    gap: 5px;
+  }
+
+  .venue-slider__dots button {
+    width: 20px;
+  }
+
+  .venue-slider__dots button.is-active {
+    width: 30px;
+  }
+
+  .venue-slider__arrows button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venue-slider__viewport {
+    scroll-behavior: auto;
+  }
+}

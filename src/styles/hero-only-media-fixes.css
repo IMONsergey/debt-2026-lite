@@ -1,32 +1,3 @@
-/* Final media/title overrides for the compact #/hero landing. */
-
-/* Kinescope can expose a light sub-pixel seam at the iframe edge in some browsers.
-   Overscan the iframe and clip it to the dark 16:9 frame so no white field can leak out. */
-.hero-only-view .hero-video-section__player {
-  overflow: hidden !important;
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
-  background: #01081f !important;
-  contain: paint;
-  clip-path: inset(0);
-}
-
-.hero-only-view .hero-video-section__player iframe {
-  inset: -8px !important;
-  display: block !important;
-  width: calc(100% + 16px) !important;
-  height: calc(100% + 16px) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  outline: 0 !important;
-  background: #01081f !important;
-  transform: translateZ(0);
-}
-
-/* Video and gallery headings use one shared scale. */
-.hero-only-view .hero-video-section h2,
 .hero-only-view .gallery-section h2 {
   max-width: 980px;
   color: #ffffff !important;
@@ -41,13 +12,11 @@
   text-shadow: none !important;
 }
 
-/* The inline video block is replaced by the fixed widget, so the gallery needs its own top spacing. */
 .hero-only-view .gallery-section {
   padding-top: clamp(88px, 7vw, 120px) !important;
 }
 
 @media (max-width: 1180px) {
-  .hero-only-view .hero-video-section h2,
   .hero-only-view .gallery-section h2 {
     font-size: clamp(24px, 3.6vw, 34px) !important;
     line-height: 1.1 !important;
@@ -59,7 +28,6 @@
 }
 
 @media (max-width: 699px) {
-  .hero-only-view .hero-video-section h2,
   .hero-only-view .gallery-section h2 {
     font-size: clamp(20px, 6.4vw, 26px) !important;
     line-height: 1.08 !important;

@@ -5,6 +5,8 @@ import { VideoWidget } from './components/VideoWidget.jsx';
 import './styles/hero-only.css';
 import './styles/hero-only-media-fixes.css';
 import './styles/soft-reveal.css';
+import './styles/venue-section.css';
+import './styles/mobile-registration.css';
 
 const galleryImages = [
   '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
@@ -36,11 +38,6 @@ const content = {
       modal: null,
     },
     sidebar: {
-      venueTitle: 'TAU - пространство\nмузыкальных культур',
-      venueAddress: 'Москва, Рязанский проспект, 8Ас10',
-      venueImage: assetUrl('assets/images/venue.webp'),
-      routeLabel: 'Смотреть на карте',
-      routeHref: 'https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D0%A0%D1%8F%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%2C%208%D0%90%D1%8110',
       contactLabel: 'Контакты для связи',
       contactEmail: 'redchief@rvzrus.ru',
       organizersLabel: 'ОРГАНИЗАТОРЫ',
@@ -76,10 +73,23 @@ const content = {
     ],
   },
   heroVideo: {
-    title: 'Как проходят наши конференции',
+    title: 'Как это было в 2025',
     previewUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
     embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=true&transparent=true',
     widgetUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=false&muted=false&transparent=false',
+  },
+  venue: {
+    title: 'Место проведения',
+    date: '13 ноября 2026',
+    name: 'TAU — пространство музыкальных культур',
+    address: 'Москва, Рязанский проспект, 8Ас10',
+    routeLabel: 'Смотреть на карте',
+    routeHref: 'https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D0%A0%D1%8F%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%2C%208%D0%90%D1%8110',
+    images: [
+      { image: assetUrl('assets/images/venue/hall.webp'), alt: 'Главный зал TAU' },
+      { image: assetUrl('assets/images/venue/lounge.webp'), alt: 'Лаунж-зона TAU' },
+      { image: assetUrl('assets/images/venue/event.webp'), alt: 'Событие в пространстве TAU' },
+    ],
   },
   gallery: {
     title: 'Кадры с DEBT TECH 2025',
@@ -109,6 +119,18 @@ export default function App() {
         <SitePage content={content} />
       </div>
       <VideoWidget video={content.heroVideo} />
+      <MobileRegistration cta={content.menu.cta} />
     </>
+  );
+}
+
+function MobileRegistration({ cta }) {
+  if (!cta?.href) return null;
+
+  return (
+    <a className="mobile-registration" href={cta.href} target="_blank" rel="noreferrer">
+      <span>{cta.label}</span>
+      <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+    </a>
   );
 }

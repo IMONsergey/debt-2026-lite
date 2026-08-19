@@ -110,55 +110,6 @@
   display: block !important;
 }
 
-/* Kinescope video block. */
-.hero-video-section {
-  position: relative;
-  width: var(--desktop-content-width);
-  margin-left: calc(var(--desktop-content-left) - var(--edge));
-  padding: clamp(118px, 10vw, 168px) 0 clamp(104px, 8vw, 142px);
-  background: #01081f;
-}
-
-.hero-video-section h2 {
-  max-width: 980px;
-  margin: 0 0 clamp(42px, 4.5vw, 68px);
-  color: #ffffff;
-  font-family: 'Unbounded', Arial, sans-serif;
-  font-size: clamp(34px, 3vw, 56px);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-
-.hero-video-section__player {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 0;
-  border-radius: 0;
-  outline: 0;
-  background: #01081f;
-  box-shadow: none;
-  line-height: 0;
-  isolation: isolate;
-}
-
-.hero-video-section__player iframe {
-  position: absolute;
-  inset: -3px;
-  display: block;
-  width: calc(100% + 6px);
-  height: calc(100% + 6px);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  vertical-align: top;
-}
-
 /* Give the reused gallery a clear end to the compact landing page. */
 .hero-only-view .gallery-section {
   padding-bottom: clamp(100px, 10vw, 168px);
@@ -398,17 +349,6 @@
     aspect-ratio: 1.14 / 1;
   }
 
-  .hero-video-section {
-    width: calc(100% - (var(--adaptive-inline, 24px) * 2));
-    margin-left: var(--adaptive-inline, 24px);
-    padding: clamp(86px, 10vw, 124px) 0 clamp(84px, 9vw, 116px);
-  }
-
-  .hero-video-section h2 {
-    margin-bottom: clamp(30px, 4vw, 46px);
-    font-size: clamp(30px, 4.4vw, 46px);
-  }
-
   .hero-landing-footer {
     width: calc(100% - (var(--adaptive-inline, 24px) * 2));
     margin-left: var(--adaptive-inline, 24px);
@@ -433,21 +373,6 @@
 
   .hero-only-view .venue-card__image {
     aspect-ratio: 1.1 / 1;
-  }
-
-  .hero-video-section {
-    width: calc(100% - 36px);
-    margin-left: 18px;
-    padding: 72px 0 76px;
-  }
-
-  .hero-video-section h2 {
-    margin-bottom: 26px;
-    font-size: clamp(27px, 8vw, 36px);
-  }
-
-  .hero-video-section__player {
-    border-radius: 0;
   }
 
   .application-modal {

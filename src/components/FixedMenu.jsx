@@ -13,29 +13,10 @@ export function FixedMenu({ site, menu }) {
 
 export function SidebarInfo({ className = 'sidebar-info', menu }) {
   const sidebar = menu.sidebar ?? {};
-  const routeIsExternal = /^https?:\/\//.test(sidebar.routeHref ?? '');
 
   return (
     <div className={className}>
-      <article className="venue-card">
-        <div className="venue-card__copy">
-          <span>{typograf(sidebar.venueTitle)}</span>
-          <strong>{typograf(sidebar.venueAddress)}</strong>
-        </div>
-        <div className="venue-card__image">
-          <img src={sidebar.venueImage} alt="Пространство проведения DEBT TECH 2026" />
-        </div>
-      </article>
-
-      <a
-        className="route-link"
-        href={sidebar.routeHref}
-        target={routeIsExternal ? '_blank' : undefined}
-        rel={routeIsExternal ? 'noreferrer' : undefined}
-      >
-        <span>{typograf(sidebar.routeLabel)}</span>
-        <img className="route-link__icon" src="assets/icons/route-pin.svg" alt="" aria-hidden="true" />
-      </a>
+      <div className="video-widget-slot" data-video-widget-slot aria-hidden="true" />
 
       <a className="contact-link" href={`mailto:${sidebar.contactEmail}`}>
         <span>{typograf(sidebar.contactLabel)}</span>

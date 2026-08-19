@@ -7,6 +7,7 @@ export function VideoWidget({ video }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
+  const [anchor, setAnchor] = useState(null);
 
   useEffect(() => {
     const media = window.matchMedia(DESKTOP_QUERY);
@@ -15,13 +16,30 @@ export function VideoWidget({ video }) {
     const updateState = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
-        if (!media.matches) {
-          setIsFloating(false);
+        const slots = [...document.querySelectorAll('[data-video-widget-slot]')];
+        const slot = slots.find((item) => {
+          const rect = item.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0 && window.getComputedStyle(item).display !== 'none';
+        });
+
+        if (!slot) {
+          setAnchor(null);
           return;
         }
 
-        const threshold = Math.max(150, Math.min(240, window.innerHeight * 0.22));
-        setIsFloating(window.scrollY > threshold);
+        const rect = slot.getBoundingClientRect();
+        setAnchor({
+          top: Math.round(rect.top),
+          left: Math.round(rect.left),
+          width: Math.round(rect.width),
+        });
+
+        if (media.matches) {
+          const threshold = Math.max(150, Math.min(240, window.innerHeight * 0.22));
+          setIsFloating(window.scrollY > threshold);
+        } else {
+          setIsFloating(rect.top <= 18);
+        }
       });
     };
 
@@ -55,11 +73,18 @@ export function VideoWidget({ video }) {
     'video-widget',
     isFloating ? 'is-floating' : 'is-hero',
     isOpen ? 'is-open' : '',
+    anchor ? 'is-ready' : '',
   ].filter(Boolean).join(' ');
 
+  const style = anchor && !isFloating ? {
+    '--video-anchor-top': `${anchor.top}px`,
+    '--video-anchor-left': `${anchor.left}px`,
+    '--video-anchor-width': `${anchor.width}px`,
+  } : undefined;
+
   return (
-    <aside className={className} aria-label="Видео о конференции">
-      <span className="video-widget__caption">Как проходят наши конференции</span>
+    <aside className={className} style={style} aria-label="Видео о конференции">
+      <span className="video-widget__caption">{video.title}</span>
 
       {isOpen ? (
         <div className="video-widget__player">
