@@ -22,7 +22,9 @@ export function SidebarInfo({ className = 'sidebar-info', menu }) {
           <span>{typograf(sidebar.venueTitle)}</span>
           <strong>{typograf(sidebar.venueAddress)}</strong>
         </div>
-        <img src={sidebar.venueImage} alt="Пространство проведения DEBT TECH 2026" />
+        <div className="venue-card__image">
+          <img src={sidebar.venueImage} alt="Пространство проведения DEBT TECH 2026" />
+        </div>
       </article>
 
       <a

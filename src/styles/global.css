@@ -710,9 +710,15 @@ button {
   line-height: 1.14;
 }
 
-.venue-card img {
+.venue-card__image {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.venue-card img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
