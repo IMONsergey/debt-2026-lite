@@ -73,9 +73,9 @@ const content = {
   },
   heroVideo: {
     title: 'Как это было в 2025',
-    previewUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
-    embedUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=true&transparent=true',
-    widgetUrl: 'https://kinescope.io/embed/dWWEsDjKoSiH5GH9RM24fz?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=false&transparent=false',
+    previewUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
+    embedUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=true&transparent=true',
+    widgetUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=false&transparent=false',
   },
   venue: {
     title: 'Место проведения',
