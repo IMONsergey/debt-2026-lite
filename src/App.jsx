@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
+import { ApplicationModal } from './components/ApplicationModal.jsx';
 import { SitePage } from './components/SitePage.jsx';
 import { VideoWidget } from './components/VideoWidget.jsx';
 import { assetUrl } from './lib/assets.js';
@@ -29,12 +30,12 @@ const content = {
     cta: {
       label: 'Ранняя регистрация',
       href: 'https://t.me/anna_joys',
-      modal: null,
+      modal: 'early-registration',
     },
     secondaryCta: {
       label: 'Забронировать стенд',
       href: 'https://t.me/anna_joys',
-      modal: null,
+      modal: 'stand-booking',
     },
     sidebar: {
       contactLabel: 'Контакты для связи',
@@ -104,9 +105,16 @@ const content = {
     privacyLabel: 'Политика конфиденциальности и персональных данных',
     privacyHref: 'https://rvzrus.ru/politic',
   },
+  forms: {
+    eventId: 'debt-tech-2026',
+    contactEmail: 'redchief@rvzrus.ru',
+    telegramUrl: 'https://t.me/anna_joys',
+  },
 };
 
 export default function App() {
+  const [activeForm, setActiveForm] = useState(null);
+
   useEffect(() => {
     document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
   }, []);
@@ -115,16 +123,36 @@ export default function App() {
     <>
       <CosmosPointerEffect />
       <div className="hero-only-view">
-        <SitePage content={content} />
+        <SitePage content={content} onOpenApplication={setActiveForm} />
       </div>
       <VideoWidget video={content.heroVideo} />
-      <MobileRegistration cta={content.menu.cta} />
+      <MobileRegistration cta={content.menu.cta} onOpenApplication={setActiveForm} />
+      {activeForm ? (
+        <ApplicationModal
+          key={activeForm}
+          kind={activeForm}
+          config={content.forms}
+          privacyHref={content.footer.privacyHref}
+          onClose={() => setActiveForm(null)}
+        />
+      ) : null}
     </>
   );
 }
 
-function MobileRegistration({ cta }) {
-  if (!cta?.href) return null;
+function MobileRegistration({ cta, onOpenApplication }) {
+  if (!cta) return null;
+
+  if (cta.modal) {
+    return (
+      <button className="mobile-registration" type="button" onClick={() => onOpenApplication(cta.modal)}>
+        <span>{cta.label}</span>
+        <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+      </button>
+    );
+  }
+
+  if (!cta.href) return null;
 
   return (
     <a className="mobile-registration" href={cta.href} target="_blank" rel="noreferrer">

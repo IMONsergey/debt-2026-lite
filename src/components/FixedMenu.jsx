@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
-export function FixedMenu({ site, menu, video }) {
+export function FixedMenu({ site, menu, video, onOpenApplication }) {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
@@ -17,12 +17,20 @@ export function FixedMenu({ site, menu, video }) {
         video={video}
         desktopVideo
         onVideoOpenChange={setIsVideoOpen}
+        onOpenApplication={onOpenApplication}
       />
     </aside>
   );
 }
 
-export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVideo = false, onVideoOpenChange }) {
+export function SidebarInfo({
+  className = 'sidebar-info',
+  menu,
+  video,
+  desktopVideo = false,
+  onVideoOpenChange,
+  onOpenApplication,
+}) {
   const sidebar = menu.sidebar ?? {};
 
   return (
@@ -44,8 +52,10 @@ export function SidebarInfo({ className = 'sidebar-info', menu, video, desktopVi
         <img src={sidebar.organizersImage} alt={sidebar.organizersLabel} />
       </div>
 
-      <SidebarCta cta={menu.cta} />
-      {menu.secondaryCta ? <SidebarCta cta={menu.secondaryCta} secondary /> : null}
+      <SidebarCta cta={menu.cta} onOpenApplication={onOpenApplication} />
+      {menu.secondaryCta ? (
+        <SidebarCta cta={menu.secondaryCta} secondary onOpenApplication={onOpenApplication} />
+      ) : null}
     </div>
   );
 }
@@ -120,8 +130,23 @@ function SidebarVideo({ video, onOpenChange }) {
   );
 }
 
-function SidebarCta({ cta, secondary = false }) {
+function SidebarCta({ cta, secondary = false, onOpenApplication }) {
   const className = `fixed-menu__cta${secondary ? ' fixed-menu__cta--secondary' : ''}`;
+  const content = (
+    <>
+      <span>{typograf(cta.label)}</span>
+      <img className="fixed-menu__cta-icon" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+    </>
+  );
+
+  if (cta.modal) {
+    return (
+      <button className={className} type="button" onClick={() => onOpenApplication?.(cta.modal)}>
+        {content}
+      </button>
+    );
+  }
+
   const isExternal = /^https?:\/\//.test(cta.href ?? '');
 
   return (
@@ -131,8 +156,7 @@ function SidebarCta({ cta, secondary = false }) {
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noreferrer' : undefined}
     >
-      <span>{typograf(cta.label)}</span>
-      <img className="fixed-menu__cta-icon" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+      {content}
     </a>
   );
 }

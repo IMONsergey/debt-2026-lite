@@ -203,8 +203,10 @@
 }
 
 .application-modal__form input[type='text'],
+.application-modal__form input[type='number'],
 .application-modal__form input[type='tel'],
 .application-modal__form input[type='email'],
+.application-modal__form select,
 .application-modal__form textarea {
   width: 100%;
   min-height: 50px;
@@ -223,6 +225,7 @@
 }
 
 .application-modal__form input:focus,
+.application-modal__form select:focus,
 .application-modal__form textarea:focus {
   border-color: rgba(83, 168, 255, 0.7);
   box-shadow: 0 0 0 3px rgba(67, 171, 255, 0.09);
@@ -249,6 +252,47 @@
   accent-color: #168cf2;
 }
 
+.application-modal__consent a,
+.application-modal__contacts a {
+  color: #68c1ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.application-modal__honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+
+.application-modal__message {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  border: 1px solid rgba(104, 193, 255, 0.24);
+  background: rgba(10, 51, 104, 0.28);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.application-modal__message--error {
+  border-color: rgba(255, 118, 118, 0.4);
+  background: rgba(104, 16, 34, 0.22);
+}
+
+.application-modal__message p {
+  margin: 0;
+}
+
+.application-modal__contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 9px;
+}
+
 .application-modal__submit,
 .application-modal__success button {
   display: flex;
@@ -270,6 +314,11 @@
   height: 12px;
   flex: 0 0 auto;
   margin-left: 12px;
+}
+
+.application-modal__submit:disabled {
+  cursor: wait;
+  opacity: 0.68;
 }
 
 .application-modal__success {

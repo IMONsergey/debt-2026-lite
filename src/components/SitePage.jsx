@@ -3,13 +3,13 @@ import { FixedMenu, SidebarInfo } from './FixedMenu.jsx';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
-export function SitePage({ content }) {
+export function SitePage({ content, onOpenApplication }) {
   const countdown = useCountdown(content.hero.countdownTarget, content.hero.countdown);
 
   return (
     <div className="app-shell">
       <div className="site-grid">
-        <FixedMenu site={content.site} menu={content.menu} video={content.heroVideo} />
+        <FixedMenu site={content.site} menu={content.menu} video={content.heroVideo} onOpenApplication={onOpenApplication} />
         <main className="page-flow" aria-label="Debt Tech 2026">
           <section
             className="hero-placeholder"
@@ -38,7 +38,12 @@ export function SitePage({ content }) {
                     ))}
                   </div>
                 </div>
-                <SidebarInfo className="mobile-hero-info" menu={content.menu} video={content.heroVideo} />
+                <SidebarInfo
+                  className="mobile-hero-info"
+                  menu={content.menu}
+                  video={content.heroVideo}
+                  onOpenApplication={onOpenApplication}
+                />
               </div>
             </div>
           </section>
