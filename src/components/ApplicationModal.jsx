@@ -57,8 +57,10 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
     event.preventDefault();
     if (status === 'sending') return;
 
-    const runtimeConfig = window.DEBT_TECH_FORMS ?? {};
-    const endpoint = String(runtimeConfig.endpoint ?? '').trim();
+    const endpoint = document
+      .querySelector('meta[name="debt-tech-forms-endpoint"]')
+      ?.getAttribute('content')
+      ?.trim();
 
     if (!endpoint) {
       setStatus('not-configured');
