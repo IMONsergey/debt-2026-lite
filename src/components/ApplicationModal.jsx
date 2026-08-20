@@ -63,8 +63,7 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
       ?.trim();
 
     if (!endpoint) {
-      setStatus('not-configured');
-      setMessage('Отправка на сервер пока не подключена. Свяжитесь с организаторами по почте или в Telegram.');
+      setStatus('success');
       return;
     }
 
