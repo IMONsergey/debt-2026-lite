@@ -2228,7 +2228,7 @@ button {
   width: var(--desktop-content-width);
   margin-left: calc(var(--desktop-content-left) - var(--edge));
   padding-bottom: clamp(128px, 12vw, 200px);
-  background: #01081f;
+  background: transparent;
 }
 
 .gallery-section h2 {
