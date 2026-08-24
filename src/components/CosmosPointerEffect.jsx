@@ -2,18 +2,20 @@ import { useEffect, useRef } from 'react';
 import '../styles/cosmos-effect.css';
 
 const MAX_DPR = 1.5;
-const DESKTOP_PARTICLES = 48;
-const TABLET_PARTICLES = 30;
-const MOBILE_PARTICLES = 18;
-const DESKTOP_FPS = 22;
-const TOUCH_FPS = 12;
+const DESKTOP_PARTICLES = 56;
+const TABLET_PARTICLES = 34;
+const MOBILE_PARTICLES = 22;
+const DESKTOP_FPS = 28;
+const TOUCH_FPS = 14;
 
 export function CosmosPointerEffect() {
+  const layerRef = useRef(null);
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    const layer = layerRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return undefined;
+    if (!layer || !canvas) return undefined;
 
     const context = canvas.getContext('2d', { alpha: true, desynchronized: true });
     if (!context) return undefined;
@@ -53,12 +55,12 @@ export function CosmosPointerEffect() {
         nx: Math.random(),
         ny: Math.random(),
         depth: 0.25 + Math.random() * 0.75,
-        radius: bright ? 1.15 + Math.random() * 0.45 : 0.45 + Math.random() * 0.75,
-        alpha: bright ? 0.4 + Math.random() * 0.18 : 0.12 + Math.random() * 0.24,
-        driftX: -0.28 + Math.random() * 0.56,
-        driftY: -0.18 + Math.random() * 0.36,
+        radius: bright ? 1 + Math.random() * 0.42 : 0.38 + Math.random() * 0.65,
+        alpha: bright ? 0.24 + Math.random() * 0.14 : 0.08 + Math.random() * 0.16,
+        driftX: -0.34 + Math.random() * 0.68,
+        driftY: -0.22 + Math.random() * 0.44,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.55 + Math.random() * 0.9,
+        speed: 0.7 + Math.random() * 1.1,
         blue: Math.random() > 0.72,
         glint: bright,
       };
@@ -100,13 +102,13 @@ export function CosmosPointerEffect() {
           0,
           pointer.screenX,
           pointer.screenY,
-          180,
+          230,
         );
-        halo.addColorStop(0, 'rgba(58, 154, 255, 0.045)');
-        halo.addColorStop(0.42, 'rgba(24, 111, 255, 0.02)');
+        halo.addColorStop(0, 'rgba(58, 154, 255, 0.038)');
+        halo.addColorStop(0.34, 'rgba(24, 111, 255, 0.022)');
         halo.addColorStop(1, 'rgba(24, 111, 255, 0)');
         context.fillStyle = halo;
-        context.fillRect(pointer.screenX - 180, pointer.screenY - 180, 360, 360);
+        context.fillRect(pointer.screenX - 230, pointer.screenY - 230, 460, 460);
       }
 
       const seconds = time * 0.001;
@@ -118,18 +120,18 @@ export function CosmosPointerEffect() {
         const driftY = seconds * particle.driftY * 4.5;
         const baseX = ((particle.nx * width + driftX + 40) % travelX) - 40;
         const baseY = ((particle.ny * height + driftY + 40) % travelY) - 40;
-        const parallaxX = pointer.x * particle.depth * 15;
-        const parallaxY = pointer.y * particle.depth * 11;
+        const parallaxX = pointer.x * particle.depth * 34;
+        const parallaxY = pointer.y * particle.depth * 24;
         const x = baseX + parallaxX;
         const y = baseY + parallaxY;
 
         const distance = pointer.active
           ? Math.hypot(x - pointer.screenX, y - pointer.screenY)
           : Number.POSITIVE_INFINITY;
-        const proximity = Math.max(0, 1 - (distance / 190));
+        const proximity = Math.max(0, 1 - (distance / 230));
         const twinkle = 0.76 + Math.sin((seconds * particle.speed) + particle.phase) * 0.16;
-        const alpha = Math.min(0.72, particle.alpha * twinkle * (1 + proximity * 0.72));
-        const radius = particle.radius * (1 + proximity * 0.42);
+        const alpha = Math.min(0.48, particle.alpha * twinkle * (1 + proximity * 1.45));
+        const radius = particle.radius * (1 + proximity * 0.8);
 
         context.fillStyle = particle.blue
           ? `rgba(86, 174, 255, ${alpha})`
@@ -139,7 +141,7 @@ export function CosmosPointerEffect() {
         context.fill();
 
         if (particle.glint) {
-          context.strokeStyle = `rgba(108, 188, 255, ${alpha * 0.42})`;
+          context.strokeStyle = `rgba(108, 188, 255, ${alpha * 0.36})`;
           context.lineWidth = 0.65;
           context.beginPath();
           context.moveTo(x - 3.5, y);
@@ -180,8 +182,12 @@ export function CosmosPointerEffect() {
       pointer.targetY = ((event.clientY / height) - 0.5) * 2;
       pointer.targetScreenX = event.clientX;
       pointer.targetScreenY = event.clientY;
-      canvas.style.setProperty('--cosmos-pointer-x', `${Math.round(event.clientX)}px`);
-      canvas.style.setProperty('--cosmos-pointer-y', `${Math.round(event.clientY)}px`);
+      layer.style.setProperty('--cosmos-pointer-x', `${Math.round(event.clientX)}px`);
+      layer.style.setProperty('--cosmos-pointer-y', `${Math.round(event.clientY)}px`);
+      layer.style.setProperty('--cosmos-shift-x', `${Math.round(pointer.targetX * 18)}px`);
+      layer.style.setProperty('--cosmos-shift-y', `${Math.round(pointer.targetY * 14)}px`);
+      layer.style.setProperty('--cosmos-far-shift-x', `${Math.round(pointer.targetX * -10)}px`);
+      layer.style.setProperty('--cosmos-far-shift-y', `${Math.round(pointer.targetY * -8)}px`);
     }
 
     function handlePointerLeave() {
@@ -190,6 +196,10 @@ export function CosmosPointerEffect() {
       pointer.targetY = 0;
       pointer.targetScreenX = width * 0.5;
       pointer.targetScreenY = height * 0.5;
+      layer.style.setProperty('--cosmos-shift-x', '0px');
+      layer.style.setProperty('--cosmos-shift-y', '0px');
+      layer.style.setProperty('--cosmos-far-shift-x', '0px');
+      layer.style.setProperty('--cosmos-far-shift-y', '0px');
     }
 
     function handleVisibility() {
@@ -222,7 +232,7 @@ export function CosmosPointerEffect() {
   }, []);
 
   return (
-    <div className="cosmos-pointer-layer" aria-hidden="true">
+    <div className="cosmos-pointer-layer" ref={layerRef} aria-hidden="true">
       <span className="cosmos-pointer-layer__stars cosmos-pointer-layer__stars--near" />
       <span className="cosmos-pointer-layer__stars cosmos-pointer-layer__stars--far" />
       <canvas
