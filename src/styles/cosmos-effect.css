@@ -1,29 +1,106 @@
-.cosmos-pointer-effect {
+.cosmos-pointer-layer {
   position: fixed;
   z-index: 4;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout paint style;
+  mix-blend-mode: screen;
+}
+
+.cosmos-pointer-layer__stars {
+  position: absolute;
+  inset: -12vh -12vw;
+  display: block;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.cosmos-pointer-layer__stars--near {
+  opacity: 0.86;
+  background-image:
+    radial-gradient(circle at 8% 16%, rgba(255, 255, 255, 0.92) 0 1.1px, transparent 1.35px),
+    radial-gradient(circle at 27% 74%, rgba(112, 190, 255, 0.82) 0 1px, transparent 1.25px),
+    radial-gradient(circle at 52% 32%, rgba(232, 247, 255, 0.72) 0 0.9px, transparent 1.2px),
+    radial-gradient(circle at 78% 62%, rgba(86, 174, 255, 0.78) 0 1.2px, transparent 1.45px);
+  background-size: 238px 214px, 311px 263px, 401px 337px, 487px 391px;
+  animation: cosmos-star-drift-near 96s linear infinite;
+}
+
+.cosmos-pointer-layer__stars--far {
+  opacity: 0.62;
+  background-image:
+    radial-gradient(circle at 14% 44%, rgba(214, 236, 255, 0.55) 0 0.8px, transparent 1.05px),
+    radial-gradient(circle at 41% 12%, rgba(94, 177, 255, 0.46) 0 0.75px, transparent 1px),
+    radial-gradient(circle at 66% 84%, rgba(255, 255, 255, 0.5) 0 0.7px, transparent 0.95px),
+    radial-gradient(circle at 91% 28%, rgba(149, 209, 255, 0.44) 0 0.85px, transparent 1.1px);
+  background-size: 179px 157px, 283px 241px, 359px 317px, 541px 467px;
+  animation: cosmos-star-drift-far 148s linear infinite;
+}
+
+.cosmos-pointer-effect {
+  position: absolute;
   inset: 0;
   display: block;
   width: 100vw;
   height: 100vh;
-  pointer-events: none;
-  opacity: 0.74;
-  contain: strict;
+  opacity: 0.82;
 }
 
 @media (max-width: 1180px) {
+  .cosmos-pointer-layer__stars--near {
+    opacity: 0.74;
+  }
+
+  .cosmos-pointer-layer__stars--far {
+    opacity: 0.52;
+  }
+
   .cosmos-pointer-effect {
-    opacity: 0.58;
+    opacity: 0.64;
   }
 }
 
 @media (max-width: 699px) {
+  .cosmos-pointer-layer__stars--near {
+    opacity: 0.58;
+  }
+
+  .cosmos-pointer-layer__stars--far {
+    opacity: 0.38;
+  }
+
   .cosmos-pointer-effect {
     opacity: 0.42;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cosmos-pointer-layer__stars {
+    animation: none;
+  }
+
   .cosmos-pointer-effect {
     opacity: 0.34;
+  }
+}
+
+@keyframes cosmos-star-drift-near {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-120px, 86px, 0);
+  }
+}
+
+@keyframes cosmos-star-drift-far {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(92px, -64px, 0);
   }
 }

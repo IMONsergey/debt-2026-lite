@@ -5,8 +5,8 @@ const MAX_DPR = 1.5;
 const DESKTOP_PARTICLES = 48;
 const TABLET_PARTICLES = 30;
 const MOBILE_PARTICLES = 18;
-const DESKTOP_FPS = 30;
-const TOUCH_FPS = 18;
+const DESKTOP_FPS = 22;
+const TOUCH_FPS = 12;
 
 export function CosmosPointerEffect() {
   const canvasRef = useRef(null);
@@ -222,11 +222,14 @@ export function CosmosPointerEffect() {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="cosmos-pointer-effect"
-      aria-hidden="true"
-      data-cosmos-effect="reactive"
-    />
+    <div className="cosmos-pointer-layer" aria-hidden="true">
+      <span className="cosmos-pointer-layer__stars cosmos-pointer-layer__stars--near" />
+      <span className="cosmos-pointer-layer__stars cosmos-pointer-layer__stars--far" />
+      <canvas
+        ref={canvasRef}
+        className="cosmos-pointer-effect"
+        data-cosmos-effect="reactive"
+      />
+    </div>
   );
 }
