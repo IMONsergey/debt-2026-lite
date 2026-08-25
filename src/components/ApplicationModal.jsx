@@ -61,6 +61,37 @@ function clearFieldValidity(event) {
   event.currentTarget.setCustomValidity('');
 }
 
+function formatPhoneValue(value) {
+  let digits = value.replace(/\D/g, '');
+
+  if (digits.startsWith('9')) {
+    digits = `7${digits.slice(0, 10)}`;
+  } else if (digits.startsWith('8')) {
+    digits = `7${digits.slice(1, 11)}`;
+  } else {
+    digits = digits.slice(0, 15);
+  }
+
+  if (!digits) return '';
+  if (!digits.startsWith('7')) return `+${digits}`;
+
+  const local = digits.slice(1, 11);
+  const parts = [];
+  if (local.slice(0, 3)) parts.push(local.slice(0, 3));
+  if (local.slice(3, 6)) parts.push(local.slice(3, 6));
+
+  const tail = [local.slice(6, 8), local.slice(8, 10)].filter(Boolean).join('-');
+  return `+7${parts.length ? ` ${parts.join(' ')}` : ''}${tail ? `-${tail}` : ''}`;
+}
+
+function handleFieldInput(event) {
+  clearFieldValidity(event);
+
+  if (event.currentTarget.name === 'phone') {
+    event.currentTarget.value = formatPhoneValue(event.currentTarget.value);
+  }
+}
+
 function preserveMobileScroll(event) {
   if (window.innerWidth > 699) return;
 
@@ -85,9 +116,7 @@ function ChannelIcon({ id }) {
   }
 
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M5 5.2h3.6l3.4 5.3 3.4-5.3H19v13.6h-3.2v-8l-2.8 4.4h-2l-2.8-4.4v8H5V5.2Z" />
-    </svg>
+    <img src={assetUrl('assets/icons/max-logo.svg')} alt="" aria-hidden="true" />
   );
 }
 
@@ -234,7 +263,7 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
                     defaultValue={field.defaultValue}
                     autoComplete={field.autoComplete}
                     required={field.required}
-                    onInput={clearFieldValidity}
+                    onInput={handleFieldInput}
                   />
                 )}
               </label>

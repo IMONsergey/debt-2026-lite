@@ -397,6 +397,12 @@
   fill: currentColor;
 }
 
+.application-modal__channel-links img {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
 /* Compact footer: copyright, logo and policy share one horizontal line on desktop/tablet. */
 .hero-landing-footer {
   display: grid;
