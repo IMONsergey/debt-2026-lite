@@ -220,8 +220,12 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
-    await sendTelegram(payload);
     jsonResponse(response, 200, { success: true }, corsHeaders);
+    setImmediate(() => {
+      sendTelegram(payload).catch((error) => {
+        console.error(new Date().toISOString(), `telegram_async_error:${error.message}`);
+      });
+    });
   } catch (error) {
     const status = error.message === 'payload_too_large' ? 413 : 502;
     console.error(new Date().toISOString(), error.message);
