@@ -310,12 +310,12 @@
 }
 
 .application-modal__submit {
-  width: min(360px, 100%);
+  width: min(300px, 100%);
   justify-self: start;
 }
 
 .application-modal__success button {
-  width: min(220px, 100%);
+  width: min(180px, 100%);
   justify-content: center;
 }
 
