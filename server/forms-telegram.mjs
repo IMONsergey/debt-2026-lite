@@ -11,6 +11,7 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN || process.env.ALLOWED_ORIGI
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES || 32_768);
 const RATE_WINDOW_MS = Number(process.env.RATE_WINDOW_MS || 10 * 60 * 1000);
 const RATE_LIMIT = Number(process.env.RATE_LIMIT || 8);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const rateBuckets = new Map();
 
@@ -161,6 +162,11 @@ function validatePayload(payload) {
   for (const field of required) {
     if (!clean(payload[field])) return 'required_fields';
   }
+
+  const phoneDigits = clean(payload.phone, 40).replace(/\D/g, '');
+  if (phoneDigits.length < 10 || phoneDigits.length > 15) return 'invalid_phone';
+
+  if (!EMAIL_PATTERN.test(clean(payload.email, 160))) return 'invalid_email';
 
   return null;
 }

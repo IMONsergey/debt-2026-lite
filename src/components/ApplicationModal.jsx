@@ -6,14 +6,14 @@ const FORM_DETAILS = {
   'early-registration': {
     id: 'early-registration-form',
     title: 'Ранняя регистрация',
-    description: 'Оставьте контакты и укажите количество участников. Менеджер свяжется с вами и расскажет об условиях участия.',
+    description: 'Оставьте контакты и укажите количество участников.\nМенеджер свяжется с вами и расскажет об условиях участия.',
     fields: [
       { name: 'full_name', label: 'ФИО участника / ответственного лица', type: 'text', autoComplete: 'name', required: true },
       { name: 'company', label: 'Название компании', type: 'text', autoComplete: 'organization', required: true },
       { name: 'participants_count', label: 'Количество участников', type: 'number', min: '1', inputMode: 'numeric', defaultValue: '1', required: true },
       { name: 'promo_code', label: 'Промокод', type: 'text', autoComplete: 'off' },
-      { name: 'phone', label: 'Телефон', type: 'tel', autoComplete: 'tel', required: true },
-      { name: 'email', label: 'E-mail', type: 'email', autoComplete: 'email', required: true },
+      { name: 'phone', label: 'Телефон', type: 'tel', autoComplete: 'tel', inputMode: 'tel', maxLength: '24', required: true },
+      { name: 'email', label: 'E-mail', type: 'email', autoComplete: 'email', inputMode: 'email', maxLength: '120', required: true },
     ],
   },
   'stand-booking': {
@@ -24,12 +24,72 @@ const FORM_DETAILS = {
       { name: 'full_name', label: 'ФИО контактного лица', type: 'text', autoComplete: 'name', required: true },
       { name: 'company', label: 'Название компании', type: 'text', autoComplete: 'organization', required: true },
       { name: 'job_title', label: 'Должность', type: 'text', autoComplete: 'organization-title' },
-      { name: 'phone', label: 'Телефон', type: 'tel', autoComplete: 'tel', required: true },
-      { name: 'email', label: 'E-mail', type: 'email', autoComplete: 'email', required: true },
+      { name: 'phone', label: 'Телефон', type: 'tel', autoComplete: 'tel', inputMode: 'tel', maxLength: '24', required: true },
+      { name: 'email', label: 'E-mail', type: 'email', autoComplete: 'email', inputMode: 'email', maxLength: '120', required: true },
       { name: 'comment', label: 'Комментарий / желаемый формат стенда', type: 'textarea', wide: true },
     ],
   },
 };
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validateContactFields(form) {
+  const phoneInput = form.elements.phone;
+  const emailInput = form.elements.email;
+  const phoneDigits = phoneInput?.value.replace(/\D/g, '') ?? '';
+  const email = emailInput?.value.trim() ?? '';
+
+  phoneInput?.setCustomValidity('');
+  emailInput?.setCustomValidity('');
+
+  if (phoneInput && (phoneDigits.length < 10 || phoneDigits.length > 15)) {
+    phoneInput.setCustomValidity('Введите корректный телефон: от 10 до 15 цифр.');
+    phoneInput.reportValidity();
+    return false;
+  }
+
+  if (emailInput && !EMAIL_PATTERN.test(email)) {
+    emailInput.setCustomValidity('Введите корректный e-mail.');
+    emailInput.reportValidity();
+    return false;
+  }
+
+  return true;
+}
+
+function clearFieldValidity(event) {
+  event.currentTarget.setCustomValidity('');
+}
+
+function preserveMobileScroll(event) {
+  if (window.innerWidth > 699) return;
+
+  const dialog = event.currentTarget.closest('.application-modal__dialog');
+  const modal = event.currentTarget.closest('.application-modal');
+  const dialogScrollTop = dialog?.scrollTop ?? 0;
+  const modalScrollTop = modal?.scrollTop ?? 0;
+
+  window.requestAnimationFrame(() => {
+    if (dialog) dialog.scrollTop = dialogScrollTop;
+    if (modal) modal.scrollTop = modalScrollTop;
+  });
+}
+
+function ChannelIcon({ id }) {
+  if (id === 'telegram') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M21.7 4.3 18.4 20c-.2.9-.9 1.1-1.7.7l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.4-.1-.6-.6-.3L6.1 13.5 1.3 12c-1-.3-1-1 .2-1.5L20.1 3.3c.9-.3 1.7.2 1.6 1Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M5 5.2h3.6l3.4 5.3 3.4-5.3H19v13.6h-3.2v-8l-2.8 4.4h-2l-2.8-4.4v8H5V5.2Z" />
+    </svg>
+  );
+}
 
 export function ApplicationModal({ kind, config, privacyHref, onClose }) {
   const details = FORM_DETAILS[kind] ?? FORM_DETAILS['early-registration'];
@@ -40,7 +100,9 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    firstFieldRef.current?.focus();
+    if (window.matchMedia('(pointer: fine)').matches) {
+      firstFieldRef.current?.focus();
+    }
 
     function handleKeyDown(event) {
       if (event.key === 'Escape') onClose();
@@ -56,6 +118,7 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
   async function handleSubmit(event) {
     event.preventDefault();
     if (status === 'sending') return;
+    if (!validateContactFields(event.currentTarget)) return;
 
     const endpoint = document
       .querySelector('meta[name="debt-tech-forms-endpoint"]')
@@ -105,6 +168,8 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
 
   const contactEmail = config.contactEmail;
   const telegramUrl = config.telegramUrl;
+  const channels = config.channels ?? [];
+  const descriptionId = status === 'success' ? undefined : `${details.id}-description`;
 
   return createPortal(
     <div
@@ -115,22 +180,33 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
       }}
     >
       <section
-        className="application-modal__dialog"
+        className={`application-modal__dialog application-modal__dialog--${status}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${details.id}-title`}
-        aria-describedby={`${details.id}-description`}
+        aria-describedby={descriptionId}
       >
         <button className="application-modal__close" type="button" onClick={onClose} aria-label="Закрыть окно">×</button>
         <div className="application-modal__heading">
           <h2 id={`${details.id}-title`}>{details.title}</h2>
-          <p id={`${details.id}-description`}>{details.description}</p>
+          {status !== 'success' ? <p id={`${details.id}-description`}>{details.description}</p> : null}
         </div>
 
         {status === 'success' ? (
           <div className="application-modal__success" role="status">
             <strong>Спасибо! Заявка отправлена</strong>
             <p>Мы получили ваши данные и свяжемся с вами в ближайшее время.</p>
+            <div className="application-modal__channels">
+              <p>Следить за обновлениями и новостями удобнее в наших каналах.</p>
+              <div className="application-modal__channel-links" aria-label="Каналы DEBT TECH">
+                {channels.map((channel) => (
+                  <a href={channel.href} target="_blank" rel="noreferrer" key={channel.id}>
+                    <ChannelIcon id={channel.id} />
+                    <span>{channel.label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
             <button type="button" onClick={onClose}>Закрыть</button>
           </div>
         ) : (
@@ -154,16 +230,18 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
                     type={field.type}
                     min={field.min}
                     inputMode={field.inputMode}
+                    maxLength={field.maxLength}
                     defaultValue={field.defaultValue}
                     autoComplete={field.autoComplete}
                     required={field.required}
+                    onInput={clearFieldValidity}
                   />
                 )}
               </label>
             ))}
 
             <label className="application-modal__consent application-modal__field--wide">
-              <input name="consent" type="checkbox" value="yes" required />
+              <input name="consent" type="checkbox" value="yes" required onChange={preserveMobileScroll} />
               <span>
                 Я соглашаюсь на обработку персональных данных и принимаю условия{' '}
                 <a href={privacyHref} target="_blank" rel="noreferrer">политики конфиденциальности</a>.

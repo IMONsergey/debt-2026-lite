@@ -183,6 +183,7 @@
   color: rgba(255, 255, 255, 0.64);
   font-size: 16px;
   line-height: 1.45;
+  white-space: pre-line;
 }
 
 .application-modal__form {
@@ -298,14 +299,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 56px;
-  padding: 0 18px;
+  min-height: 48px;
+  padding: 0 16px;
   border: 0;
   border-radius: 6px;
   background: linear-gradient(90deg, #155ecf 0%, #0788e4 100%);
   color: #ffffff;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.application-modal__submit {
+  width: min(360px, 100%);
+  justify-self: start;
+}
+
+.application-modal__success button {
+  width: min(220px, 100%);
+  justify-content: center;
 }
 
 .application-modal__submit-icon {
@@ -336,6 +347,54 @@
 .application-modal__success p {
   margin: 0;
   color: rgba(255, 255, 255, 0.66);
+}
+
+.application-modal__channels {
+  display: grid;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.application-modal__channels p {
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.application-modal__channel-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.application-modal__channel-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid rgba(104, 193, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(8, 47, 104, 0.56);
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.application-modal__channel-links a:hover,
+.application-modal__channel-links a:focus-visible {
+  border-color: rgba(104, 193, 255, 0.72);
+  background: rgba(9, 91, 184, 0.5);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.application-modal__channel-links svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
 
 /* Compact footer: copyright, logo and policy share one horizontal line on desktop/tablet. */
@@ -437,6 +496,17 @@
     border-bottom: 0;
     border-left: 0;
     border-radius: 0;
+    overscroll-behavior: contain;
+  }
+
+  .application-modal__dialog--success {
+    display: flex;
+    width: 100%;
+    min-height: 100svh;
+    max-height: 100svh;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: calc(env(safe-area-inset-top, 0px) + 64px) 18px calc(env(safe-area-inset-bottom, 0px) + 28px);
   }
 
   .application-modal__heading h2 {
@@ -455,6 +525,31 @@
 
   .application-modal__field--wide {
     grid-column: auto;
+  }
+
+  .application-modal__submit,
+  .application-modal__success button {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  .application-modal__success {
+    gap: 18px;
+    margin-top: 30px;
+  }
+
+  .application-modal__success strong {
+    font-size: clamp(22px, 7vw, 32px);
+    line-height: 1.05;
+  }
+
+  .application-modal__channel-links {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .application-modal__channel-links a {
+    justify-content: center;
   }
 
   .hero-landing-footer {

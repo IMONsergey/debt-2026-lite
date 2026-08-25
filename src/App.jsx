@@ -109,6 +109,10 @@ const content = {
     eventId: 'debt-tech-2026',
     contactEmail: 'redchief@rvzrus.ru',
     telegramUrl: 'https://t.me/anna_joys',
+    channels: [
+      { id: 'telegram', label: 'Telegram', href: 'https://t.me/rvzrus_chat' },
+      { id: 'max', label: 'Max', href: 'https://max.ru/id9725047250_biz' },
+    ],
   },
 };
 
