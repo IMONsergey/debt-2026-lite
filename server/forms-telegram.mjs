@@ -4,6 +4,9 @@ const PORT = Number(process.env.PORT || 32026);
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const THREAD_ID = process.env.TELEGRAM_THREAD_ID;
+const BITRIX_WEBHOOK_URL = (process.env.BITRIX_WEBHOOK_URL || '').trim().replace(/\/+$/, '');
+const BITRIX_ENTITY_TYPE_ID = Number(process.env.BITRIX_ENTITY_TYPE_ID || 1);
+const BITRIX_ASSIGNED_BY_ID = process.env.BITRIX_ASSIGNED_BY_ID ? Number(process.env.BITRIX_ASSIGNED_BY_ID) : null;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN || process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((origin) => origin.trim())
@@ -13,6 +16,7 @@ const RATE_WINDOW_MS = Number(process.env.RATE_WINDOW_MS || 10 * 60 * 1000);
 const RATE_LIMIT = Number(process.env.RATE_LIMIT || 8);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TELEGRAM_RETRY_DELAYS_MS = [600, 1_600];
+const BITRIX_TIMEOUT_MS = Number(process.env.BITRIX_TIMEOUT_MS || 8_000);
 
 const rateBuckets = new Map();
 
@@ -100,6 +104,105 @@ function formTitle(formId) {
   if (formId === 'stand-booking-form') return 'Бронирование стенда';
   if (formId === 'early-registration-form') return 'Ранняя регистрация';
   return clean(formId || 'Заявка');
+}
+
+function splitFullName(value) {
+  const parts = clean(value, 160).split(' ').filter(Boolean);
+  if (parts.length === 0) return { name: '', lastName: '' };
+  if (parts.length === 1) return { name: parts[0], lastName: '' };
+  return {
+    lastName: parts[0],
+    name: parts.slice(1).join(' '),
+  };
+}
+
+function formatLeadComments(payload) {
+  const rows = [
+    ['Форма', formTitle(payload.form_id)],
+    ['Участников', payload.participants_count],
+    ['Промокод', payload.promo_code],
+    ['Должность', payload.job_title],
+    ['Комментарий', payload.comment],
+    ['Страница', payload.source_page],
+    ['UTM source', payload.utm_source],
+    ['UTM medium', payload.utm_medium],
+    ['UTM campaign', payload.utm_campaign],
+    ['UTM content', payload.utm_content],
+    ['UTM term', payload.utm_term],
+  ].filter(([, value]) => clean(value));
+
+  return rows.map(([label, value]) => `${label}: ${clean(value, 1000)}`).join('\n');
+}
+
+function buildBitrixLeadPayload(payload) {
+  const { name, lastName } = splitFullName(payload.full_name);
+  const companyTitle = clean(payload.company, 255);
+  const titleParts = [`DEBT TECH 2026: ${formTitle(payload.form_id)}`];
+  if (clean(payload.full_name)) titleParts.push(clean(payload.full_name, 160));
+  if (companyTitle) titleParts.push(companyTitle);
+
+  const fm = [];
+  if (clean(payload.phone, 60)) {
+    fm.push({ typeId: 'PHONE', valueType: 'WORK', value: clean(payload.phone, 60) });
+  }
+  if (clean(payload.email, 160)) {
+    fm.push({ typeId: 'EMAIL', valueType: 'WORK', value: clean(payload.email, 160) });
+  }
+
+  const fields = {
+    title: titleParts.join(' — '),
+    name,
+    lastName,
+    companyTitle,
+    fm,
+    comments: formatLeadComments(payload),
+  };
+
+  if (Number.isInteger(BITRIX_ASSIGNED_BY_ID) && BITRIX_ASSIGNED_BY_ID > 0) {
+    fields.assignedById = BITRIX_ASSIGNED_BY_ID;
+  }
+
+  return {
+    entityTypeId: BITRIX_ENTITY_TYPE_ID,
+    fields,
+  };
+}
+
+async function callBitrix(method, params) {
+  if (!BITRIX_WEBHOOK_URL) return null;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), BITRIX_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${BITRIX_WEBHOOK_URL}/${method}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(params),
+      signal: controller.signal,
+    });
+
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.error) {
+      throw new Error(`bitrix_error_${response.status}:${clean(result.error_description || result.error || 'unknown', 240)}`);
+    }
+
+    return result;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function createBitrixLead(payload) {
+  if (!BITRIX_WEBHOOK_URL) return null;
+
+  const result = await callBitrix('crm.item.add', buildBitrixLeadPayload(payload));
+  const leadId = result?.result?.item?.id;
+  if (!leadId) throw new Error('bitrix_error_no_lead_id');
+  return leadId;
 }
 
 function formatMessage(payload) {
@@ -220,7 +323,8 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
-    jsonResponse(response, 200, { success: true }, corsHeaders);
+    const bitrixLeadId = await createBitrixLead(payload);
+    jsonResponse(response, 200, { success: true, lead_id: bitrixLeadId || undefined }, corsHeaders);
     setImmediate(() => {
       sendTelegram(payload).catch((error) => {
         console.error(new Date().toISOString(), `telegram_async_error:${error.message}`);
