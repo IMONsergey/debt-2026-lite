@@ -5,9 +5,9 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const THREAD_ID = process.env.TELEGRAM_THREAD_ID;
 const BITRIX_WEBHOOK_URL = (process.env.BITRIX_WEBHOOK_URL || '').trim().replace(/\/+$/, '');
-const BITRIX_ENTITY_TYPE_ID = Number(process.env.BITRIX_ENTITY_TYPE_ID || 2);
 const BITRIX_DEAL_CATEGORY_ID = Number(process.env.BITRIX_DEAL_CATEGORY_ID || 15);
-const BITRIX_DEAL_STAGE_ID = process.env.BITRIX_DEAL_STAGE_ID || 'C15:NEW';
+const BITRIX_EARLY_REGISTRATION_STAGE_ID = process.env.BITRIX_EARLY_REGISTRATION_STAGE_ID || 'C15:NEW';
+const BITRIX_STAND_BOOKING_STAGE_ID = process.env.BITRIX_STAND_BOOKING_STAGE_ID || 'C15:PREPARATION';
 const BITRIX_ASSIGNED_BY_ID = process.env.BITRIX_ASSIGNED_BY_ID ? Number(process.env.BITRIX_ASSIGNED_BY_ID) : null;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN || process.env.ALLOWED_ORIGINS || '')
   .split(',')
@@ -19,6 +19,19 @@ const RATE_LIMIT = Number(process.env.RATE_LIMIT || 8);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TELEGRAM_RETRY_DELAYS_MS = [600, 1_600];
 const BITRIX_TIMEOUT_MS = Number(process.env.BITRIX_TIMEOUT_MS || 8_000);
+const BITRIX_DEBT_FIELDS = {
+  formType: 'UF_CRM_DEBT2026_FORM_TYPE',
+  participants: 'UF_CRM_DEBT2026_PARTICIPANTS',
+  promoCode: 'UF_CRM_DEBT2026_PROMO_CODE',
+  jobTitle: 'UF_CRM_DEBT2026_JOB_TITLE',
+  userComment: 'UF_CRM_DEBT2026_USER_COMMENT',
+  sourcePage: 'UF_CRM_DEBT2026_SOURCE_PAGE',
+  utmSource: 'UF_CRM_DEBT2026_UTM_SOURCE',
+  utmMedium: 'UF_CRM_DEBT2026_UTM_MEDIUM',
+  utmCampaign: 'UF_CRM_DEBT2026_UTM_CAMPAIGN',
+  utmContent: 'UF_CRM_DEBT2026_UTM_CONTENT',
+  utmTerm: 'UF_CRM_DEBT2026_UTM_TERM',
+};
 
 const rateBuckets = new Map();
 
@@ -108,49 +121,59 @@ function formTitle(formId) {
   return clean(formId || 'Заявка');
 }
 
-function formatBitrixComments(payload) {
-  const rows = [
-    ['Форма', formTitle(payload.form_id)],
-    ['ФИО', payload.full_name],
-    ['Компания', payload.company],
-    ['Телефон', payload.phone],
-    ['E-mail', payload.email],
-    ['Участников', payload.participants_count],
-    ['Промокод', payload.promo_code],
-    ['Должность', payload.job_title],
-    ['Комментарий', payload.comment],
-    ['Страница', payload.source_page],
-    ['UTM source', payload.utm_source],
-    ['UTM medium', payload.utm_medium],
-    ['UTM campaign', payload.utm_campaign],
-    ['UTM content', payload.utm_content],
-    ['UTM term', payload.utm_term],
-  ].filter(([, value]) => clean(value));
-
-  return rows.map(([label, value]) => `${label}: ${clean(value, 1000)}`).join('\n');
+function stageIdForForm(formId) {
+  if (formId === 'stand-booking-form') return BITRIX_STAND_BOOKING_STAGE_ID;
+  return BITRIX_EARLY_REGISTRATION_STAGE_ID;
 }
 
-function buildBitrixDealPayload(payload) {
+function splitFullName(value) {
+  const parts = clean(value, 160).split(' ').filter(Boolean);
+  return {
+    lastName: parts.length > 1 ? parts[0] : '',
+    name: parts.length > 1 ? parts[1] : parts[0] || '',
+    secondName: parts.length > 2 ? parts.slice(2).join(' ') : '',
+  };
+}
+
+function buildDealTitle(payload) {
   const company = clean(payload.company, 255);
   const titleParts = [`DEBT TECH 2026: ${formTitle(payload.form_id)}`];
   if (clean(payload.full_name)) titleParts.push(clean(payload.full_name, 160));
   if (company) titleParts.push(company);
+  return titleParts.join(' — ');
+}
 
+function buildBitrixDealFields(payload, contactId, companyId) {
   const fields = {
-    title: titleParts.join(' — '),
-    categoryId: BITRIX_DEAL_CATEGORY_ID,
-    stageId: BITRIX_DEAL_STAGE_ID,
-    comments: formatBitrixComments(payload),
+    TITLE: buildDealTitle(payload),
+    CATEGORY_ID: BITRIX_DEAL_CATEGORY_ID,
+    STAGE_ID: stageIdForForm(clean(payload.form_id)),
+    COMMENTS: clean(payload.comment)
+      ? `Комментарий из формы: ${clean(payload.comment, 2000)}`
+      : 'Заявка с сайта DEBT TECH 2026. Данные разнесены по полям сделки, контакту и компании.',
+    [BITRIX_DEBT_FIELDS.formType]: formTitle(payload.form_id),
+    [BITRIX_DEBT_FIELDS.sourcePage]: clean(payload.source_page, 255),
+    [BITRIX_DEBT_FIELDS.utmSource]: clean(payload.utm_source, 255),
+    [BITRIX_DEBT_FIELDS.utmMedium]: clean(payload.utm_medium, 255),
+    [BITRIX_DEBT_FIELDS.utmCampaign]: clean(payload.utm_campaign, 255),
+    [BITRIX_DEBT_FIELDS.utmContent]: clean(payload.utm_content, 255),
+    [BITRIX_DEBT_FIELDS.utmTerm]: clean(payload.utm_term, 255),
   };
 
+  const participantsCount = Number.parseInt(clean(payload.participants_count, 10), 10);
+  if (Number.isInteger(participantsCount) && participantsCount > 0) {
+    fields[BITRIX_DEBT_FIELDS.participants] = participantsCount;
+  }
+  if (clean(payload.promo_code, 120)) fields[BITRIX_DEBT_FIELDS.promoCode] = clean(payload.promo_code, 120);
+  if (clean(payload.job_title, 160)) fields[BITRIX_DEBT_FIELDS.jobTitle] = clean(payload.job_title, 160);
+  if (clean(payload.comment, 2000)) fields[BITRIX_DEBT_FIELDS.userComment] = clean(payload.comment, 2000);
+  if (contactId) fields.CONTACT_ID = contactId;
+  if (companyId) fields.COMPANY_ID = companyId;
   if (Number.isInteger(BITRIX_ASSIGNED_BY_ID) && BITRIX_ASSIGNED_BY_ID > 0) {
-    fields.assignedById = BITRIX_ASSIGNED_BY_ID;
+    fields.ASSIGNED_BY_ID = BITRIX_ASSIGNED_BY_ID;
   }
 
-  return {
-    entityTypeId: BITRIX_ENTITY_TYPE_ID,
-    fields,
-  };
+  return Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== ''));
 }
 
 async function callBitrix(method, params) {
@@ -184,10 +207,72 @@ async function callBitrix(method, params) {
 async function createBitrixDeal(payload) {
   if (!BITRIX_WEBHOOK_URL) return null;
 
-  const result = await callBitrix('crm.item.add', buildBitrixDealPayload(payload));
-  const dealId = result?.result?.item?.id;
+  const companyId = await findOrCreateBitrixCompany(payload);
+  const contactId = await findOrCreateBitrixContact(payload, companyId);
+  const result = await callBitrix('crm.deal.add', {
+    fields: buildBitrixDealFields(payload, contactId, companyId),
+  });
+  const dealId = result?.result;
   if (!dealId) throw new Error('bitrix_error_no_deal_id');
   return dealId;
+}
+
+async function findBitrixDuplicateId(entityType, type, value) {
+  const prepared = clean(value, type === 'PHONE' ? 60 : 160);
+  if (!prepared) return null;
+
+  const result = await callBitrix('crm.duplicate.findbycomm', {
+    entity_type: entityType,
+    type,
+    values: [prepared],
+  });
+  const ids = result?.result?.[entityType];
+  const id = Array.isArray(ids) ? Number(ids[0]) : null;
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+async function findOrCreateBitrixCompany(payload) {
+  const title = clean(payload.company, 255);
+  if (!title) return null;
+
+  const existing = await callBitrix('crm.company.list', {
+    filter: { '=TITLE': title },
+    select: ['ID', 'TITLE'],
+    order: { ID: 'ASC' },
+  });
+  const existingId = Number(existing?.result?.[0]?.ID);
+  if (Number.isInteger(existingId) && existingId > 0) return existingId;
+
+  const result = await callBitrix('crm.company.add', {
+    fields: { TITLE: title },
+  });
+  const companyId = Number(result?.result);
+  if (!Number.isInteger(companyId) || companyId <= 0) throw new Error('bitrix_error_no_company_id');
+  return companyId;
+}
+
+async function findOrCreateBitrixContact(payload, companyId) {
+  const email = clean(payload.email, 160);
+  const phone = clean(payload.phone, 60);
+  const existingId =
+    (await findBitrixDuplicateId('CONTACT', 'EMAIL', email)) ||
+    (await findBitrixDuplicateId('CONTACT', 'PHONE', phone));
+  if (existingId) return existingId;
+
+  const { name, lastName, secondName } = splitFullName(payload.full_name);
+  const fields = {
+    NAME: name || clean(payload.full_name, 160),
+    LAST_NAME: lastName,
+    SECOND_NAME: secondName,
+    PHONE: phone ? [{ VALUE: phone, VALUE_TYPE: 'WORK' }] : [],
+    EMAIL: email ? [{ VALUE: email, VALUE_TYPE: 'WORK' }] : [],
+  };
+  if (companyId) fields.COMPANY_ID = companyId;
+
+  const result = await callBitrix('crm.contact.add', { fields });
+  const contactId = Number(result?.result);
+  if (!Number.isInteger(contactId) || contactId <= 0) throw new Error('bitrix_error_no_contact_id');
+  return contactId;
 }
 
 function formatMessage(payload) {
