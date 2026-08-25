@@ -5,7 +5,9 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const THREAD_ID = process.env.TELEGRAM_THREAD_ID;
 const BITRIX_WEBHOOK_URL = (process.env.BITRIX_WEBHOOK_URL || '').trim().replace(/\/+$/, '');
-const BITRIX_ENTITY_TYPE_ID = Number(process.env.BITRIX_ENTITY_TYPE_ID || 1);
+const BITRIX_ENTITY_TYPE_ID = Number(process.env.BITRIX_ENTITY_TYPE_ID || 2);
+const BITRIX_DEAL_CATEGORY_ID = Number(process.env.BITRIX_DEAL_CATEGORY_ID || 15);
+const BITRIX_DEAL_STAGE_ID = process.env.BITRIX_DEAL_STAGE_ID || 'C15:NEW';
 const BITRIX_ASSIGNED_BY_ID = process.env.BITRIX_ASSIGNED_BY_ID ? Number(process.env.BITRIX_ASSIGNED_BY_ID) : null;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN || process.env.ALLOWED_ORIGINS || '')
   .split(',')
@@ -106,19 +108,13 @@ function formTitle(formId) {
   return clean(formId || 'Заявка');
 }
 
-function splitFullName(value) {
-  const parts = clean(value, 160).split(' ').filter(Boolean);
-  if (parts.length === 0) return { name: '', lastName: '' };
-  if (parts.length === 1) return { name: parts[0], lastName: '' };
-  return {
-    lastName: parts[0],
-    name: parts.slice(1).join(' '),
-  };
-}
-
-function formatLeadComments(payload) {
+function formatBitrixComments(payload) {
   const rows = [
     ['Форма', formTitle(payload.form_id)],
+    ['ФИО', payload.full_name],
+    ['Компания', payload.company],
+    ['Телефон', payload.phone],
+    ['E-mail', payload.email],
     ['Участников', payload.participants_count],
     ['Промокод', payload.promo_code],
     ['Должность', payload.job_title],
@@ -134,28 +130,17 @@ function formatLeadComments(payload) {
   return rows.map(([label, value]) => `${label}: ${clean(value, 1000)}`).join('\n');
 }
 
-function buildBitrixLeadPayload(payload) {
-  const { name, lastName } = splitFullName(payload.full_name);
-  const companyTitle = clean(payload.company, 255);
+function buildBitrixDealPayload(payload) {
+  const company = clean(payload.company, 255);
   const titleParts = [`DEBT TECH 2026: ${formTitle(payload.form_id)}`];
   if (clean(payload.full_name)) titleParts.push(clean(payload.full_name, 160));
-  if (companyTitle) titleParts.push(companyTitle);
-
-  const fm = [];
-  if (clean(payload.phone, 60)) {
-    fm.push({ typeId: 'PHONE', valueType: 'WORK', value: clean(payload.phone, 60) });
-  }
-  if (clean(payload.email, 160)) {
-    fm.push({ typeId: 'EMAIL', valueType: 'WORK', value: clean(payload.email, 160) });
-  }
+  if (company) titleParts.push(company);
 
   const fields = {
     title: titleParts.join(' — '),
-    name,
-    lastName,
-    companyTitle,
-    fm,
-    comments: formatLeadComments(payload),
+    categoryId: BITRIX_DEAL_CATEGORY_ID,
+    stageId: BITRIX_DEAL_STAGE_ID,
+    comments: formatBitrixComments(payload),
   };
 
   if (Number.isInteger(BITRIX_ASSIGNED_BY_ID) && BITRIX_ASSIGNED_BY_ID > 0) {
@@ -196,13 +181,13 @@ async function callBitrix(method, params) {
   }
 }
 
-async function createBitrixLead(payload) {
+async function createBitrixDeal(payload) {
   if (!BITRIX_WEBHOOK_URL) return null;
 
-  const result = await callBitrix('crm.item.add', buildBitrixLeadPayload(payload));
-  const leadId = result?.result?.item?.id;
-  if (!leadId) throw new Error('bitrix_error_no_lead_id');
-  return leadId;
+  const result = await callBitrix('crm.item.add', buildBitrixDealPayload(payload));
+  const dealId = result?.result?.item?.id;
+  if (!dealId) throw new Error('bitrix_error_no_deal_id');
+  return dealId;
 }
 
 function formatMessage(payload) {
@@ -323,8 +308,8 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
-    const bitrixLeadId = await createBitrixLead(payload);
-    jsonResponse(response, 200, { success: true, lead_id: bitrixLeadId || undefined }, corsHeaders);
+    const bitrixDealId = await createBitrixDeal(payload);
+    jsonResponse(response, 200, { success: true, deal_id: bitrixDealId || undefined }, corsHeaders);
     setImmediate(() => {
       sendTelegram(payload).catch((error) => {
         console.error(new Date().toISOString(), `telegram_async_error:${error.message}`);
