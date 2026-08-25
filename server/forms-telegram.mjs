@@ -12,6 +12,7 @@ const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES || 32_768);
 const RATE_WINDOW_MS = Number(process.env.RATE_WINDOW_MS || 10 * 60 * 1000);
 const RATE_LIMIT = Number(process.env.RATE_LIMIT || 8);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TELEGRAM_RETRY_DELAYS_MS = [600, 1_600];
 
 const rateBuckets = new Map();
 
@@ -138,15 +139,26 @@ async function sendTelegram(payload) {
 
   if (THREAD_ID) body.message_thread_id = THREAD_ID;
 
-  const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  for (let attempt = 0; attempt <= TELEGRAM_RETRY_DELAYS_MS.length; attempt += 1) {
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
 
-  if (!response.ok) {
-    const errorBody = await response.text().catch(() => '');
-    throw new Error(`telegram_error_${response.status}:${errorBody.slice(0, 200)}`);
+      if (response.ok) return;
+
+      const errorBody = await response.text().catch(() => '');
+      const shouldRetry = response.status === 429 || response.status >= 500;
+      if (!shouldRetry || attempt === TELEGRAM_RETRY_DELAYS_MS.length) {
+        throw new Error(`telegram_error_${response.status}:${errorBody.slice(0, 200)}`);
+      }
+    } catch (error) {
+      if (attempt === TELEGRAM_RETRY_DELAYS_MS.length) throw error;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, TELEGRAM_RETRY_DELAYS_MS[attempt]));
   }
 }
 
