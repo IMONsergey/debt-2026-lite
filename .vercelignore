@@ -1,5 +1,4 @@
+.playwright-cli/
 node_modules/
 dist/
-.playwright-cli/
-.vercel/
 .DS_Store

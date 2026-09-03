@@ -9,6 +9,8 @@ import './styles/hero-only-media-fixes.css';
 import './styles/soft-reveal.css';
 import './styles/venue-section.css';
 import './styles/mobile-registration.css';
+import './styles/about-forum.css';
+import './styles/tariffs.css';
 
 const galleryImages = [
   '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
@@ -29,8 +31,7 @@ const content = {
     groups: [],
     cta: {
       label: 'Ранняя регистрация',
-      href: 'https://t.me/anna_joys',
-      modal: 'early-registration',
+      href: '#tariffs',
     },
     secondaryCta: {
       label: 'Забронировать стенд',
@@ -100,6 +101,101 @@ const content = {
       alt: `DEBT TECH 2025 — кадр ${index + 1}`,
     })),
   },
+  tariffs: {
+    eyebrow: 'Multipass',
+    title: 'Welcome',
+    logoImage: assetUrl('assets/images/tariffs/logo-form.svg'),
+    handImage: assetUrl('assets/images/tariffs/hand-spaceman.png'),
+    offer: 'Скидка 50% на один билет любого тарифа для представителя компании, которая впервые участвует в DEBT TECH.',
+    agreement: 'Скидка предоставляется по согласованию с организаторами.',
+    note: 'Стоимость указана по тарифу ранней регистрации и действует до 15 сентября.',
+    ctaLabel: 'Принять участие',
+    ctaModal: 'early-registration',
+    items: [
+      {
+        id: 'business',
+        title: 'Деловой',
+        price: '44 000 ₽',
+        background: assetUrl('assets/images/tariffs/business-bg.svg'),
+        icon: assetUrl('assets/images/tariffs/business-icon.svg'),
+        features: [
+          { label: 'Деловая программа', active: true },
+          { label: 'Кофе-брейк, обед', active: true },
+          { label: 'Фотоотчет', active: true },
+          { label: 'Презентации спикеров', active: true },
+          { label: 'Видеозапись конференции', active: true },
+          { label: 'Креативная вечерняя программа', active: false },
+          { label: 'Space Disco Afterparty', active: false },
+        ],
+      },
+      {
+        id: 'full',
+        title: 'Полный',
+        price: '49 000 ₽',
+        background: assetUrl('assets/images/tariffs/full-bg.svg'),
+        icon: assetUrl('assets/images/tariffs/full-icon.svg'),
+        features: [
+          { label: 'Деловая программа', active: true },
+          { label: 'Кофе-брейк, обед', active: true },
+          { label: 'Фотоотчет', active: true },
+          { label: 'Презентации спикеров', active: true },
+          { label: 'Видеозапись конференции', active: true },
+          { label: 'Креативная вечерняя программа', active: false },
+          { label: 'Space Disco Afterparty', active: true },
+        ],
+      },
+      {
+        id: 'full-plus',
+        title: 'Полный Plus',
+        price: '66 000 ₽',
+        background: assetUrl('assets/images/tariffs/full-plus-bg.svg'),
+        icon: assetUrl('assets/images/tariffs/full-plus-icon.svg'),
+        features: [
+          { label: 'Деловая программа', active: true },
+          { label: 'Кофе-брейк, обед', active: true },
+          { label: 'Фотоотчет', active: true },
+          { label: 'Презентации спикеров', active: true },
+          { label: 'Видеозапись конференции', active: true },
+          { label: 'Креативная вечерняя программа', active: true },
+          { label: 'Space Disco Afterparty', active: true },
+        ],
+      },
+    ],
+  },
+  aboutForum: {
+    eyebrow: 'О форуме',
+    title: 'DEBT TECH 2026',
+    description: 'Ежегодная форум-выставка о технологиях на рынке долговых активов',
+    planetImage: assetUrl('assets/images/about-forum/planet-about.png'),
+    features: [
+      'Эксклюзивная деловая программа с практическими кейсами',
+      'Активное участие представителей государственных органов и СРО',
+      'Спецформаты и услуги для участников',
+      'Доступ к готовым решениям: демостенды, контакты интеграторов и разработчиков',
+      'Новые партнёры и сделки',
+    ],
+    stats: [
+      { value: '800+', label: 'участников' },
+      { value: '400+', label: 'компаний' },
+      { value: '100+', label: 'спикеров' },
+      { value: '50+', label: 'партнеров' },
+    ],
+    tags: [
+      { id: 'artificial-intelligence', label: 'Искусственный интеллект', icon: assetUrl('assets/images/about-forum/tags/artificial-intelligence.svg') },
+      { id: 'big-data', label: 'Big Data', icon: assetUrl('assets/images/about-forum/tags/big-data.svg') },
+      { id: 'ai-agents', label: 'AI-агенты', icon: assetUrl('assets/images/about-forum/tags/ai-agents.svg') },
+      { id: 'speech-analytics', label: 'Речевая аналитика', icon: assetUrl('assets/images/about-forum/tags/speech-analytics.svg') },
+      { id: 'bi', label: 'BI', icon: assetUrl('assets/images/about-forum/tags/bi.svg') },
+      { id: 'low-code', label: 'Low-code', icon: assetUrl('assets/images/about-forum/tags/low-code.svg') },
+      { id: 'import-substitution', label: 'Импортозамещение', icon: assetUrl('assets/images/about-forum/tags/import-substitution.svg') },
+      { id: 'data-driven', label: 'Data driven', icon: assetUrl('assets/images/about-forum/tags/data-driven.svg') },
+      { id: 'e-justice', label: 'Электронное правосудие', icon: assetUrl('assets/images/about-forum/tags/e-justice.svg') },
+      { id: 'distressed-debt', label: 'Проблемный долг', icon: assetUrl('assets/images/about-forum/tags/distressed-debt.svg') },
+      { id: 'cession', label: 'Цессия', icon: assetUrl('assets/images/about-forum/tags/cession.svg') },
+      { id: 'investments', label: 'Инвестиции', icon: assetUrl('assets/images/about-forum/tags/investments.svg') },
+      { id: 'e-auctions', label: 'Электронные торги', icon: assetUrl('assets/images/about-forum/tags/e-auctions.svg') },
+    ],
+  },
   footer: {
     copyright: '© 2026 DEBT TECH. Все права защищены.',
     privacyLabel: 'Политика конфиденциальности и персональных данных',
@@ -121,6 +217,17 @@ export default function App() {
 
   useEffect(() => {
     document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
+    preloadImages([
+      content.hero.backgroundImage,
+      content.hero.backgroundImageAdaptive,
+      content.aboutForum.planetImage,
+      ...content.aboutForum.tags.map((tag) => tag.icon),
+      content.tariffs.logoImage,
+      content.tariffs.handImage,
+      ...content.tariffs.items.flatMap((item) => [item.background, item.icon]),
+      ...content.venue.images.map((item) => item.image),
+      ...content.gallery.items.map((item) => item.image),
+    ]);
   }, []);
 
   return (
@@ -133,8 +240,9 @@ export default function App() {
       <MobileRegistration cta={content.menu.cta} onOpenApplication={setActiveForm} />
       {activeForm ? (
         <ApplicationModal
-          key={activeForm}
-          kind={activeForm}
+          key={typeof activeForm === 'string' ? activeForm : `${activeForm.kind}-${activeForm.tariff?.id ?? 'form'}`}
+          kind={typeof activeForm === 'string' ? activeForm : activeForm.kind}
+          selectedTariff={typeof activeForm === 'string' ? null : activeForm.tariff}
           config={content.forms}
           privacyHref={content.footer.privacyHref}
           onClose={() => setActiveForm(null)}
@@ -142,6 +250,16 @@ export default function App() {
       ) : null}
     </>
   );
+}
+
+function preloadImages(urls) {
+  urls.filter(Boolean).forEach((url) => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.loading = 'eager';
+    image.fetchPriority = 'high';
+    image.src = url;
+  });
 }
 
 function MobileRegistration({ cta, onOpenApplication }) {
@@ -158,8 +276,15 @@ function MobileRegistration({ cta, onOpenApplication }) {
 
   if (!cta.href) return null;
 
+  const isExternal = /^https?:\/\//.test(cta.href);
+
   return (
-    <a className="mobile-registration" href={cta.href} target="_blank" rel="noreferrer">
+    <a
+      className="mobile-registration"
+      href={cta.href}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noreferrer' : undefined}
+    >
       <span>{cta.label}</span>
       <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
     </a>

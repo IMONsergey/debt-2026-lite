@@ -32,6 +32,11 @@ const BITRIX_DEBT_FIELDS = {
   utmContent: 'UF_CRM_DEBT2026_UTM_CONTENT',
   utmTerm: 'UF_CRM_DEBT2026_UTM_TERM',
 };
+const TARIFFS = {
+  business: { name: 'Деловой', price: 44_000 },
+  full: { name: 'Полный', price: 49_000 },
+  'full-plus': { name: 'Полный Plus', price: 66_000 },
+};
 
 const rateBuckets = new Map();
 
@@ -138,9 +143,18 @@ function splitFullName(value) {
 function buildDealTitle(payload) {
   const company = clean(payload.company, 255);
   const titleParts = [`DEBT TECH 2026: ${formTitle(payload.form_id)}`];
+  const tariff = normalizeTariff(payload);
+  if (tariff) titleParts.push(`Тариф ${tariff.name}`);
   if (clean(payload.full_name)) titleParts.push(clean(payload.full_name, 160));
   if (company) titleParts.push(company);
   return titleParts.join(' — ');
+}
+
+function normalizeTariff(payload) {
+  const id = clean(payload.tariff_id, 40);
+  const tariff = TARIFFS[id];
+  if (!tariff) return null;
+  return { id, ...tariff };
 }
 
 function buildBitrixDealFields(payload, contactId, companyId) {
@@ -214,7 +228,31 @@ async function createBitrixDeal(payload) {
   });
   const dealId = result?.result;
   if (!dealId) throw new Error('bitrix_error_no_deal_id');
+  await setBitrixDealProductRows(dealId, payload);
   return dealId;
+}
+
+async function setBitrixDealProductRows(dealId, payload) {
+  const tariff = normalizeTariff(payload);
+  if (!tariff) return;
+
+  const participantsCount = Number.parseInt(clean(payload.participants_count, 10), 10);
+  const quantity = Number.isInteger(participantsCount) && participantsCount > 0 ? participantsCount : 1;
+
+  try {
+    await callBitrix('crm.deal.productrows.set', {
+      id: dealId,
+      rows: [
+        {
+          PRODUCT_NAME: `DEBT TECH 2026 — тариф ${tariff.name}`,
+          PRICE: tariff.price,
+          QUANTITY: quantity,
+        },
+      ],
+    });
+  } catch (error) {
+    console.error(new Date().toISOString(), `bitrix_productrows_error:${error.message}`);
+  }
 }
 
 async function findBitrixDuplicateId(entityType, type, value) {
@@ -276,8 +314,10 @@ async function findOrCreateBitrixContact(payload, companyId) {
 }
 
 function formatMessage(payload) {
+  const tariff = normalizeTariff(payload);
   const rows = [
     ['Форма', formTitle(payload.form_id)],
+    ['Тариф', tariff ? `${tariff.name} — ${tariff.price.toLocaleString('ru-RU')} ₽` : ''],
     ['ФИО', payload.full_name],
     ['Компания', payload.company],
     ['Должность', payload.job_title],

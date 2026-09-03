@@ -95,22 +95,6 @@ export function CosmosPointerEffect() {
       pointer.screenX += (pointer.targetScreenX - pointer.screenX) * 0.14;
       pointer.screenY += (pointer.targetScreenY - pointer.screenY) * 0.14;
 
-      if (finePointer.matches && pointer.active) {
-        const halo = context.createRadialGradient(
-          pointer.screenX,
-          pointer.screenY,
-          0,
-          pointer.screenX,
-          pointer.screenY,
-          230,
-        );
-        halo.addColorStop(0, 'rgba(58, 154, 255, 0.038)');
-        halo.addColorStop(0.34, 'rgba(24, 111, 255, 0.022)');
-        halo.addColorStop(1, 'rgba(24, 111, 255, 0)');
-        context.fillStyle = halo;
-        context.fillRect(pointer.screenX - 230, pointer.screenY - 230, 460, 460);
-      }
-
       const seconds = time * 0.001;
       const travelX = width + 80;
       const travelY = height + 80;
@@ -125,13 +109,9 @@ export function CosmosPointerEffect() {
         const x = baseX + parallaxX;
         const y = baseY + parallaxY;
 
-        const distance = pointer.active
-          ? Math.hypot(x - pointer.screenX, y - pointer.screenY)
-          : Number.POSITIVE_INFINITY;
-        const proximity = Math.max(0, 1 - (distance / 230));
         const twinkle = 0.76 + Math.sin((seconds * particle.speed) + particle.phase) * 0.16;
-        const alpha = Math.min(0.48, particle.alpha * twinkle * (1 + proximity * 1.45));
-        const radius = particle.radius * (1 + proximity * 0.8);
+        const alpha = Math.min(0.48, particle.alpha * twinkle);
+        const radius = particle.radius;
 
         context.fillStyle = particle.blue
           ? `rgba(86, 174, 255, ${alpha})`
@@ -182,8 +162,6 @@ export function CosmosPointerEffect() {
       pointer.targetY = ((event.clientY / height) - 0.5) * 2;
       pointer.targetScreenX = event.clientX;
       pointer.targetScreenY = event.clientY;
-      layer.style.setProperty('--cosmos-pointer-x', `${Math.round(event.clientX)}px`);
-      layer.style.setProperty('--cosmos-pointer-y', `${Math.round(event.clientY)}px`);
       layer.style.setProperty('--cosmos-shift-x', `${Math.round(pointer.targetX * 18)}px`);
       layer.style.setProperty('--cosmos-shift-y', `${Math.round(pointer.targetY * 14)}px`);
       layer.style.setProperty('--cosmos-far-shift-x', `${Math.round(pointer.targetX * -10)}px`);

@@ -186,6 +186,22 @@
   white-space: pre-line;
 }
 
+.application-modal__heading .application-modal__tariff {
+  max-width: max-content;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid rgba(67, 171, 255, 0.4);
+  border-radius: 4px;
+  background: rgba(5, 48, 111, 0.34);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.application-modal__tariff strong {
+  color: #ffffff;
+}
+
 .application-modal__form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

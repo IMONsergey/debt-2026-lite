@@ -1,6 +1,4 @@
 .cosmos-pointer-layer {
-  --cosmos-pointer-x: 50vw;
-  --cosmos-pointer-y: 50vh;
   --cosmos-shift-x: 0px;
   --cosmos-shift-y: 0px;
   --cosmos-far-shift-x: 0px;
@@ -24,8 +22,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at var(--cosmos-pointer-x) var(--cosmos-pointer-y), rgba(43, 145, 255, 0.16), rgba(20, 89, 202, 0.055) 18vw, transparent 36vw),
-    radial-gradient(circle at 54% 18%, rgba(72, 157, 255, 0.11), transparent 32vw);
+    radial-gradient(circle at 76% 22%, rgba(43, 145, 255, 0.12), transparent 30vw),
+    radial-gradient(circle at 22% 72%, rgba(72, 157, 255, 0.08), transparent 34vw);
   filter: blur(0.2px);
   opacity: 0.68;
   transition: opacity 220ms ease;

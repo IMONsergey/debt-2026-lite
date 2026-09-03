@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/lead",
+      "destination": "https://debt-2026-lite.176.98.177.253.sslip.io/api/lead"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

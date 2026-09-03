@@ -49,13 +49,135 @@ export function SitePage({ content, onOpenApplication }) {
           </section>
 
           <TickerStrip items={content.ticker?.items} />
+          <AboutForumSection about={content.aboutForum} />
           <VenueSection venue={content.venue} />
           <GallerySection gallery={content.gallery} />
+          <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
           <HeroLandingFooter logo={content.site.logo} footer={content.footer} />
         </main>
       </div>
     </div>
   );
+}
+
+function AboutForumSection({ about }) {
+  const tags = about?.tags ?? [];
+  const rotationTimerRef = useRef(0);
+  const transitionTimerRef = useRef(0);
+  const [visibleTags, setVisibleTags] = useState(() => tags.slice(0, 5));
+  const [isSwitching, setIsSwitching] = useState(false);
+
+  const clearTagTimers = () => {
+    window.clearTimeout(rotationTimerRef.current);
+    window.clearTimeout(transitionTimerRef.current);
+  };
+
+  const scheduleTagRotation = () => {
+    window.clearTimeout(rotationTimerRef.current);
+    if (tags.length <= 5) return;
+    rotationTimerRef.current = window.setTimeout(() => {
+      switchTags();
+    }, 4200);
+  };
+
+  const switchTags = () => {
+    if (tags.length <= 5) return;
+    clearTagTimers();
+    setVisibleTags((current) => selectForumTags(tags, current));
+    setIsSwitching(true);
+    transitionTimerRef.current = window.setTimeout(() => {
+      setIsSwitching(false);
+      scheduleTagRotation();
+    }, 520);
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    clearTagTimers();
+    setVisibleTags(tags.slice(0, 5));
+    setIsSwitching(false);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) scheduleTagRotation();
+    return clearTagTimers;
+  }, [tags]);
+
+  if (!about) return null;
+
+  return (
+    <section
+      className="about-forum-section"
+      id="about-forum"
+      aria-labelledby="about-forum-title"
+    >
+      <div className="about-forum-section__content">
+        <div className="about-forum-section__copy">
+          <span className="about-forum-section__eyebrow">{typograf(about.eyebrow)}</span>
+          <h2 id="about-forum-title">{typograf(about.title)}</h2>
+          <p className="about-forum-section__lead">{typograf(about.description)}</p>
+
+          <div className="about-forum-section__features">
+            {(about.features ?? []).map((feature) => (
+              <p key={feature}>{typograf(feature)}</p>
+            ))}
+          </div>
+        </div>
+
+        <div className="about-tags" aria-label="Темы форума">
+          <img className="about-tags__planet" src={about.planetImage} alt="" aria-hidden="true" fetchPriority="high" />
+          <div className={`about-tags__grid${isSwitching ? ' about-tags__grid--switching' : ''}`}>
+            {visibleTags.map((tag, index) => (
+              <button
+                className={`about-tags__card about-tags__card--${index}`}
+                type="button"
+                key={tag.id}
+                onClick={switchTags}
+              >
+                <span>{formatForumTagLabel(tag)}</span>
+                <img src={tag.icon} alt="" aria-hidden="true" fetchPriority="high" />
+              </button>
+            ))}
+          </div>
+          <div className="about-tags__preload" aria-hidden="true">
+            {tags.map((tag) => (
+              <img src={tag.icon} alt="" key={`preload-${tag.id}`} fetchPriority="high" />
+            ))}
+          </div>
+        </div>
+
+        <div className="about-forum-section__stats" aria-label="Ключевые показатели форума">
+          {(about.stats ?? []).map((item) => (
+            <div className="about-forum-section__stat" key={item.label}>
+              <strong>{typograf(item.value)}</strong>
+              <span>{typograf(item.label)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const forumTagBreaks = {
+  'import-substitution': ['Импорто-', 'замещение'],
+};
+
+function formatForumTagLabel(tag) {
+  const parts = forumTagBreaks[tag.id];
+  if (!parts) return typograf(tag.label);
+
+  return parts.map((part, index) => (
+    <span className="about-tags__label-line" key={`${tag.id}-${part}`}>
+      {typograf(part)}
+      {index < parts.length - 1 ? <br /> : null}
+    </span>
+  ));
+}
+
+function selectForumTags(tags, current) {
+  const currentIds = new Set(current.map((tag) => tag.id));
+  const freshTags = tags.filter((tag) => !currentIds.has(tag.id));
+  const source = freshTags.length >= 5 ? freshTags : tags;
+  return [...source].sort(() => Math.random() - 0.5).slice(0, 5);
 }
 
 function VenueSection({ venue }) {
@@ -93,7 +215,7 @@ function VenueSection({ venue }) {
               className={`venue-bento__tile${index === 0 ? ' venue-bento__tile--primary' : ''}`}
               key={item.image}
             >
-              <img src={item.image} alt={item.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+              <img src={item.image} alt={item.alt} decoding="async" />
             </figure>
           ))}
         </div>
@@ -351,6 +473,74 @@ function GallerySection({ gallery }) {
           </button>
         </div>
       )}
+    </section>
+  );
+}
+
+function TariffsSection({ tariffs, onOpenApplication }) {
+  if (!tariffs || !Array.isArray(tariffs.items) || tariffs.items.length === 0) return null;
+
+  return (
+    <section className="tariffs-section" id="tariffs" aria-labelledby="tariffs-title">
+      <div className="tariffs-section__hero">
+        <div className="tariffs-section__intro">
+          <span className="tariffs-section__eyebrow">{typograf(tariffs.eyebrow)}</span>
+          <h2 id="tariffs-title">{typograf(tariffs.title)}</h2>
+
+          <div className="tariffs-section__offer">
+            <p>{typograf(tariffs.offer)}</p>
+            <span aria-hidden="true" />
+            <p>{typograf(tariffs.agreement)}</p>
+          </div>
+
+          <p className="tariffs-section__note">{typograf(tariffs.note)}</p>
+        </div>
+
+        <div className="tariffs-section__visual" aria-hidden="true">
+          <img className="tariffs-section__slash" src={tariffs.logoImage} alt="" fetchPriority="high" />
+          <img className="tariffs-section__hand" src={tariffs.handImage} alt="" fetchPriority="high" />
+        </div>
+      </div>
+
+      <div className="tariffs-section__cards">
+        {tariffs.items.map((item) => (
+          <article className={`tariff-card tariff-card--${item.id}`} key={item.id}>
+            <img className="tariff-card__bg" src={item.background} alt="" aria-hidden="true" fetchPriority="high" />
+            <div className="tariff-card__inner">
+              <h3>{typograf(item.title)}</h3>
+
+              <ul className="tariff-card__features">
+                {item.features.map((feature) => (
+                  <li className={feature.active ? '' : 'is-muted'} key={feature.label}>
+                    <img src={item.icon} alt="" aria-hidden="true" />
+                    <span>{typograf(feature.label)}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="tariff-card__footer">
+                <span className="tariff-card__price-label">Стоимость</span>
+                <strong>{typograf(item.price)}</strong>
+                <button
+                  className="tariff-card__button"
+                  type="button"
+                  onClick={() => onOpenApplication?.({
+                    kind: tariffs.ctaModal,
+                    tariff: {
+                      id: item.id,
+                      title: item.title,
+                      price: item.price,
+                    },
+                  })}
+                >
+                  <span>{typograf(tariffs.ctaLabel)}</span>
+                  <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }

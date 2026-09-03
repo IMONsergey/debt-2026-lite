@@ -120,7 +120,7 @@ function ChannelIcon({ id }) {
   );
 }
 
-export function ApplicationModal({ kind, config, privacyHref, onClose }) {
+export function ApplicationModal({ kind, selectedTariff = null, config, privacyHref, onClose }) {
   const details = FORM_DETAILS[kind] ?? FORM_DETAILS['early-registration'];
   const firstFieldRef = useRef(null);
   const [status, setStatus] = useState('idle');
@@ -219,6 +219,11 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
         <div className="application-modal__heading">
           <h2 id={`${details.id}-title`}>{details.title}</h2>
           {status !== 'success' ? <p id={`${details.id}-description`}>{details.description}</p> : null}
+          {status !== 'success' && selectedTariff ? (
+            <p className="application-modal__tariff">
+              Выбранный тариф: <strong>{selectedTariff.title}</strong>, {selectedTariff.price}
+            </p>
+          ) : null}
         </div>
 
         {status === 'success' ? (
@@ -242,6 +247,13 @@ export function ApplicationModal({ kind, config, privacyHref, onClose }) {
           <form id={details.id} name={details.id} className="application-modal__form" onSubmit={handleSubmit}>
             <input type="hidden" name="form_id" value={details.id} />
             <input type="hidden" name="event_id" value={config.eventId} />
+            {selectedTariff ? (
+              <>
+                <input type="hidden" name="tariff_id" value={selectedTariff.id} />
+                <input type="hidden" name="tariff_name" value={selectedTariff.title} />
+                <input type="hidden" name="tariff_price" value={selectedTariff.price} />
+              </>
+            ) : null}
             <label className="application-modal__honeypot" aria-hidden="true">
               <span>Сайт</span>
               <input name="website" type="text" tabIndex="-1" autoComplete="off" />
