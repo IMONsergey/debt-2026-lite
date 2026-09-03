@@ -13,7 +13,7 @@
   display: grid;
   grid-template-columns: minmax(0, 0.78fr) minmax(260px, 0.42fr);
   gap: clamp(32px, 5vw, 84px);
-  min-height: clamp(270px, 24vw, 360px);
+  min-height: clamp(235px, 20vw, 310px);
   align-items: start;
 }
 
@@ -51,82 +51,10 @@
   text-transform: uppercase;
 }
 
-.tariffs-section__offer {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(420px, 1fr) 1px minmax(290px, 0.48fr);
-  gap: clamp(28px, 3.2vw, 52px);
-  align-items: center;
-  width: min(100%, 980px);
-  margin-top: clamp(22px, 2.5vw, 34px);
-  padding: clamp(14px, 1.25vw, 20px) clamp(16px, 1.55vw, 26px);
-  border: 1px solid rgba(67, 171, 255, 0.55);
-  background:
-    linear-gradient(#43abff, #43abff) left top / 18px 2px no-repeat,
-    linear-gradient(#43abff, #43abff) left top / 2px 18px no-repeat,
-    linear-gradient(#43abff, #43abff) right bottom / 18px 2px no-repeat,
-    linear-gradient(#43abff, #43abff) right bottom / 2px 18px no-repeat,
-    linear-gradient(95deg, rgba(5, 60, 134, 0.74), rgba(1, 27, 74, 0.46));
-  box-shadow: inset 0 0 44px rgba(67, 171, 255, 0.1);
-}
-
-.tariffs-section__offer p {
-  margin: 0;
-  color: rgba(240, 247, 255, 0.86);
-  font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: clamp(13px, 1vw, 18px);
-  font-weight: 500;
-  line-height: 1.18;
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-
-.tariffs-section__offer p:first-child {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.tariffs-section__offer p:first-child strong,
-.tariffs-section__offer p:first-child em {
-  color: #43a1ff;
-  font-style: normal;
-}
-
-.tariffs-section__offer span {
-  display: block;
-  width: 2px;
-  height: 58px;
-  background: linear-gradient(180deg, rgba(67, 171, 255, 0), #43abff, rgba(67, 171, 255, 0));
-  transform: skewX(-12deg);
-}
-
-.tariffs-section__note {
-  position: relative;
-  margin: clamp(18px, 2vw, 28px) 0 0;
-  padding-left: 30px;
-  color: rgba(255, 255, 255, 0.72);
-  font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: clamp(14px, 1.05vw, 18px);
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-.tariffs-section__note::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #43abff;
-  box-shadow: 0 0 22px rgba(67, 171, 255, 0.9);
-}
-
 .tariffs-section__visual {
   position: absolute;
   z-index: 1;
-  top: -56px;
+  top: -74px;
   right: calc(clamp(28px, 5vw, 78px) * -1.2);
   width: min(690px, 48vw);
   min-height: 360px;
@@ -156,7 +84,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(14px, 1.35vw, 22px);
-  margin-top: clamp(8px, 1.4vw, 24px);
+  margin-top: clamp(0px, 0.8vw, 14px);
 }
 
 .tariff-card {
@@ -182,12 +110,12 @@
   background:
     linear-gradient(#65c8ff, #65c8ff) left top / 26px 2px no-repeat,
     linear-gradient(#65c8ff, #65c8ff) left top / 2px 26px no-repeat,
-    linear-gradient(#65c8ff, #65c8ff) right top / 26px 2px no-repeat,
-    linear-gradient(#65c8ff, #65c8ff) right top / 2px 26px no-repeat,
+    linear-gradient(#65c8ff, #65c8ff) calc(100% - 1px) top / 25px 2px no-repeat,
+    linear-gradient(#65c8ff, #65c8ff) right 1px top / 2px 25px no-repeat,
     linear-gradient(#65c8ff, #65c8ff) left bottom / 26px 2px no-repeat,
     linear-gradient(#65c8ff, #65c8ff) left bottom / 2px 26px no-repeat,
-    linear-gradient(#65c8ff, #65c8ff) right bottom / 26px 2px no-repeat,
-    linear-gradient(#65c8ff, #65c8ff) right bottom / 2px 26px no-repeat;
+    linear-gradient(#65c8ff, #65c8ff) calc(100% - 1px) bottom / 25px 2px no-repeat,
+    linear-gradient(#65c8ff, #65c8ff) right 1px bottom / 2px 25px no-repeat;
   filter: drop-shadow(0 0 12px rgba(67, 171, 255, 0.68));
   opacity: 0.9;
   pointer-events: none;
@@ -195,10 +123,10 @@
 
 .tariff-card__bg {
   position: absolute;
-  inset: -4px;
+  inset: 0;
   z-index: 0;
-  width: calc(100% + 8px);
-  height: calc(100% + 8px);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   pointer-events: none;
   transform: scale(1.01);
@@ -417,24 +345,6 @@
   .tariffs-section h2 {
     font-size: clamp(27px, 9vw, 40px);
     letter-spacing: 0.18em;
-  }
-
-  .tariffs-section__offer {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    width: 100%;
-    margin-top: 22px;
-    padding: 15px;
-  }
-
-  .tariffs-section__offer span {
-    width: 100%;
-    height: 1px;
-    transform: none;
-  }
-
-  .tariffs-section__offer p {
-    font-size: 13px;
   }
 
   .tariffs-section__visual {

@@ -486,14 +486,6 @@ function TariffsSection({ tariffs, onOpenApplication }) {
         <div className="tariffs-section__intro">
           <span className="tariffs-section__eyebrow">{typograf(tariffs.eyebrow)}</span>
           <h2 id="tariffs-title">{typograf(tariffs.title)}</h2>
-
-          <div className="tariffs-section__offer" hidden>
-            <p>{typograf(tariffs.offer)}</p>
-            <span aria-hidden="true" />
-            <p>{typograf(tariffs.agreement)}</p>
-          </div>
-
-          <p className="tariffs-section__note" hidden>{typograf(tariffs.note)}</p>
         </div>
 
         <div className="tariffs-section__visual" aria-hidden="true">
