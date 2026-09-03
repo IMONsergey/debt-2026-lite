@@ -487,13 +487,13 @@ function TariffsSection({ tariffs, onOpenApplication }) {
           <span className="tariffs-section__eyebrow">{typograf(tariffs.eyebrow)}</span>
           <h2 id="tariffs-title">{typograf(tariffs.title)}</h2>
 
-          <div className="tariffs-section__offer">
+          <div className="tariffs-section__offer" hidden>
             <p>{typograf(tariffs.offer)}</p>
             <span aria-hidden="true" />
             <p>{typograf(tariffs.agreement)}</p>
           </div>
 
-          <p className="tariffs-section__note">{typograf(tariffs.note)}</p>
+          <p className="tariffs-section__note" hidden>{typograf(tariffs.note)}</p>
         </div>
 
         <div className="tariffs-section__visual" aria-hidden="true">
@@ -505,14 +505,14 @@ function TariffsSection({ tariffs, onOpenApplication }) {
       <div className="tariffs-section__cards">
         {tariffs.items.map((item) => (
           <article className={`tariff-card tariff-card--${item.id}`} key={item.id}>
-            <img className="tariff-card__bg" src={item.background} alt="" aria-hidden="true" fetchPriority="high" />
+            <img className="tariff-card__bg" src={item.background} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
             <div className="tariff-card__inner">
               <h3>{typograf(item.title)}</h3>
 
               <ul className="tariff-card__features">
                 {item.features.map((feature) => (
                   <li className={feature.active ? '' : 'is-muted'} key={feature.label}>
-                    <img src={item.icon} alt="" aria-hidden="true" />
+                    <img src={item.icon} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
                     <span>{typograf(feature.label)}</span>
                   </li>
                 ))}

@@ -140,8 +140,8 @@ const content = {
           { label: 'Фотоотчет', active: true },
           { label: 'Презентации спикеров', active: true },
           { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: false },
-          { label: 'Space Disco Afterparty', active: true },
+          { label: 'Креативная вечерняя программа', active: true },
+          { label: 'Space Disco Afterparty', active: false },
         ],
       },
       {

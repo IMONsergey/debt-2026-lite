@@ -140,6 +140,62 @@
   transform: translate3d(2px, -2px, 0);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .about-forum-section__features p,
+  .about-forum-section__stat,
+  .about-tags__card,
+  .venue-section__route,
+  .venue-section__photo,
+  .gallery-strip__item,
+  .gallery-section__link,
+  .mobile-registration,
+  .contact-link,
+  .fixed-menu__cta {
+    transition:
+      transform 440ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 320ms ease,
+      border-color 320ms ease,
+      background-color 320ms ease,
+      box-shadow 440ms ease,
+      filter 440ms ease;
+  }
+
+  .about-forum-section__features p:hover,
+  .about-forum-section__stat:hover,
+  .about-tags__card:hover,
+  .about-tags__card:focus-within,
+  .venue-section__route:hover,
+  .venue-section__route:focus-visible,
+  .gallery-section__link:hover,
+  .gallery-section__link:focus-visible,
+  .mobile-registration:hover,
+  .mobile-registration:focus-visible,
+  .contact-link:hover,
+  .contact-link:focus-visible,
+  .fixed-menu__cta:hover,
+  .fixed-menu__cta:focus-visible {
+    transform: translate3d(0, -3px, 0);
+  }
+
+  .venue-section__photo:hover,
+  .gallery-strip__item:hover,
+  .gallery-strip__item:focus-visible {
+    transform: translate3d(0, -4px, 0) scale(1.006);
+    filter: saturate(1.05);
+  }
+
+  .about-tags__card.is-active {
+    transition:
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 420ms ease,
+      filter 420ms ease;
+  }
+}
+
 @keyframes soft-element-enter {
   from {
     opacity: 0;
@@ -219,6 +275,23 @@
   .hero-only-view .fixed-menu__cta-icon,
   .hero-only-view .route-link__icon,
   .hero-only-view .gallery-section__link img {
+    transition: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .about-forum-section__features p,
+  .about-forum-section__stat,
+  .about-tags__card,
+  .venue-section__route,
+  .venue-section__photo,
+  .gallery-strip__item,
+  .gallery-section__link,
+  .mobile-registration,
+  .contact-link,
+  .fixed-menu__cta {
     transition: none !important;
   }
 }
