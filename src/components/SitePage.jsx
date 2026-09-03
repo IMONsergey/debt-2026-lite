@@ -65,7 +65,7 @@ function AboutForumSection({ about }) {
   const rotationTimerRef = useRef(0);
   const transitionTimerRef = useRef(0);
   const [visibleTags, setVisibleTags] = useState(() => tags.slice(0, 5));
-  const [isSwitching, setIsSwitching] = useState(false);
+  const [transitionPhase, setTransitionPhase] = useState('');
 
   const clearTagTimers = () => {
     window.clearTimeout(rotationTimerRef.current);
@@ -83,19 +83,27 @@ function AboutForumSection({ about }) {
   const switchTags = () => {
     if (tags.length <= 5) return;
     clearTagTimers();
-    setVisibleTags((current) => selectForumTags(tags, current));
-    setIsSwitching(true);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      setVisibleTags((current) => selectForumTags(tags, current));
+      return;
+    }
+    setTransitionPhase('out');
     transitionTimerRef.current = window.setTimeout(() => {
-      setIsSwitching(false);
-      scheduleTagRotation();
-    }, 520);
+      setVisibleTags((current) => selectForumTags(tags, current));
+      setTransitionPhase('in');
+      transitionTimerRef.current = window.setTimeout(() => {
+        setTransitionPhase('');
+        scheduleTagRotation();
+      }, 720);
+    }, 420);
   };
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
     clearTagTimers();
     setVisibleTags(tags.slice(0, 5));
-    setIsSwitching(false);
+    setTransitionPhase('');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion) scheduleTagRotation();
     return clearTagTimers;
@@ -123,8 +131,8 @@ function AboutForumSection({ about }) {
         </div>
 
         <div className="about-tags" aria-label="Темы форума">
-          <img className="about-tags__planet" src={about.planetImage} alt="" aria-hidden="true" fetchPriority="high" />
-          <div className={`about-tags__grid${isSwitching ? ' about-tags__grid--switching' : ''}`}>
+          <img className="about-tags__planet" src={about.planetImage} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
+          <div className={`about-tags__grid${transitionPhase ? ` about-tags__grid--switching-${transitionPhase}` : ''}`}>
             {visibleTags.map((tag, index) => (
               <button
                 className={`about-tags__card about-tags__card--${index}`}
@@ -133,13 +141,13 @@ function AboutForumSection({ about }) {
                 onClick={switchTags}
               >
                 <span>{formatForumTagLabel(tag)}</span>
-                <img src={tag.icon} alt="" aria-hidden="true" fetchPriority="high" />
+                <img src={tag.icon} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
               </button>
             ))}
           </div>
           <div className="about-tags__preload" aria-hidden="true">
             {tags.map((tag) => (
-              <img src={tag.icon} alt="" key={`preload-${tag.id}`} fetchPriority="high" />
+              <img src={tag.icon} alt="" key={`preload-${tag.id}`} loading="eager" fetchPriority="high" />
             ))}
           </div>
         </div>
