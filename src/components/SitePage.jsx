@@ -64,12 +64,14 @@ function AboutForumSection({ about }) {
   const tags = about?.tags ?? [];
   const rotationTimerRef = useRef(0);
   const transitionTimerRef = useRef(0);
+  const transitionFrameRef = useRef(0);
   const [visibleTags, setVisibleTags] = useState(() => tags.slice(0, 5));
   const [transitionPhase, setTransitionPhase] = useState('');
 
   const clearTagTimers = () => {
     window.clearTimeout(rotationTimerRef.current);
     window.clearTimeout(transitionTimerRef.current);
+    window.cancelAnimationFrame(transitionFrameRef.current);
   };
 
   const scheduleTagRotation = () => {
@@ -91,11 +93,16 @@ function AboutForumSection({ about }) {
     setTransitionPhase('out');
     transitionTimerRef.current = window.setTimeout(() => {
       setVisibleTags((current) => selectForumTags(tags, current));
-      setTransitionPhase('in');
-      transitionTimerRef.current = window.setTimeout(() => {
-        setTransitionPhase('');
-        scheduleTagRotation();
-      }, 720);
+      setTransitionPhase('out');
+      transitionFrameRef.current = window.requestAnimationFrame(() => {
+        transitionFrameRef.current = window.requestAnimationFrame(() => {
+          setTransitionPhase('in');
+          transitionTimerRef.current = window.setTimeout(() => {
+            setTransitionPhase('');
+            scheduleTagRotation();
+          }, 720);
+        });
+      });
     }, 420);
   };
 
