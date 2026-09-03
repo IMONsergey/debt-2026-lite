@@ -235,7 +235,7 @@ function VenueSection({ venue }) {
 function GallerySection({ gallery }) {
   const items = gallery?.items ?? [];
   const initialIndex = Math.min(1, Math.max(0, items.length - 1));
-  const [activeVirtualIndex, setActiveVirtualIndex] = useState(() => items.length + initialIndex);
+  const [activeVirtualIndex, setActiveVirtualIndex] = useState(() => initialIndex);
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [lightboxState, setLightboxState] = useState('closed');
   const [lightboxMotion, setLightboxMotion] = useState('open');
@@ -246,17 +246,17 @@ function GallerySection({ gallery }) {
   const touchStartRef = useRef(null);
   const lightboxCloseTimerRef = useRef(null);
   const lightboxOpenFrameRef = useRef(null);
-  const loopItems = useMemo(() => Array.from({ length: items.length * 3 }, (_, virtualIndex) => ({
-    ...items[virtualIndex % items.length],
-    sourceIndex: virtualIndex % items.length,
+  const loopItems = useMemo(() => items.map((item, virtualIndex) => ({
+    ...item,
+    sourceIndex: virtualIndex,
     virtualIndex,
   })), [items]);
-  const activeIndex = items.length ? activeVirtualIndex % items.length : 0;
+  const activeIndex = items.length ? activeVirtualIndex : 0;
 
   useEffect(() => {
-    const middleIndex = items.length + Math.min(1, Math.max(0, items.length - 1));
-    setActiveVirtualIndex(middleIndex);
-    const frame = window.requestAnimationFrame(() => scrollToSlide(middleIndex, 'auto'));
+    const startIndex = Math.min(1, Math.max(0, items.length - 1));
+    setActiveVirtualIndex(startIndex);
+    const frame = window.requestAnimationFrame(() => scrollToSlide(startIndex, 'auto'));
     return () => window.cancelAnimationFrame(frame);
   }, [items.length]);
 
@@ -332,19 +332,19 @@ function GallerySection({ gallery }) {
         return currentDistance < closestDistance ? index : closestIndex;
       }, 0);
 
-      const normalizedIndex = nearestIndex < items.length
-        ? nearestIndex + items.length
-        : nearestIndex >= items.length * 2
-          ? nearestIndex - items.length
-          : nearestIndex;
-
-      setActiveVirtualIndex(normalizedIndex);
-      if (normalizedIndex !== nearestIndex) scrollToSlide(normalizedIndex, 'auto');
+      setActiveVirtualIndex(nearestIndex);
     }, 90);
   }
 
   function moveSlide(direction) {
-    selectVirtualSlide(activeVirtualIndex + direction);
+    if (!items.length) return;
+    selectVirtualSlide((activeVirtualIndex + direction + items.length) % items.length);
+  }
+
+  function isPriorityGalleryImage(index) {
+    if (!items.length) return false;
+    const distance = Math.abs(index - activeIndex);
+    return distance <= 1 || distance >= items.length - 1;
   }
 
   function openLightbox(index) {
@@ -409,12 +409,18 @@ function GallerySection({ gallery }) {
                 type="button"
                 key={`${item.image}-${item.virtualIndex}`}
                 ref={(node) => { slideRefs.current[item.virtualIndex] = node; }}
-                tabIndex={item.virtualIndex >= items.length && item.virtualIndex < items.length * 2 ? 0 : -1}
+                tabIndex={item.virtualIndex === activeVirtualIndex ? 0 : -1}
                 aria-current={item.virtualIndex === activeVirtualIndex ? 'true' : undefined}
                 aria-label={`${typograf(item.alt)}. Кадр ${item.sourceIndex + 1} из ${items.length}`}
                 onClick={() => openLightbox(item.sourceIndex)}
               >
-                <img src={item.image} alt={item.alt} decoding="async" />
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  decoding="async"
+                  loading={isPriorityGalleryImage(item.sourceIndex) ? 'eager' : 'lazy'}
+                  fetchPriority={isPriorityGalleryImage(item.sourceIndex) ? 'high' : 'auto'}
+                />
               </button>
             ))}
           </div>

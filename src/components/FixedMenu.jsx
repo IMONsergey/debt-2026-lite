@@ -93,14 +93,13 @@ function SidebarVideo({ video, onOpenChange }) {
       <div className="desktop-sidebar-video">
         <span className="desktop-sidebar-video__caption">{typograf(video.title)}</span>
         <div className={`desktop-sidebar-video__frame${isOpen ? ' is-open' : ''}`}>
-          <iframe
-            src={video.previewUrl ?? video.embedUrl}
-            title={video.title}
-            allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
-            allowFullScreen
-            tabIndex={isOpen ? undefined : '-1'}
-            aria-hidden={isOpen ? undefined : 'true'}
-          />
+          {isOpen ? (
+            <iframe
+              src={video.embedUrl}
+              title={video.title}
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock"
+            />
+          ) : null}
           {!isOpen ? (
             <button
               className="desktop-sidebar-video__open"

@@ -21,7 +21,7 @@
   .countdown__item { height: 100px; padding: 12px 8px; }
   .countdown__item strong { font-size: 42px; }
 
-  .ticker-strip__viewport { padding-block: 46px; }
+  .ticker-strip__viewport { padding-block: 22px; }
   .ticker-strip__unit { font-size: 15px; line-height: 18px; }
 
   .about-section__title,

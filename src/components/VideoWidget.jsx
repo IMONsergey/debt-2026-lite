@@ -114,8 +114,7 @@ export function VideoWidget({ video }) {
               key="video-widget-main"
               src={video.widgetUrl ?? video.embedUrl}
               title={video.title}
-              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
-              allowFullScreen
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock"
             />
           </div>
           <button
@@ -129,16 +128,7 @@ export function VideoWidget({ video }) {
         </div>
       ) : (
         <div className="video-widget__preview">
-          <div className="video-widget__media">
-            <iframe
-              key="video-widget-preview"
-              src={video.previewUrl}
-              title={`${video.title} — превью`}
-              allow="autoplay; encrypted-media"
-              tabIndex="-1"
-              aria-hidden="true"
-            />
-          </div>
+          <div className="video-widget__media" aria-hidden="true" />
           <button
             className="video-widget__open"
             type="button"

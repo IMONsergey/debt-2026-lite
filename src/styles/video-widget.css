@@ -28,9 +28,14 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 8px;
-  background: #01081f;
+  background:
+    radial-gradient(circle at 68% 36%, rgba(67, 171, 255, 0.22), transparent 42%),
+    linear-gradient(135deg, rgba(7, 61, 128, 0.84), rgba(1, 8, 31, 0.98));
   isolation: isolate;
-  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  transition:
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .desktop-sidebar-video__frame iframe {
@@ -106,7 +111,7 @@
   inset: 0;
   border-radius: inherit;
   background: rgba(0, 5, 20, 0);
-  transition: background 180ms ease;
+  transition: background 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .desktop-sidebar-video__open:hover::after,
@@ -129,9 +134,11 @@
   border-radius: 50%;
   background: rgba(1, 8, 31, 0.48);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-  opacity: 0;
-  transform: scale(0.88);
-  transition: opacity 180ms ease, transform 220ms ease;
+  opacity: 0.72;
+  transform: scale(0.94);
+  transition:
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .desktop-sidebar-video__play::before {
@@ -162,7 +169,7 @@
   padding: clamp(32px, 4vw, 68px);
   background: rgba(0, 5, 20, 0.88);
   backdrop-filter: blur(10px);
-  animation: desktop-video-modal-in 220ms ease-out both;
+  animation: desktop-video-modal-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .desktop-video-modal__close {
@@ -177,7 +184,10 @@
   border-radius: 50%;
   background: rgba(1, 8, 31, 0.58);
   cursor: pointer;
-  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+  transition:
+    border-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .desktop-video-modal__close::before,
@@ -235,7 +245,7 @@
   font-family: 'IBM Plex Sans', Arial, sans-serif;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 180ms ease;
+  transition: opacity 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .video-widget.is-ready {
@@ -244,7 +254,7 @@
 }
 
 .video-widget.is-hero {
-  transition: opacity 180ms ease;
+  transition: opacity 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .video-widget__caption {
@@ -311,9 +321,14 @@
   aspect-ratio: 16 / 9;
   overflow: visible;
   border-radius: 8px;
-  background: #01081f;
+  background:
+    radial-gradient(circle at 68% 36%, rgba(67, 171, 255, 0.22), transparent 42%),
+    linear-gradient(135deg, rgba(7, 61, 128, 0.84), rgba(1, 8, 31, 0.98));
   isolation: isolate;
-  transition: border-radius 320ms ease, box-shadow 320ms ease;
+  transition:
+    border-radius 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .video-widget.is-floating .video-widget__preview,
@@ -327,7 +342,9 @@
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
-  background: #01081f;
+  background:
+    radial-gradient(circle at 64% 38%, rgba(67, 171, 255, 0.24), transparent 40%),
+    linear-gradient(135deg, rgba(6, 60, 125, 0.9), rgba(1, 8, 31, 0.98));
   clip-path: inset(0 round 8px);
   isolation: isolate;
 }
@@ -372,7 +389,7 @@
   inset: 0;
   border-radius: inherit;
   background: rgba(0, 5, 20, 0.04);
-  transition: background 180ms ease;
+  transition: background 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .video-widget__open:hover::after,
@@ -389,9 +406,11 @@
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.58);
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.22);
-  opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 220ms ease, transform 220ms ease;
+  opacity: 0.78;
+  transform: scale(0.94);
+  transition:
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .video-widget.is-floating .video-widget__play {
@@ -426,7 +445,10 @@
   color: #fff;
   font: 300 20px/1 Arial, sans-serif;
   cursor: pointer;
-  transition: background 160ms ease, transform 160ms ease, opacity 220ms ease;
+  transition:
+    background 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .video-widget__close:hover,
@@ -454,7 +476,7 @@
 }
 
 .video-widget.is-open .video-widget__player {
-  animation: video-widget-open 220ms ease-out both;
+  animation: video-widget-open 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes video-widget-open {
