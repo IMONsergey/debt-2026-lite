@@ -220,7 +220,7 @@
   pointer-events: none;
 }
 
-.about-tags__card span {
+.about-tags__card-title {
   position: relative;
   z-index: 1;
   max-width: 100%;
@@ -234,6 +234,7 @@
   overflow-wrap: normal;
   opacity: 1;
   transform: translate3d(0, 0, 0);
+  will-change: opacity, transform;
   transition:
     opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -252,7 +253,7 @@
   pointer-events: none;
 }
 
-.about-tags__card img {
+.about-tags__card-icon {
   position: relative;
   z-index: 1;
   justify-self: end;
@@ -263,20 +264,21 @@
   filter: drop-shadow(0 0 18px rgba(58, 172, 255, 0.46));
   opacity: 1;
   transform: translate3d(0, 0, 0);
+  will-change: opacity, transform;
   transition:
     opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 640ms cubic-bezier(0.22, 1, 0.36, 1),
     filter 640ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.about-tags__grid--switching-out .about-tags__card span,
-.about-tags__grid--switching-out .about-tags__card img {
+.about-tags__grid--switching-out .about-tags__card-title,
+.about-tags__grid--switching-out .about-tags__card-icon {
   opacity: 0;
   transform: translate3d(0, 4px, 0) scale(0.992);
 }
 
-.about-tags__grid--switching-in .about-tags__card span,
-.about-tags__grid--switching-in .about-tags__card img {
+.about-tags__grid--switching-in .about-tags__card-title,
+.about-tags__grid--switching-in .about-tags__card-icon {
   animation: about-tag-content-in 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -490,13 +492,13 @@
     grid-column: 1 / -1;
   }
 
-  .about-tags__card span {
+  .about-tags__card-title {
     font-size: 10.5px;
     line-height: 1.12;
     overflow-wrap: anywhere;
   }
 
-  .about-tags__card img {
+  .about-tags__card-icon {
     width: 52px;
     height: 52px;
   }

@@ -140,8 +140,8 @@ function AboutForumSection({ about }) {
                 key={tag.id}
                 onClick={switchTags}
               >
-                <span>{formatForumTagLabel(tag)}</span>
-                <img src={tag.icon} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
+                <span className="about-tags__card-title">{formatForumTagLabel(tag)}</span>
+                <img className="about-tags__card-icon" src={tag.icon} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
               </button>
             ))}
           </div>
