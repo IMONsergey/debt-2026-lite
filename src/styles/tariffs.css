@@ -54,10 +54,10 @@
 .tariffs-section__offer {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 1px minmax(148px, 0.36fr);
-  gap: clamp(16px, 2vw, 28px);
+  grid-template-columns: minmax(420px, 1fr) 1px minmax(290px, 0.48fr);
+  gap: clamp(28px, 3.2vw, 52px);
   align-items: center;
-  width: min(100%, 650px);
+  width: min(100%, 980px);
   margin-top: clamp(22px, 2.5vw, 34px);
   padding: clamp(14px, 1.25vw, 20px) clamp(16px, 1.55vw, 26px);
   border: 1px solid rgba(67, 171, 255, 0.55);
@@ -78,6 +78,7 @@
   font-weight: 500;
   line-height: 1.18;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .tariffs-section__offer p:first-child {
