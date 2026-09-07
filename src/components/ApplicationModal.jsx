@@ -161,6 +161,13 @@ export function ApplicationModal({ kind, selectedTariff = null, config, privacyH
 
     const formData = new FormData(event.currentTarget);
     const payload = Object.fromEntries(formData.entries());
+    payload.form_id = details.id;
+    payload.event_id = config.eventId;
+    if (selectedTariff) {
+      payload.tariff_id = selectedTariff.id;
+      payload.tariff_name = selectedTariff.title;
+      payload.tariff_price = selectedTariff.price;
+    }
     payload.consent = formData.get('consent') === 'yes';
     payload.source_page = window.location.href;
     payload.submitted_at = new Date().toISOString();
