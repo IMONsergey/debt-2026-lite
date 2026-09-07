@@ -245,13 +245,13 @@ export function ApplicationModal({ kind, selectedTariff = null, config, privacyH
           </div>
         ) : (
           <form id={details.id} name={details.id} className="application-modal__form" onSubmit={handleSubmit}>
-            <input type="hidden" name="form_id" value={details.id} />
-            <input type="hidden" name="event_id" value={config.eventId} />
+            <input type="hidden" name="form_id" defaultValue={details.id} />
+            <input type="hidden" name="event_id" defaultValue={config.eventId} />
             {selectedTariff ? (
               <>
-                <input type="hidden" name="tariff_id" value={selectedTariff.id} />
-                <input type="hidden" name="tariff_name" value={selectedTariff.title} />
-                <input type="hidden" name="tariff_price" value={selectedTariff.price} />
+                <input type="hidden" name="tariff_id" defaultValue={selectedTariff.id} />
+                <input type="hidden" name="tariff_name" defaultValue={selectedTariff.title} />
+                <input type="hidden" name="tariff_price" defaultValue={selectedTariff.price} />
               </>
             ) : null}
             <label className="application-modal__honeypot" aria-hidden="true">
