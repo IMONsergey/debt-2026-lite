@@ -533,6 +533,7 @@ function TariffsSection({ tariffs, onOpenApplication }) {
 
               <div className="tariff-card__footer">
                 <span className="tariff-card__price-label">Стоимость</span>
+                <span className="tariff-card__price-note">{typograf(tariffs.note)}</span>
                 <strong>{typograf(item.price)}</strong>
                 <button
                   className="tariff-card__button"

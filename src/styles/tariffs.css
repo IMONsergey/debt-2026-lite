@@ -200,7 +200,7 @@
 
 .tariff-card__footer {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   margin-top: auto;
   padding-top: clamp(18px, 2vw, 28px);
 }
@@ -212,6 +212,16 @@
   font-weight: 600;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.tariff-card__price-note {
+  display: block;
+  max-width: 100%;
+  color: rgba(221, 240, 255, 0.78);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: clamp(11px, 0.78vw, 13px);
+  font-weight: 500;
+  line-height: 1.15;
 }
 
 .tariff-card__footer strong {

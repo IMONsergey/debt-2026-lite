@@ -108,7 +108,7 @@ const content = {
     handImage: assetUrl('assets/images/tariffs/hand-spaceman.png'),
     offer: 'Скидка 50% на один билет любого тарифа для представителя компании, которая впервые участвует в DEBT TECH.',
     agreement: 'Скидка предоставляется по согласованию с организаторами.',
-    note: 'Стоимость указана по тарифу ранней регистрации и действует до 15 сентября.',
+    note: 'Стоимость актуальна до 25 сентября',
     ctaLabel: 'Принять участие',
     ctaModal: 'early-registration',
     items: [
