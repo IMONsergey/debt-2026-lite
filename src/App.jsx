@@ -236,18 +236,15 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
     document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
+    // Keep downloads eager, but reserve decoding and high priority for the first screen.
     preloadImages([
-      content.hero.backgroundImage,
-      content.hero.backgroundImageAdaptive,
-      content.aboutForum.planetImage,
-      ...content.aboutForum.tags.map((tag) => tag.icon),
       content.tariffs.logoImage,
       content.tariffs.handImage,
       ...content.tariffs.items.flatMap((item) => [item.background, item.icon]),
       ...content.venue.images.map((item) => item.image),
       ...content.gallery.items.map((item) => item.image),
-    ]);
-    const heroImage = window.matchMedia('(max-width: 699px)').matches
+    ], undefined, false);
+    const heroImage = window.matchMedia('(max-width: 1180px)').matches
       ? content.hero.backgroundImageAdaptive
       : content.hero.backgroundImage;
     const criticalImages = [...new Set([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)].filter(Boolean))];
@@ -287,15 +284,16 @@ export default function App() {
   );
 }
 
-function preloadImages(urls, onSettled = () => {}) {
+function preloadImages(urls, onSettled = () => {}, critical = true) {
   return Promise.allSettled([...new Set(urls.filter(Boolean))].map((url) => new Promise((resolve) => {
     const image = new Image();
     image.decoding = 'async';
     image.loading = 'eager';
-    image.fetchPriority = 'high';
+    image.fetchPriority = critical ? 'high' : 'low';
     const done = () => { onSettled(); resolve(); };
     image.onload = () => {
-      image.decode().catch(() => {}).finally(done);
+      if (critical) image.decode().catch(() => {}).finally(done);
+      else done();
     };
     image.onerror = done;
     image.src = url;

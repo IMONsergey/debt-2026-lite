@@ -15,8 +15,8 @@
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
-    <link rel="preload" as="image" href="assets/hero-debttech-2026.png" fetchpriority="high" />
-    <link rel="preload" as="image" href="assets/hero-debttech-2026-adaptive.png" media="(max-width: 699px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/hero-debttech-2026.png" media="(min-width: 1181px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/hero-debttech-2026-adaptive.png" media="(max-width: 1180px)" fetchpriority="high" />
     <link rel="preload" as="image" href="assets/images/about-forum/planet-about.png" />
     <title>DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва</title>
     <link rel="stylesheet" href="/src/styles/preloader.css" />
@@ -122,10 +122,14 @@
           const animatedProgress = 1 + 99 * (1 - Math.pow(1 - elapsed, 2));
           displayed = Math.max(displayed, Math.min(target, animatedProgress, displayed + delta * 0.12));
           const value = Math.floor(displayed);
-          loader.dataset.progress = String(displayed);
-          loader.style.setProperty('--load-progress', displayed / 100);
-          progress.setAttribute('aria-valuenow', String(value));
-          percent.textContent = value + '%';
+          if (Number(loader.dataset.progress) !== displayed) {
+            loader.dataset.progress = String(displayed);
+            loader.style.setProperty('--load-progress', displayed / 100);
+          }
+          if (progress.getAttribute('aria-valuenow') !== String(value)) {
+            progress.setAttribute('aria-valuenow', String(value));
+            percent.textContent = value + '%';
+          }
           frame = requestAnimationFrame(paint);
         };
         const update = (event) => {

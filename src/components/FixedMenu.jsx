@@ -5,6 +5,14 @@ import { assetUrl } from '../lib/assets.js';
 
 export function FixedMenu({ site, menu, video, onOpenApplication }) {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia('(min-width: 1181px)').matches);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1181px)');
+    const update = () => setIsDesktop(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   return (
     <aside className={`fixed-menu${isVideoOpen ? ' is-video-open' : ''}`} aria-label="Информация о конференции">
@@ -14,7 +22,7 @@ export function FixedMenu({ site, menu, video, onOpenApplication }) {
       <SidebarInfo
         className="fixed-menu__info"
         menu={menu}
-        video={video}
+        video={isDesktop ? video : null}
         desktopVideo
         onVideoOpenChange={setIsVideoOpen}
         onOpenApplication={onOpenApplication}

@@ -29,7 +29,8 @@ export function CosmosPointerEffect() {
     let particles = [];
     let animationFrame = 0;
     let lastFrame = 0;
-    let running = !document.hidden;
+    let introActive = !!document.getElementById('site-preloader');
+    let running = !document.hidden && !introActive;
 
     const pointer = {
       active: false,
@@ -71,6 +72,7 @@ export function CosmosPointerEffect() {
     }
 
     function resize() {
+      const widthChanged = width !== Math.max(1, window.innerWidth);
       width = Math.max(1, window.innerWidth);
       height = Math.max(1, window.innerHeight);
       dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
@@ -83,7 +85,7 @@ export function CosmosPointerEffect() {
 
       pointer.screenX = pointer.targetScreenX = width * 0.5;
       pointer.screenY = pointer.targetScreenY = height * 0.5;
-      rebuildParticles();
+      if (widthChanged || !particles.length) rebuildParticles();
       draw(performance.now());
     }
 
@@ -181,8 +183,13 @@ export function CosmosPointerEffect() {
     }
 
     function handleVisibility() {
-      running = !document.hidden;
+      running = !document.hidden && !introActive;
       start();
+    }
+
+    function handleIntroClosed() {
+      introActive = false;
+      handleVisibility();
     }
 
     function handleMotionChange() {
@@ -196,6 +203,7 @@ export function CosmosPointerEffect() {
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     document.documentElement.addEventListener('pointerleave', handlePointerLeave, { passive: true });
     document.addEventListener('visibilitychange', handleVisibility);
+    document.addEventListener('debt:preloader-closed', handleIntroClosed);
     reducedMotion.addEventListener?.('change', handleMotionChange);
 
     return () => {
@@ -205,6 +213,7 @@ export function CosmosPointerEffect() {
       window.removeEventListener('pointermove', handlePointerMove);
       document.documentElement.removeEventListener('pointerleave', handlePointerLeave);
       document.removeEventListener('visibilitychange', handleVisibility);
+      document.removeEventListener('debt:preloader-closed', handleIntroClosed);
       reducedMotion.removeEventListener?.('change', handleMotionChange);
     };
   }, []);
