@@ -107,16 +107,8 @@ function preserveMobileScroll(event) {
 }
 
 export function ChannelIcon({ id }) {
-  if (id === 'telegram') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M21.7 4.3 18.4 20c-.2.9-.9 1.1-1.7.7l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.4-.1-.6-.6-.3L6.1 13.5 1.3 12c-1-.3-1-1 .2-1.5L20.1 3.3c.9-.3 1.7.2 1.6 1Z" />
-      </svg>
-    );
-  }
-
   return (
-    <img src={assetUrl('assets/icons/max-logo.svg')} alt="" aria-hidden="true" />
+    <img src={assetUrl(`assets/icons/${id === 'telegram' ? 'telegram' : 'max'}-contact.svg`)} width="39" height="39" loading="eager" alt="" aria-hidden="true" />
   );
 }
 

@@ -117,11 +117,11 @@
   height: 44px;
   place-items: center;
   border-radius: 50%;
-  background: rgba(31, 133, 235, 0.23);
+  background: transparent;
   color: #43a1ff;
 }
 .contact-info__socials svg,
-.contact-info__socials img { width: 24px; height: 24px; fill: currentColor; }
+.contact-info__socials img { width: 39px; height: 39px; fill: currentColor; }
 
 .contact-info__bottom {
   display: grid;
