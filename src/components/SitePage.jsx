@@ -54,8 +54,7 @@ export function SitePage({ content, onOpenApplication }) {
           <VenueSection venue={content.venue} />
           <GallerySection gallery={content.gallery} />
           <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
-          <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} />
-          <HeroLandingFooter logo={content.site.logo} footer={content.footer} />
+          <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} footer={content.footer} />
         </main>
       </div>
     </div>
@@ -561,12 +560,13 @@ function TariffsSection({ tariffs, onOpenApplication }) {
   );
 }
 
-function ContactInfoSection({ contacts, venue, channels }) {
+function ContactInfoSection({ contacts, venue, channels, footer }) {
   const telegram = channels.find((channel) => channel.id === 'telegram');
   const mapUrl = `https://yandex.ru/map-widget/v1/?${new URLSearchParams({ text: venue.address, z: '16' })}`;
 
   return (
     <section className="contact-info" id="contacts" aria-labelledby="contact-info-title">
+      <img className="contact-info__artwork" src={assetUrl('assets/images/contacts-rocket.png')} width="1752" height="1752" loading="eager" alt="" aria-hidden="true" />
       <div className="contact-info__heading">
         <h2 id="contact-info-title">{contacts.title}</h2>
         <a className="contact-info__accreditation" href={`mailto:${contacts.accreditationEmail}`}>
@@ -607,7 +607,13 @@ function ContactInfoSection({ contacts, venue, channels }) {
               ))}
             </div>
           </div>
-          <img className="contact-info__organizers" src={assetUrl('assets/icons/organizers-contact.svg')} width="397" height="73" alt="Организаторы: DEBTPRICE и Рынок взыскания" loading="eager" />
+          <footer className="contact-info__footer" id="privacy">
+            <img className="contact-info__organizers" src={assetUrl('assets/icons/organizers-contact.svg')} width="397" height="73" alt="Организаторы: DEBTPRICE и Рынок взыскания" loading="eager" />
+            <div className="contact-info__legal">
+              <span>{typograf(footer.copyright)}</span>
+              <a href={footer.privacyHref} target="_blank" rel="noreferrer">{typograf(footer.privacyLabel)}</a>
+            </div>
+          </footer>
         </div>
         <div className="contact-info__map">
           <iframe title={`Карта: ${venue.name}, ${venue.address}`} src={mapUrl} width="560" height="320" loading="eager" />
@@ -616,25 +622,10 @@ function ContactInfoSection({ contacts, venue, channels }) {
           </a>
         </div>
       </div>
-    </section>
-  );
-}
-
-function HeroLandingFooter({ logo, footer }) {
-  const privacyHref = footer?.privacyHref ?? '#privacy';
-
-  return (
-    <footer className="hero-landing-footer" id="privacy">
-      <a className="hero-landing-footer__brand" href="#top" aria-label="Наверх">
-        <img src={logo} alt="DEBT TECH 2026" />
+      <a className="contact-info__brand" href="#top" aria-label="DEBT TECH 2026 — наверх">
+        <img src={assetUrl('assets/icons/debttech-finale.svg')} width="364" height="173" loading="eager" alt="DEBT TECH 2026" />
       </a>
-      <div className="hero-landing-footer__meta">
-        <span>{typograf(footer?.copyright ?? '© 2026. Все права защищены.')}</span>
-        <a href={privacyHref} target="_blank" rel="noreferrer">
-          {typograf(footer?.privacyLabel ?? 'Политика конфиденциальности и персональных данных')}
-        </a>
-      </div>
-    </footer>
+    </section>
   );
 }
 
