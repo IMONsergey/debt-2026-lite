@@ -54,8 +54,7 @@ export function SitePage({ content, onOpenApplication }) {
           <VenueSection venue={content.venue} />
           <GallerySection gallery={content.gallery} />
           <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
-          <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} />
-          <HeroLandingFooter logo={content.site.logo} footer={content.footer} />
+          <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} footer={content.footer} />
         </main>
       </div>
     </div>
@@ -561,7 +560,7 @@ function TariffsSection({ tariffs, onOpenApplication }) {
   );
 }
 
-function ContactInfoSection({ contacts, venue, channels }) {
+function ContactInfoSection({ contacts, venue, channels, footer }) {
   const telegram = channels.find((channel) => channel.id === 'telegram');
   const mapUrl = `https://yandex.ru/map-widget/v1/?${new URLSearchParams({ text: venue.address, z: '16' })}`;
 
@@ -575,7 +574,7 @@ function ContactInfoSection({ contacts, venue, channels }) {
         </a>
       </div>
       <div className="contact-info__grid">
-        {[contacts.tickets, contacts.partnership].map((contact, index) => (
+        {[contacts.tickets, contacts.partnership].map((contact) => (
           <article className="contact-info__group" key={contact.email}>
             <h3>{typograf(contact.title)}</h3>
             <address>
@@ -584,18 +583,6 @@ function ContactInfoSection({ contacts, venue, channels }) {
               <span className="contact-info__label">Тел.</span>
               <a className="contact-info__phone" href={contact.phoneHref}>{contact.phone}</a>
             </address>
-            {index === 0 && (
-              <div className="contact-info__socials">
-                <span className="contact-info__label">Связаться с нами</span>
-                <div>
-                  {channels.map((channel) => (
-                    <a key={channel.id} href={channel.href} target="_blank" rel="noreferrer" aria-label={`Написать в ${channel.label}`} title={channel.label}>
-                      <ChannelIcon id={channel.id} />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
           </article>
         ))}
         <article className="contact-info__group">
@@ -608,34 +595,33 @@ function ContactInfoSection({ contacts, venue, channels }) {
         </article>
       </div>
       <div className="contact-info__bottom">
-        <img className="contact-info__organizers" src={assetUrl('assets/icons/organizers.svg')} width="320" height="36" alt="Организаторы: DEBTPRICE и Рынок взыскания" loading="eager" />
+        <div className="contact-info__closing">
+          <div className="contact-info__socials">
+            <span className="contact-info__label">Связаться с нами</span>
+            <div>
+              {channels.map((channel) => (
+                <a key={channel.id} href={channel.href} target="_blank" rel="noreferrer" aria-label={`Написать в ${channel.label}`} title={channel.label}>
+                  <ChannelIcon id={channel.id} />
+                </a>
+              ))}
+            </div>
+          </div>
+          <footer className="contact-info__footer" id="privacy">
+            <img className="contact-info__organizers" src={assetUrl('assets/icons/organizers-contact.svg')} width="397" height="73" alt="Организаторы: DEBTPRICE и Рынок взыскания" loading="eager" />
+            <div className="contact-info__legal">
+              <span>{typograf(footer.copyright)}</span>
+              <a href={footer.privacyHref} target="_blank" rel="noreferrer">{typograf(footer.privacyLabel)}</a>
+            </div>
+          </footer>
+        </div>
         <div className="contact-info__map">
           <iframe title={`Карта: ${venue.name}, ${venue.address}`} src={mapUrl} width="560" height="320" loading="eager" />
-          <a href={venue.routeHref} target="_blank" rel="noreferrer">
-            <span>{venue.name}<small>{venue.address}</small></span>
+          <a href={venue.routeHref} target="_blank" rel="noreferrer" aria-label={`Открыть карту: ${venue.address}`} title="Открыть в Яндекс Картах">
             <img src={assetUrl('assets/icons/arrow-up.svg')} width="20" height="20" alt="" />
           </a>
         </div>
       </div>
     </section>
-  );
-}
-
-function HeroLandingFooter({ logo, footer }) {
-  const privacyHref = footer?.privacyHref ?? '#privacy';
-
-  return (
-    <footer className="hero-landing-footer" id="privacy">
-      <a className="hero-landing-footer__brand" href="#top" aria-label="Наверх">
-        <img src={logo} alt="DEBT TECH 2026" />
-      </a>
-      <div className="hero-landing-footer__meta">
-        <span>{typograf(footer?.copyright ?? '© 2026. Все права защищены.')}</span>
-        <a href={privacyHref} target="_blank" rel="noreferrer">
-          {typograf(footer?.privacyLabel ?? 'Политика конфиденциальности и персональных данных')}
-        </a>
-      </div>
-    </footer>
   );
 }
 
