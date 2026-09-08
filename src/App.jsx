@@ -11,6 +11,7 @@ import './styles/venue-section.css';
 import './styles/mobile-registration.css';
 import './styles/about-forum.css';
 import './styles/tariffs.css';
+import './styles/contact-info.css';
 
 const galleryImages = [
   '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
@@ -195,6 +196,23 @@ const content = {
       { id: 'investments', label: 'Инвестиции', icon: assetUrl('assets/images/about-forum/tags/investments.svg') },
       { id: 'e-auctions', label: 'Электронные торги', icon: assetUrl('assets/images/about-forum/tags/e-auctions.svg') },
     ],
+  },
+  contacts: {
+    title: 'Контактная информация',
+    accreditationEmail: 'org@rvzrus.ru',
+    tickets: {
+      title: 'Приобрести билет участника:',
+      email: 'a.fefilova@rvzrus.ru',
+      phone: '+7 965 786 88 46',
+      phoneHref: 'tel:+79657868846',
+    },
+    partnership: {
+      title: 'По вопросам партнерства и выступления:',
+      email: 'org@rvzrus.ru',
+      phone: '+7 925 223 67 07',
+      phoneHref: 'tel:+79252236707',
+    },
+    website: 'https://rvzrus.ru/',
   },
   footer: {
     copyright: '© 2026 DEBT TECH. Все права защищены.',

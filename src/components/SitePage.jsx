@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { FixedMenu, SidebarInfo } from './FixedMenu.jsx';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
+import { ChannelIcon } from './ApplicationModal.jsx';
 
 export function SitePage({ content, onOpenApplication }) {
   const countdown = useCountdown(content.hero.countdownTarget, content.hero.countdown);
@@ -53,6 +54,7 @@ export function SitePage({ content, onOpenApplication }) {
           <VenueSection venue={content.venue} />
           <GallerySection gallery={content.gallery} />
           <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
+          <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} />
           <HeroLandingFooter logo={content.site.logo} footer={content.footer} />
         </main>
       </div>
@@ -554,6 +556,66 @@ function TariffsSection({ tariffs, onOpenApplication }) {
             </div>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function ContactInfoSection({ contacts, venue, channels }) {
+  const telegram = channels.find((channel) => channel.id === 'telegram');
+  const mapUrl = `https://yandex.ru/map-widget/v1/?${new URLSearchParams({ text: venue.address, z: '16' })}`;
+
+  return (
+    <section className="contact-info" id="contacts" aria-labelledby="contact-info-title">
+      <div className="contact-info__heading">
+        <h2 id="contact-info-title">{contacts.title}</h2>
+        <a className="contact-info__accreditation" href={`mailto:${contacts.accreditationEmail}`}>
+          <span>Аккредитация СМИ:<strong>{contacts.accreditationEmail}</strong></span>
+          <span className="contact-info__info-icon" aria-hidden="true">i</span>
+        </a>
+      </div>
+      <div className="contact-info__grid">
+        {[contacts.tickets, contacts.partnership].map((contact, index) => (
+          <article className="contact-info__group" key={contact.email}>
+            <h3>{typograf(contact.title)}</h3>
+            <address>
+              <span className="contact-info__label">E-mail</span>
+              <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              <span className="contact-info__label">Тел.</span>
+              <a className="contact-info__phone" href={contact.phoneHref}>{contact.phone}</a>
+            </address>
+            {index === 0 && (
+              <div className="contact-info__socials">
+                <span className="contact-info__label">Связаться с нами</span>
+                <div>
+                  {channels.map((channel) => (
+                    <a key={channel.id} href={channel.href} target="_blank" rel="noreferrer" aria-label={`Написать в ${channel.label}`} title={channel.label}>
+                      <ChannelIcon id={channel.id} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </article>
+        ))}
+        <article className="contact-info__group">
+          <h3>Другие ресурсы:</h3>
+          <div className="contact-info__resources">
+            <span className="contact-info__label">Сайт</span>
+            <a href={contacts.website} target="_blank" rel="noreferrer">rvzrus.ru</a>
+            {telegram && <><span className="contact-info__label">Телеграм</span><a href={telegram.href} target="_blank" rel="noreferrer">@rvzrus_chat</a></>}
+          </div>
+        </article>
+      </div>
+      <div className="contact-info__bottom">
+        <img className="contact-info__organizers" src={assetUrl('assets/icons/organizers.svg')} width="320" height="36" alt="Организаторы: DEBTPRICE и Рынок взыскания" loading="eager" />
+        <div className="contact-info__map">
+          <iframe title={`Карта: ${venue.name}, ${venue.address}`} src={mapUrl} width="560" height="320" loading="eager" />
+          <a href={venue.routeHref} target="_blank" rel="noreferrer">
+            <span>{venue.name}<small>{venue.address}</small></span>
+            <img src={assetUrl('assets/icons/arrow-up.svg')} width="20" height="20" alt="" />
+          </a>
+        </div>
       </div>
     </section>
   );

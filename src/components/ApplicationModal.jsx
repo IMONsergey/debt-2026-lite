@@ -106,7 +106,7 @@ function preserveMobileScroll(event) {
   });
 }
 
-function ChannelIcon({ id }) {
+export function ChannelIcon({ id }) {
   if (id === 'telegram') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
