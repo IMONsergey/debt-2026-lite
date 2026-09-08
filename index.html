@@ -146,14 +146,26 @@
           else loader.querySelector('.site-preloader__progress-meta > span').textContent = 'Открываем сайт';
           const remaining = Math.max((target - displayed) / 0.12, 2000 - (performance.now() - presentedAt));
           setTimeout(() => {
-            loader.classList.add('is-leaving');
-            setTimeout(() => {
+            let removed = false;
+            let exitTimer;
+            const removeLoader = () => {
+              if (removed) return;
+              removed = true;
+              clearTimeout(exitTimer);
+              loader.removeEventListener('transitionend', onExit);
               cancelAnimationFrame(frame);
               document.dispatchEvent(new Event('debt:preloader-closed'));
               root.inert = false;
               document.documentElement.classList.remove('is-site-loading');
               loader.remove();
-            }, reduced ? 160 : 350);
+            };
+            const onExit = (event) => {
+              if (event.target === loader && event.propertyName === 'opacity') removeLoader();
+            };
+            loader.addEventListener('transitionend', onExit);
+            // Keep the overlay mounted until the fade really ends, even on slow frames.
+            exitTimer = setTimeout(removeLoader, reduced ? 750 : 1500);
+            loader.classList.add('is-leaving');
           }, remaining);
         };
         frame = requestAnimationFrame(paint);
