@@ -25,7 +25,27 @@
 <div class="site-preloader" id="site-preloader" aria-label="Загрузка DEBT TECH 2026" data-progress="0">
       <div class="site-preloader__content">
         <button class="site-preloader__sphere" type="button" aria-label="Повернуть кольцо" title="Повернуть кольцо">
-          <span class="site-preloader__depth" aria-hidden="true"><img class="site-preloader__portal" src="/assets/images/about-forum/planet-about.png" width="1500" height="1500" alt="" loading="eager" fetchpriority="high" /></span>
+          <span class="site-preloader__depth" aria-hidden="true">
+            <svg class="site-preloader__portal" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="intro-rim" x1="135" y1="120" x2="438" y2="480" gradientUnits="userSpaceOnUse"><stop stop-color="#1265e8"/><stop offset=".32" stop-color="#3bb6ff"/><stop offset=".53" stop-color="#e5fbff"/><stop offset=".7" stop-color="#259cff"/><stop offset="1" stop-color="#0546b7"/></linearGradient>
+                <linearGradient id="intro-edge" x1="90" y1="200" x2="450" y2="450" gradientUnits="userSpaceOnUse"><stop stop-color="#024797"/><stop offset=".48" stop-color="#07346b"/><stop offset=".77" stop-color="#40ceff"/><stop offset="1" stop-color="#1272eb"/></linearGradient>
+                <linearGradient id="intro-light" x1="100" y1="130" x2="480" y2="410" gradientUnits="userSpaceOnUse"><stop stop-color="#218fff" stop-opacity="0"/><stop offset=".45" stop-color="#90eeff"/><stop offset=".7" stop-color="white"/><stop offset="1" stop-color="#2399ff" stop-opacity="0"/></linearGradient>
+                <filter id="intro-glow" x="-50%" y="-70%" width="200%" height="240%"><feGaussianBlur stdDeviation="12"/></filter>
+              </defs>
+              <g transform="rotate(-28 300 300)">
+                <ellipse cx="300" cy="310" rx="218" ry="158" stroke="#159bff" stroke-width="18" opacity=".45" filter="url(#intro-glow)"/>
+                <ellipse cx="300" cy="314" rx="207" ry="151" stroke="url(#intro-edge)" stroke-width="30"/>
+                <ellipse cx="300" cy="300" rx="210" ry="150" stroke="url(#intro-rim)" stroke-width="23"/>
+                <ellipse cx="300" cy="300" rx="222" ry="162" stroke="#3eafff" stroke-width="1.5" opacity=".8"/>
+                <ellipse cx="300" cy="300" rx="198" ry="138" stroke="url(#intro-light)" stroke-width="3"/>
+                <path d="M90 300a210 150 0 0 1 420 0" stroke="url(#intro-light)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M97 335c30 124 352 170 411-10" stroke="url(#intro-light)" stroke-width="2" stroke-linecap="round"/>
+                <ellipse class="site-preloader__orbit" cx="300" cy="300" rx="245" ry="183" stroke="#329fff" stroke-width="1" opacity=".55" stroke-dasharray="100 22 5 22"/>
+                <ellipse class="site-preloader__vector-progress" cx="300" cy="300" rx="245" ry="183" pathLength="100" stroke="#b5f5ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100"/>
+              </g>
+            </svg>
+          </span>
           <svg class="site-preloader__mark" aria-hidden="true" width="316" height="259" viewBox="0 0 316 259" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M196.06 173.922C196.06 189.944 166.618 185.746 164.017 193.964H195.469V202.891H149.118V197.511C149.118 180.307 185.418 184.15 185.418 174.75C185.418 171.321 183.231 169.843 174.067 169.843C164.903 169.843 160.706 171.202 160.706 177.765H150.064C150.064 163.99 159.76 160.915 173.476 160.915C187.724 160.915 196.06 163.635 196.06 173.922Z" fill="white"/>
 <path d="M123.561 203.482C107.125 203.482 99.3213 195.915 99.3213 182.14C99.3213 168.424 107.125 160.915 123.561 160.915C139.937 160.915 147.8 168.483 147.8 182.14C147.8 195.856 139.937 203.482 123.561 203.482ZM123.561 194.555C132.902 194.555 137.158 189.884 137.158 182.14C137.158 174.454 132.902 169.843 123.561 169.843C114.22 169.843 109.963 174.395 109.963 182.14C109.963 189.944 114.22 194.555 123.561 194.555Z" fill="white"/>
@@ -70,7 +90,6 @@
           loader.classList.add('is-presented');
           if (pendingFinish) finish(pendingFinish);
         };
-        document.addEventListener('debt:intro-visible', presented, { once: true });
         root.inert = true;
         document.documentElement.classList.add('is-site-loading');
         const paint = (now) => {
@@ -116,6 +135,7 @@
         frame = requestAnimationFrame(paint);
         document.addEventListener('debt:progress', update);
         document.addEventListener('debt:ready', finish);
+        requestAnimationFrame(presented);
         timer = setTimeout(() => {
           if (root.childElementCount) { presented(); finish(); }
           else {

@@ -3,25 +3,12 @@ if (loader && !loader.classList.contains('has-error')) startIntro(loader);
 
 function startIntro(loader) {
   const button = loader.querySelector('.site-preloader__sphere');
-  const image = loader.querySelector('.site-preloader__portal');
   const depth = loader.querySelector('.site-preloader__depth');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let disposed = false;
   let frame;
   let previous = performance.now();
   let x = 0, y = 0, targetX = 0, targetY = 0, turn = 0, targetTurn = 0;
-  let fallback;
-  // Start the viewing interval only after the artwork can actually be painted.
-  Promise.race([
-    Promise.allSettled([image.decode(), document.fonts.ready]),
-    new Promise((resolve) => { fallback = setTimeout(resolve, 3000); }),
-  ]).then(() => {
-    clearTimeout(fallback);
-    if (disposed || !loader.isConnected) return;
-    requestAnimationFrame(() => {
-      if (!disposed) document.dispatchEvent(new Event('debt:intro-visible'));
-    });
-  });
   const pointer = (event) => {
     const bounds = button.getBoundingClientRect();
     targetX = Math.max(-1, Math.min(1, (event.clientX - bounds.left) / bounds.width * 2 - 1)) * 9;
@@ -43,7 +30,6 @@ function startIntro(loader) {
   };
   function dispose() {
     disposed = true;
-    clearTimeout(fallback);
     cancelAnimationFrame(frame);
     button.removeEventListener('pointermove', pointer);
     button.removeEventListener('pointerleave', reset);
