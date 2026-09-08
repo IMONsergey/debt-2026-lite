@@ -250,9 +250,15 @@ export default function App() {
     const heroImage = window.matchMedia('(max-width: 699px)').matches
       ? content.hero.backgroundImageAdaptive
       : content.hero.backgroundImage;
+    const criticalImages = [...new Set([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)].filter(Boolean))];
+    let completed = 0;
+    const reportProgress = () => {
+      completed += 1;
+      if (!cancelled) document.dispatchEvent(new CustomEvent('debt:progress', { detail: { completed, total: criticalImages.length + 1 } }));
+    };
     Promise.allSettled([
-      preloadImages([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)]),
-      document.fonts.ready,
+      preloadImages(criticalImages, reportProgress),
+      document.fonts.ready.then(reportProgress, reportProgress),
     ]).then(() => {
       if (!cancelled) document.dispatchEvent(new Event('debt:ready'));
     });
@@ -281,16 +287,17 @@ export default function App() {
   );
 }
 
-function preloadImages(urls) {
+function preloadImages(urls, onSettled = () => {}) {
   return Promise.allSettled([...new Set(urls.filter(Boolean))].map((url) => new Promise((resolve) => {
     const image = new Image();
     image.decoding = 'async';
     image.loading = 'eager';
     image.fetchPriority = 'high';
+    const done = () => { onSettled(); resolve(); };
     image.onload = () => {
-      image.decode().catch(() => {}).finally(resolve);
+      image.decode().catch(() => {}).finally(done);
     };
-    image.onerror = resolve;
+    image.onerror = done;
     image.src = url;
   })));
 }
