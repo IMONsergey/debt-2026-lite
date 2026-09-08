@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="/src/styles/preloader.css" />
   </head>
   <body>
-<div class="site-preloader" id="site-preloader" aria-label="Загрузка DEBT TECH 2026" data-progress="0">
+<div class="site-preloader" id="site-preloader" aria-label="Загрузка DEBT TECH 2026" data-progress="1">
       <svg class="site-preloader__space" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="intro-stars-far" width="337" height="293" patternUnits="userSpaceOnUse">
@@ -87,8 +87,8 @@
         </button>
         <h1 class="site-preloader__title">Вселенная технологий</h1>
         <p class="site-preloader__date">13 ноября 2026</p>
-        <div class="site-preloader__progress" role="progressbar" aria-label="Загрузка сайта" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="site-preloader__progress-meta"><span>Загрузка</span><span class="site-preloader__percent">0%</span></div>
+        <div class="site-preloader__progress" role="progressbar" aria-label="Загрузка сайта" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1">
+          <div class="site-preloader__progress-meta"><span>Загрузка</span><span class="site-preloader__percent">1%</span></div>
           <div class="site-preloader__track"><span></span></div>
         </div>
       </div>
@@ -105,7 +105,7 @@
         const percent = loader.querySelector('.site-preloader__percent');
         const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         const started = performance.now();
-        let closing = false, frame, timer, target = 0, displayed = 0, last = started;
+        let closing = false, frame, timer, target = 1, displayed = 1, last = started;
         let presentedAt = null, pendingFinish = null;
         const presented = () => {
           if (presentedAt !== null) return;
@@ -116,10 +116,11 @@
         root.inert = true;
         document.documentElement.classList.add('is-site-loading');
         const paint = (now) => {
-          const delta = Math.min(100, now - last);
+          const delta = Math.min(50, now - last);
           last = now;
-          displayed = reduced ? target : displayed + (target - displayed) * (1 - Math.exp(-delta / 180));
-          if (target - displayed < 0.1) displayed = target;
+          const elapsed = Math.min(1, Math.max(0, (now - (presentedAt ?? now)) / 2000));
+          const animatedProgress = 1 + 99 * (1 - Math.pow(1 - elapsed, 2));
+          displayed = Math.max(displayed, Math.min(target, animatedProgress, displayed + delta * 0.12));
           const value = Math.floor(displayed);
           loader.dataset.progress = String(displayed);
           loader.style.setProperty('--load-progress', displayed / 100);
@@ -143,7 +144,7 @@
             loader.querySelector('.site-preloader__progress-meta > span').textContent = 'Загрузка завершена';
           }
           else loader.querySelector('.site-preloader__progress-meta > span').textContent = 'Открываем сайт';
-          const remaining = Math.max(reduced ? 0 : 700, 4500 - (performance.now() - presentedAt));
+          const remaining = Math.max((target - displayed) / 0.12, 2000 - (performance.now() - presentedAt));
           setTimeout(() => {
             loader.classList.add('is-leaving');
             setTimeout(() => {
@@ -152,7 +153,7 @@
               root.inert = false;
               document.documentElement.classList.remove('is-site-loading');
               loader.remove();
-            }, reduced ? 160 : 750);
+            }, reduced ? 160 : 350);
           }, remaining);
         };
         frame = requestAnimationFrame(paint);

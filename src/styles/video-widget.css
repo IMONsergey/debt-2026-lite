@@ -52,7 +52,6 @@
 }
 
 .fixed-menu.is-video-open {
-  z-index: 12001;
   overflow: visible;
 }
 
