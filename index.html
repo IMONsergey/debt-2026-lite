@@ -23,10 +23,9 @@
   </head>
   <body>
 <div class="site-preloader" id="site-preloader" aria-label="Загрузка DEBT TECH 2026" data-progress="0">
-      <canvas class="site-preloader__cosmos" aria-hidden="true"></canvas>
       <div class="site-preloader__content">
-        <button class="site-preloader__sphere" type="button" aria-label="Повернуть сферу" title="Повернуть сферу">
-          <span class="site-preloader__sphere-fallback" aria-hidden="true"></span>
+        <button class="site-preloader__sphere" type="button" aria-label="Повернуть кольцо" title="Повернуть кольцо">
+          <span class="site-preloader__depth" aria-hidden="true"><img class="site-preloader__portal" src="/assets/images/about-forum/planet-about.png" width="1500" height="1500" alt="" loading="eager" fetchpriority="high" /></span>
           <svg class="site-preloader__mark" aria-hidden="true" width="316" height="259" viewBox="0 0 316 259" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M196.06 173.922C196.06 189.944 166.618 185.746 164.017 193.964H195.469V202.891H149.118V197.511C149.118 180.307 185.418 184.15 185.418 174.75C185.418 171.321 183.231 169.843 174.067 169.843C164.903 169.843 160.706 171.202 160.706 177.765H150.064C150.064 163.99 159.76 160.915 173.476 160.915C187.724 160.915 196.06 163.635 196.06 173.922Z" fill="white"/>
 <path d="M123.561 203.482C107.125 203.482 99.3213 195.915 99.3213 182.14C99.3213 168.424 107.125 160.915 123.561 160.915C139.937 160.915 147.8 168.483 147.8 182.14C147.8 195.856 139.937 203.482 123.561 203.482ZM123.561 194.555C132.902 194.555 137.158 189.884 137.158 182.14C137.158 174.454 132.902 169.843 123.561 169.843C114.22 169.843 109.963 174.395 109.963 182.14C109.963 189.944 114.22 194.555 123.561 194.555Z" fill="white"/>
@@ -64,6 +63,14 @@
         const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         const started = performance.now();
         let closing = false, frame, timer, target = 0, displayed = 0, last = started;
+        let presentedAt = null, pendingFinish = null;
+        const presented = () => {
+          if (presentedAt !== null) return;
+          presentedAt = performance.now();
+          loader.classList.add('is-presented');
+          if (pendingFinish) finish(pendingFinish);
+        };
+        document.addEventListener('debt:intro-visible', presented, { once: true });
         root.inert = true;
         document.documentElement.classList.add('is-site-loading');
         const paint = (now) => {
@@ -84,13 +91,17 @@
         };
         const finish = (event) => {
           if (closing) return;
+          if (presentedAt === null) { pendingFinish = event || { type: 'timeout' }; return; }
           closing = true;
           clearTimeout(timer);
           document.removeEventListener('debt:ready', finish);
           document.removeEventListener('debt:progress', update);
-          if (event?.type === 'debt:ready') target = 100;
+          if (event?.type === 'debt:ready') {
+            target = 100;
+            loader.querySelector('.site-preloader__progress-meta > span').textContent = 'Загрузка завершена';
+          }
           else loader.querySelector('.site-preloader__progress-meta > span').textContent = 'Открываем сайт';
-          const remaining = Math.max(reduced ? 0 : 700, (reduced ? 0 : 2500) - (performance.now() - started));
+          const remaining = Math.max(reduced ? 0 : 700, 4500 - (performance.now() - presentedAt));
           setTimeout(() => {
             loader.classList.add('is-leaving');
             setTimeout(() => {
@@ -106,7 +117,7 @@
         document.addEventListener('debt:progress', update);
         document.addEventListener('debt:ready', finish);
         timer = setTimeout(() => {
-          if (root.childElementCount) finish();
+          if (root.childElementCount) { presented(); finish(); }
           else {
             loader.classList.add('has-error');
             loader.querySelector('.site-preloader__fallback').hidden = false;
