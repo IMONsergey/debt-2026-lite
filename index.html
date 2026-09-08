@@ -23,6 +23,25 @@
   </head>
   <body>
 <div class="site-preloader" id="site-preloader" aria-label="Загрузка DEBT TECH 2026" data-progress="0">
+      <svg class="site-preloader__space" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="intro-stars-far" width="337" height="293" patternUnits="userSpaceOnUse">
+            <g fill="#77b6e8"><circle cx="18" cy="27" r=".7"/><circle cx="86" cy="61" r="1"/><circle cx="168" cy="19" r=".6"/><circle cx="299" cy="88" r=".8"/><circle cx="213" cy="106" r=".6"/><circle cx="46" cy="171" r=".8"/><circle cx="142" cy="128" r=".6"/><circle cx="267" cy="217" r=".9"/><circle cx="113" cy="267" r=".7"/><circle cx="201" cy="245" r=".6"/><circle cx="317" cy="278" r=".6"/><circle cx="23" cy="253" r=".6"/></g>
+          </pattern>
+          <pattern id="intro-stars-near" width="563" height="457" patternUnits="userSpaceOnUse">
+            <g fill="#d1f4ff"><circle cx="59" cy="82" r="1.3"/><circle cx="361" cy="36" r="1"/><circle cx="251" cy="269" r="1.2"/><circle cx="504" cy="389" r="1.4"/><circle cx="106" cy="427" r="1"/></g>
+            <path d="M443 145v10m-5-5h10" stroke="#7cdbff" stroke-width=".8"/><circle cx="443" cy="150" r="1.4" fill="#e0fbff"/>
+          </pattern>
+          <linearGradient id="intro-space-light" x1="100" y1="1000" x2="1490" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#036eec" stop-opacity="0"/><stop offset=".28" stop-color="#036eec"/><stop offset=".66" stop-color="#2eb9ff"/><stop offset="1" stop-color="#036eec" stop-opacity="0"/></linearGradient>
+          <filter id="intro-space-haze" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+        </defs>
+        <g class="site-preloader__stardrift">
+          <path d="M-120 980C280 750 355 750 700 500S1160 180 1730-100" fill="none" stroke="url(#intro-space-light)" stroke-width="175" opacity=".1" filter="url(#intro-space-haze)"/>
+          <path d="M-120 960C320 770 305 700 720 496S1240 148 1730-100" fill="none" stroke="url(#intro-space-light)" stroke-width="35" opacity=".11" filter="url(#intro-space-haze)"/>
+          <rect x="-30" y="-30" width="1660" height="1060" fill="url(#intro-stars-far)" opacity=".65"/>
+          <rect class="site-preloader__starlight" x="-30" y="-30" width="1660" height="1060" fill="url(#intro-stars-near)" opacity=".85"/>
+        </g>
+      </svg>
       <div class="site-preloader__content">
         <button class="site-preloader__sphere" type="button" aria-label="Повернуть кольцо" title="Повернуть кольцо">
           <span class="site-preloader__depth" aria-hidden="true">
@@ -32,9 +51,13 @@
                 <linearGradient id="intro-edge" x1="90" y1="200" x2="450" y2="450" gradientUnits="userSpaceOnUse"><stop stop-color="#024797"/><stop offset=".48" stop-color="#07346b"/><stop offset=".77" stop-color="#40ceff"/><stop offset="1" stop-color="#1272eb"/></linearGradient>
                 <linearGradient id="intro-light" x1="100" y1="130" x2="480" y2="410" gradientUnits="userSpaceOnUse"><stop stop-color="#218fff" stop-opacity="0"/><stop offset=".45" stop-color="#90eeff"/><stop offset=".7" stop-color="white"/><stop offset="1" stop-color="#2399ff" stop-opacity="0"/></linearGradient>
                 <filter id="intro-glow" x="-50%" y="-70%" width="200%" height="240%"><feGaussianBlur stdDeviation="12"/></filter>
+                <filter id="intro-glow-wide" x="-60%" y="-80%" width="220%" height="260%"><feGaussianBlur stdDeviation="25"/></filter>
               </defs>
               <g transform="rotate(-28 300 300)">
-                <ellipse cx="300" cy="310" rx="218" ry="158" stroke="#159bff" stroke-width="18" opacity=".45" filter="url(#intro-glow)"/>
+                <g class="site-preloader__ringlight">
+                  <ellipse cx="300" cy="305" rx="214" ry="154" stroke="#077dff" stroke-width="46" opacity=".7" filter="url(#intro-glow-wide)"/>
+                  <ellipse cx="300" cy="302" rx="215" ry="154" stroke="#39c4ff" stroke-width="22" opacity=".9" filter="url(#intro-glow)"/>
+                </g>
                 <ellipse cx="300" cy="314" rx="207" ry="151" stroke="url(#intro-edge)" stroke-width="30"/>
                 <ellipse cx="300" cy="300" rx="210" ry="150" stroke="url(#intro-rim)" stroke-width="23"/>
                 <ellipse cx="300" cy="300" rx="222" ry="162" stroke="#3eafff" stroke-width="1.5" opacity=".8"/>
