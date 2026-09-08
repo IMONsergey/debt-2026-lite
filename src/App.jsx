@@ -234,6 +234,7 @@ export default function App() {
   const [activeForm, setActiveForm] = useState(null);
 
   useEffect(() => {
+    let cancelled = false;
     document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
     preloadImages([
       content.hero.backgroundImage,
@@ -246,6 +247,16 @@ export default function App() {
       ...content.venue.images.map((item) => item.image),
       ...content.gallery.items.map((item) => item.image),
     ]);
+    const heroImage = window.matchMedia('(max-width: 699px)').matches
+      ? content.hero.backgroundImageAdaptive
+      : content.hero.backgroundImage;
+    Promise.allSettled([
+      preloadImages([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)]),
+      document.fonts.ready,
+    ]).then(() => {
+      if (!cancelled) document.dispatchEvent(new Event('debt:ready'));
+    });
+    return () => { cancelled = true; };
   }, []);
 
   return (
@@ -271,13 +282,17 @@ export default function App() {
 }
 
 function preloadImages(urls) {
-  urls.filter(Boolean).forEach((url) => {
+  return Promise.allSettled([...new Set(urls.filter(Boolean))].map((url) => new Promise((resolve) => {
     const image = new Image();
     image.decoding = 'async';
     image.loading = 'eager';
     image.fetchPriority = 'high';
+    image.onload = () => {
+      image.decode().catch(() => {}).finally(resolve);
+    };
+    image.onerror = resolve;
     image.src = url;
-  });
+  })));
 }
 
 function MobileRegistration({ cta, onOpenApplication }) {
