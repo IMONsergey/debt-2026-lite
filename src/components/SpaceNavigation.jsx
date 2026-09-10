@@ -1,15 +1,12 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import '../styles/space-navigation.css';
 
 const destinations = [
-  { id: 'about-forum', targetId: 'about-forum', label: 'О конференции', spy: true },
-  { id: 'participants', targetId: 'about-forum', label: 'Участники' },
-  { id: 'speakers', targetId: 'gallery', label: 'Спикеры' },
-  { id: 'key-themes', targetId: 'about-forum', label: 'Ключевые темы' },
-  { id: 'program', targetId: 'gallery', label: 'Программа DEBT TECH 2026', spy: true },
-  { id: 'tariffs', targetId: 'tariffs', label: 'Тарифные планы', spy: true },
-  { id: 'partners', targetId: 'contacts', label: 'Партнеры конференции' },
+  { id: 'about-forum', targetId: 'about-forum', label: 'О форуме', spy: true },
+  { id: 'venue', targetId: 'venue', label: 'Место проведения', spy: true },
+  { id: 'gallery', targetId: 'gallery', label: 'Кадры с DEBT TECH 2025', spy: true },
+  { id: 'tariffs', targetId: 'tariffs', label: 'Тарифы', spy: true },
   { id: 'contacts', targetId: 'contacts', label: 'Контакты', spy: true },
 ];
 
@@ -25,6 +22,7 @@ export function SpaceNavigation({ mobile = false }) {
   const shipRef = useRef(null);
   const toggleRef = useRef(null);
   const flightRef = useRef(null);
+  const scrollAnimationRef = useRef(null);
   const destinationRef = useRef(null);
   const initialized = useRef(false);
   const panelId = useId();
@@ -55,7 +53,12 @@ export function SpaceNavigation({ mobile = false }) {
       setActive(current);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
-    const interrupt = () => { destinationRef.current = null; schedule(); };
+    const interrupt = () => {
+      destinationRef.current = null;
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+      schedule();
+    };
     const observer = new ResizeObserver(schedule);
     observer.observe(document.body);
     measure();
@@ -75,7 +78,7 @@ export function SpaceNavigation({ mobile = false }) {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ship = shipRef.current;
     const nav = navRef.current;
     if (!ship || !nav || (mobile && !open)) return;
@@ -88,24 +91,47 @@ export function SpaceNavigation({ mobile = false }) {
     const currentY = matrix ? matrix.m42 : y;
     flightRef.current?.cancel();
     const target = `translate(${shipDockX}px, ${y}px) rotate(0deg)`;
-    ship.style.transform = target;
     if (!initialized.current || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       initialized.current = true;
+      ship.style.transform = target;
       return;
     }
+    ship.style.transform = `translate(${currentX}px, ${currentY}px) rotate(0deg)`;
     ship.classList.add('is-flying');
-    // Retarget from the rendered position so fast clicks never snap the ship back.
-    const flight = ship.animate([
-      { transform: from === 'none' ? target : from, offset: 0 },
-      { transform: `translate(${shipOrbitX}px, ${currentY}px) rotate(0deg)`, offset: currentX === shipOrbitX ? 0.01 : 0.16 },
-      { transform: `translate(${shipOrbitX}px, ${y}px) rotate(0deg)`, offset: 0.78 },
-      { transform: target, offset: 1 },
-    ], { duration: 1150, easing: 'cubic-bezier(.4,0,.16,1)' });
+    // A sampled cubic curve keeps takeoff, vertical travel and docking continuous.
+    // Starting from the rendered coordinates also prevents snapping on rapid clicks.
+    const distanceY = y - currentY;
+    const controlStartY = currentY + distanceY * 0.16;
+    const controlEndY = y - distanceY * 0.16;
+    const frames = Array.from({ length: 41 }, (_, index) => {
+      const progress = index / 40;
+      const t = progress;
+      const inverse = 1 - t;
+      const x = inverse ** 3 * currentX
+        + 3 * inverse ** 2 * t * shipOrbitX
+        + 3 * inverse * t ** 2 * shipOrbitX
+        + t ** 3 * shipDockX;
+      const frameY = inverse ** 3 * currentY
+        + 3 * inverse ** 2 * t * controlStartY
+        + 3 * inverse * t ** 2 * controlEndY
+        + t ** 3 * y;
+      return { transform: `translate(${x}px, ${frameY}px) rotate(0deg)`, offset: progress };
+    });
+    const duration = Math.min(2200, Math.max(1350, 1150 + Math.abs(distanceY) * 5));
+    const flight = ship.animate(frames, { duration, easing: 'cubic-bezier(.22,.55,.28,1)' });
     flightRef.current = flight;
-    flight.onfinish = () => ship.classList.remove('is-flying');
+    flight.onfinish = () => {
+      if (flightRef.current !== flight) return;
+      ship.style.transform = target;
+      ship.classList.remove('is-flying');
+      flightRef.current = null;
+    };
   }, [active, mobile, open, routeHeight]);
 
-  useEffect(() => () => flightRef.current?.cancel(), []);
+  useEffect(() => () => {
+    flightRef.current?.cancel();
+    cancelAnimationFrame(scrollAnimationRef.current);
+  }, []);
 
   useEffect(() => {
     if (!mobile || !open) return;
@@ -128,7 +154,26 @@ export function SpaceNavigation({ mobile = false }) {
     destinationRef.current = { id: item.targetId, until: performance.now() + 2000 };
     setActive(item.id);
     history.replaceState(null, '', `#${item.targetId}`);
-    window.scrollTo({ top: Math.max(0, section.getBoundingClientRect().top + scrollY - 24), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    const targetY = Math.max(0, section.getBoundingClientRect().top + scrollY - 24);
+    cancelAnimationFrame(scrollAnimationRef.current);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo(0, targetY);
+    } else {
+      const startY = scrollY;
+      const distance = targetY - startY;
+      const duration = Math.min(1400, Math.max(760, Math.abs(distance) * 0.28));
+      const startedAt = performance.now();
+      const step = (now) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        window.scrollTo(0, startY + distance * eased);
+        if (progress < 1) scrollAnimationRef.current = requestAnimationFrame(step);
+        else scrollAnimationRef.current = null;
+      };
+      scrollAnimationRef.current = requestAnimationFrame(step);
+    }
     if (mobile) { setOpen(false); toggleRef.current?.focus({ preventScroll: true }); }
   };
 
