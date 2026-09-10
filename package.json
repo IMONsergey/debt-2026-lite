@@ -10,6 +10,7 @@
     "forms:telegram": "node server/forms-telegram.mjs"
   },
   "dependencies": {
+    "lucide-react": "^1.43.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

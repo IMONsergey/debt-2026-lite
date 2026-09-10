@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
+import { SpaceNavigation } from './SpaceNavigation.jsx';
 
 export function FixedMenu({ site, menu, video, onOpenApplication }) {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -15,10 +16,12 @@ export function FixedMenu({ site, menu, video, onOpenApplication }) {
   }, []);
 
   return (
-    <aside className={`fixed-menu${isVideoOpen ? ' is-video-open' : ''}`} aria-label="Информация о конференции">
+    <>
+    <aside className={`fixed-menu has-space-route${isVideoOpen ? ' is-video-open' : ''}`} aria-label="Информация о конференции">
       <a className="fixed-menu__brand" href="#top" aria-label={site.title}>
         <img src={site.logo} alt={site.title} />
       </a>
+      {isDesktop && <SpaceNavigation />}
       <SidebarInfo
         className="fixed-menu__info"
         menu={menu}
@@ -28,6 +31,8 @@ export function FixedMenu({ site, menu, video, onOpenApplication }) {
         onOpenApplication={onOpenApplication}
       />
     </aside>
+    {!isDesktop && createPortal(<SpaceNavigation mobile />, document.body)}
+    </>
   );
 }
 
