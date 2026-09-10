@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - sandbox/menu-preview
   workflow_dispatch:
 
 permissions:
