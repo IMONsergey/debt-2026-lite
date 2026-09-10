@@ -3,14 +3,19 @@ import { Menu, X } from 'lucide-react';
 import '../styles/space-navigation.css';
 
 const destinations = [
-  { id: 'about-forum', label: 'О конференции' },
-  { id: 'venue', label: 'Место проведения' },
-  { id: 'gallery', label: 'Кадры с DEBT TECH' },
-  { id: 'tariffs', label: 'Тарифные планы' },
-  { id: 'contacts', label: 'Контакты' },
+  { id: 'about-forum', targetId: 'about-forum', label: 'О конференции', spy: true },
+  { id: 'participants', targetId: 'about-forum', label: 'Участники' },
+  { id: 'speakers', targetId: 'gallery', label: 'Спикеры' },
+  { id: 'key-themes', targetId: 'about-forum', label: 'Ключевые темы' },
+  { id: 'program', targetId: 'gallery', label: 'Программа DEBT TECH 2026', spy: true },
+  { id: 'tariffs', targetId: 'tariffs', label: 'Тарифные планы', spy: true },
+  { id: 'partners', targetId: 'contacts', label: 'Партнеры конференции' },
+  { id: 'contacts', targetId: 'contacts', label: 'Контакты', spy: true },
 ];
 
 const shipImageSrc = `${import.meta.env.BASE_URL}assets/menu-spaceship.png`;
+const shipDockX = 12;
+const shipOrbitX = -3;
 
 export function SpaceNavigation({ mobile = false }) {
   const [active, setActive] = useState('about-forum');
@@ -42,8 +47,8 @@ export function SpaceNavigation({ mobile = false }) {
       }
       destinationRef.current = null;
       let current = 'about-forum';
-      for (const item of destinations) {
-        const section = document.getElementById(item.id);
+      for (const item of destinations.filter((destination) => destination.spy)) {
+        const section = document.getElementById(item.targetId);
         if (section && section.getBoundingClientRect().top <= innerHeight * 0.32) current = item.id;
       }
       if (scrollY + innerHeight >= document.documentElement.scrollHeight - 4) current = 'contacts';
@@ -74,27 +79,28 @@ export function SpaceNavigation({ mobile = false }) {
     const ship = shipRef.current;
     const nav = navRef.current;
     if (!ship || !nav || (mobile && !open)) return;
-    const row = nav.querySelector(`[href="#${active}"]`);
+    const row = nav.querySelector(`[data-route-id="${active}"]`);
     if (!row) return;
     const y = row.offsetTop + row.offsetHeight / 2;
     const from = getComputedStyle(ship).transform;
-    const currentY = from === 'none' ? y : new DOMMatrixReadOnly(from).m42;
+    const matrix = from === 'none' ? null : new DOMMatrixReadOnly(from);
+    const currentX = matrix ? matrix.m41 : shipDockX;
+    const currentY = matrix ? matrix.m42 : y;
     flightRef.current?.cancel();
-    const target = `translate(11px, ${y}px) rotate(0deg)`;
+    const target = `translate(${shipDockX}px, ${y}px) rotate(0deg)`;
     ship.style.transform = target;
     if (!initialized.current || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       initialized.current = true;
       return;
     }
     ship.classList.add('is-flying');
-    const direction = y >= currentY ? 1 : -1;
     // Retarget from the rendered position so fast clicks never snap the ship back.
     const flight = ship.animate([
       { transform: from === 'none' ? target : from, offset: 0 },
-      { transform: `translate(4px, ${currentY + (y - currentY) * 0.3}px) rotate(${direction * 72}deg)`, offset: 0.3 },
-      { transform: `translate(4px, ${currentY + (y - currentY) * 0.76}px) rotate(${direction * 55}deg)`, offset: 0.7 },
+      { transform: `translate(${shipOrbitX}px, ${currentY}px) rotate(0deg)`, offset: currentX === shipOrbitX ? 0.01 : 0.16 },
+      { transform: `translate(${shipOrbitX}px, ${y}px) rotate(0deg)`, offset: 0.78 },
       { transform: target, offset: 1 },
-    ], { duration: 1050, easing: 'cubic-bezier(.4,0,.16,1)' });
+    ], { duration: 1150, easing: 'cubic-bezier(.4,0,.16,1)' });
     flightRef.current = flight;
     flight.onfinish = () => ship.classList.remove('is-flying');
   }, [active, mobile, open, routeHeight]);
@@ -114,14 +120,14 @@ export function SpaceNavigation({ mobile = false }) {
     return () => { window.removeEventListener('keydown', close); window.removeEventListener('pointerdown', outside); };
   }, [mobile, open]);
 
-  const navigate = (event, id) => {
+  const navigate = (event, item) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const section = document.getElementById(id);
+    const section = document.getElementById(item.targetId);
     if (!section) return;
     event.preventDefault();
-    destinationRef.current = { id, until: performance.now() + 2000 };
-    setActive(id);
-    history.replaceState(null, '', `#${id}`);
+    destinationRef.current = { id: item.targetId, until: performance.now() + 2000 };
+    setActive(item.id);
+    history.replaceState(null, '', `#${item.targetId}`);
     window.scrollTo({ top: Math.max(0, section.getBoundingClientRect().top + scrollY - 24), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
     if (mobile) { setOpen(false); toggleRef.current?.focus({ preventScroll: true }); }
   };
@@ -131,7 +137,7 @@ export function SpaceNavigation({ mobile = false }) {
       {mobile && <button ref={toggleRef} className="space-navigation__toggle" type="button" aria-label={open ? 'Закрыть меню' : 'Открыть меню'} title={open ? 'Закрыть меню' : 'Открыть меню'} aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(!open)}>{open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}</button>}
       <nav ref={navRef} id={panelId} className="space-route" style={{ '--route-progress': routeProgress }} aria-label="Разделы сайта" inert={mobile && !open ? true : undefined}>
         <div className="space-route__rail" aria-hidden="true"><span className="space-route__rail-light" /></div>
-        {destinations.map((item, index) => <a key={item.id} href={`#${item.id}`} className={`space-route__stop${active === item.id ? ' is-active' : ''}`} aria-current={active === item.id ? 'location' : undefined} onClick={(event) => navigate(event, item.id)}>
+        {destinations.map((item, index) => <a key={item.id} href={`#${item.targetId}`} data-route-id={item.id} className={`space-route__stop${active === item.id ? ' is-active' : ''}`} aria-current={active === item.id ? 'location' : undefined} onClick={(event) => navigate(event, item)}>
           <span className="space-route__branch" aria-hidden="true" />
           <span className={`space-planet space-planet--${index}`} aria-hidden="true"><span className="space-planet__surface" /><span className="space-planet__orbit" /></span>
           <span className="space-route__label">{item.label}</span>
