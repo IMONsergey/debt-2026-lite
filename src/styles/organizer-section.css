@@ -329,6 +329,7 @@
   line-height: 1.22;
   letter-spacing: 0;
   text-transform: uppercase;
+  white-space: pre-line;
 }
 
 .organizer-card--features p:last-child {
@@ -425,8 +426,23 @@
     padding-block: clamp(32px, 2.4vw, 38px) 52px;
   }
 
+  .organizer-section__heading {
+    grid-template-columns: minmax(0, 43fr) minmax(0, 57fr);
+    gap: clamp(24px, 2vw, 32px);
+  }
+
   .organizer-section__title {
     font-size: clamp(34px, 3vw, 48px);
+  }
+
+  .organizer-contact-strip {
+    width: 100%;
+    padding-left: clamp(40px, 4vw, 58px);
+    justify-self: stretch;
+  }
+
+  .organizer-contact-strip__socials {
+    margin-left: auto;
   }
 }
 
@@ -508,4 +524,13 @@
     right: 24px;
     left: 24px;
   }
+}
+
+/* All supporting copy follows the design's IBM Plex Sans Medium typography. */
+.organizer-section .organizer-contact-strip,
+.organizer-section .organizer-contact-strip *,
+.organizer-section .organizer-card,
+.organizer-section .organizer-card * {
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-weight: 500;
 }

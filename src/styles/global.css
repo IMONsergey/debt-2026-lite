@@ -531,9 +531,8 @@ button {
   padding-left: 16px;
   padding-right: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
-  overscroll-behavior: contain;
 }
 
 .fixed-menu::-webkit-scrollbar {

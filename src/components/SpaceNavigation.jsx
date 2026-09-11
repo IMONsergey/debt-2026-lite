@@ -7,7 +7,7 @@ const destinations = [
   { id: 'venue', targetId: 'venue', label: 'Место проведения', spy: true },
   { id: 'gallery', targetId: 'gallery', label: 'Кадры с DEBT TECH 2025', spy: true },
   { id: 'organizer', targetId: 'organizer', label: 'Организатор', spy: true },
-  { id: 'other-conferences', targetId: 'other-conferences', label: 'Ранние конференции', spy: true },
+  { id: 'other-conferences', targetId: 'other-conferences', label: 'Другие конференции', spy: true },
   { id: 'tariffs', targetId: 'tariffs', label: 'Тарифы', spy: true },
   { id: 'contacts', targetId: 'contacts', label: 'Контакты', spy: true },
 ];
