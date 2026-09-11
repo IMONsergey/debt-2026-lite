@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { heroPlanetDataUrl } from '../assets/hero-planet/index.js';
-import { assetUrl } from '../lib/assets.js';
 
 const MAX_DPR = 2;
 
@@ -196,8 +195,8 @@ function RayColumn() {
       gl.uniform1f(uniform('uHover'), Math.min(1, pointer.on) * 0.63);
 
       const background = hexColor('#000206', [0, 0.008, 0.024]);
-      const base = hexColor('#003A8C', [0.063, 0.188, 0.431]);
-      const accent = hexColor('#56B3FF', [0.431, 0.671, 0.961]);
+      const base = hexColor('#3D00FF', [0.239, 0, 1]);
+      const accent = hexColor('#6EABF5', [0.431, 0.671, 0.961]);
       const highlight = hexColor('#CFE4FF', [0.812, 0.894, 1]);
       gl.uniform3f(uniform('uBg'), ...background);
       gl.uniform3f(uniform('uBase'), ...base);
@@ -255,10 +254,7 @@ export function HeroRayColumnPortal() {
   return createPortal(
     <div className="hero-experiment-background" aria-hidden="true">
       <RayColumn />
-      <img className="hero-experiment-pattern" src={assetUrl('assets/hero-experiment/back-pattern.svg')} alt="" />
-      <div className="hero-experiment-orbit-glow" />
       <img className="hero-experiment-planet" src={heroPlanetDataUrl} alt="" />
-      <img className="hero-experiment-logo" src={assetUrl('assets/hero-experiment/logo-main-block.svg')} alt="" />
     </div>,
     hero,
   );
