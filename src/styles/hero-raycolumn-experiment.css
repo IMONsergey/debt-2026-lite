@@ -1,4 +1,4 @@
-/* Experimental hero: preserve the existing hero layout exactly; replace only its visual background. */
+/* Hero decoration only. The existing hero geometry and UI remain untouched. */
 .hero-placeholder {
   overflow: hidden;
   isolation: isolate;
@@ -6,7 +6,6 @@
   background-image: none !important;
 }
 
-/* Remove the old static-image fade. It was dimming the WebGL background. */
 .hero-placeholder::after {
   content: none !important;
   display: none !important;
@@ -31,23 +30,20 @@
   opacity: 1;
 }
 
-/* No extra gradients, overlays, patterns or artificial darkening. */
 .hero-experiment-background::before,
 .hero-experiment-background::after,
 .hero-experiment-pattern,
-.hero-experiment-orbit-glow,
-.hero-experiment-logo {
+.hero-experiment-orbit-glow {
   content: none !important;
   display: none !important;
 }
 
-/* Supplied planet is a pure background layer and never participates in layout. */
 .hero-experiment-planet {
   position: absolute;
   z-index: 1;
   left: 50%;
-  bottom: clamp(-82px, -4vw, -42px);
-  width: min(1760px, 88vw);
+  bottom: clamp(-72px, -3.5vw, -38px);
+  width: min(1680px, 120vw);
   max-width: none;
   height: auto;
   opacity: 1;
@@ -56,22 +52,47 @@
   user-select: none;
 }
 
-/* Keep all original hero content above the new background without changing its positioning. */
+.hero-experiment-logo {
+  position: absolute;
+  z-index: 2;
+  top: clamp(110px, 14vh, 168px);
+  left: 50%;
+  display: block;
+  width: min(560px, 39vw);
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+}
+
 .hero-placeholder__meta,
 .hero-bottom {
-  z-index: 2 !important;
+  z-index: 3 !important;
 }
 
 @media (max-width: 1180px) {
+  .hero-experiment-logo {
+    top: clamp(92px, 11vh, 122px);
+    width: min(430px, 56vw);
+  }
+
   .hero-experiment-planet {
-    bottom: -44px;
-    width: max(920px, 132vw);
+    top: clamp(350px, 41vh, 440px);
+    bottom: auto;
+    width: max(1050px, 138vw);
   }
 }
 
 @media (max-width: 699px) {
+  .hero-experiment-logo {
+    top: 92px;
+    width: min(270px, 69vw);
+  }
+
   .hero-experiment-planet {
-    bottom: -18px;
+    top: clamp(430px, 55vh, 500px);
+    bottom: auto;
     width: max(760px, 188vw);
   }
 }

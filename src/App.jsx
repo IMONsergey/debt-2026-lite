@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
 import { ApplicationModal } from './components/ApplicationModal.jsx';
 import { SitePage } from './components/SitePage.jsx';
 import { VideoWidget } from './components/VideoWidget.jsx';
@@ -48,8 +47,6 @@ const content = {
   },
   hero: {
     title: 'DEBT TECH 2026',
-    backgroundImage: assetUrl('assets/hero-debttech-2026.png'),
-    backgroundImageAdaptive: assetUrl('assets/hero-debttech-2026-adaptive.png'),
     bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
     countdownLabel: 'Время до запуска',
     countdownTarget: '2026-11-13T00:00:00+03:00',
@@ -236,18 +233,10 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
     document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
-    // Keep downloads eager, but reserve decoding and high priority for the first screen.
-    preloadImages([
-      content.tariffs.logoImage,
-      content.tariffs.handImage,
-      ...content.tariffs.items.flatMap((item) => [item.background, item.icon]),
-      ...content.venue.images.map((item) => item.image),
-      ...content.gallery.items.map((item) => item.image),
-    ], undefined, false);
-    const heroImage = window.matchMedia('(max-width: 1180px)').matches
-      ? content.hero.backgroundImageAdaptive
-      : content.hero.backgroundImage;
-    const criticalImages = [...new Set([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)].filter(Boolean))];
+    const criticalImages = [
+      assetUrl('assets/hero-experiment/planet.webp'),
+      assetUrl('assets/hero-experiment/logo-main-block.svg'),
+    ];
     let completed = 0;
     const reportProgress = () => {
       completed += 1;
@@ -264,7 +253,6 @@ export default function App() {
 
   return (
     <>
-      <CosmosPointerEffect />
       <div className="hero-only-view">
         <SitePage content={content} onOpenApplication={setActiveForm} />
       </div>

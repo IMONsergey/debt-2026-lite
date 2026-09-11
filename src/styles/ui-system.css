@@ -1,0 +1,124 @@
+/* Shared UI rules added during the DEBT TECH 2026 preview cleanup.
+   This file intentionally does not redefine section geometry or breakpoints. */
+:root {
+  --ui-cta-height: 54px;
+  --ui-cta-radius: 7px;
+  --ui-cta-border: rgba(104, 193, 255, 0.48);
+  --ui-cta-border-hover: rgba(104, 193, 255, 0.82);
+  --ui-cta-bg: rgba(8, 59, 121, 0.22);
+  --ui-cta-bg-hover: rgba(8, 82, 170, 0.34);
+  --ui-motion-fast: 220ms;
+  --ui-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body {
+  background: var(--bg);
+}
+
+.app-shell,
+.page-flow {
+  background: transparent;
+}
+
+.fixed-menu::before {
+  width: clamp(250px, 20vw, 360px);
+  background: linear-gradient(90deg, rgba(0, 2, 10, 0.92) 0%, rgba(0, 7, 23, 0.72) 58%, rgba(0, 7, 23, 0) 100%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.venue-section__route,
+.gallery-section__link,
+.tariff-card__button {
+  min-height: var(--ui-cta-height) !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 18px !important;
+  border: 1px solid var(--ui-cta-border) !important;
+  border-radius: var(--ui-cta-radius) !important;
+  background: var(--ui-cta-bg) !important;
+  color: #fff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  text-transform: uppercase;
+  transform: none !important;
+  transition:
+    border-color var(--ui-motion-fast) var(--ui-motion-ease),
+    background-color var(--ui-motion-fast) var(--ui-motion-ease),
+    color var(--ui-motion-fast) var(--ui-motion-ease) !important;
+}
+
+.tariff-card__button {
+  width: 100%;
+}
+
+.venue-section__route img,
+.gallery-section__link img,
+.tariff-card__button img {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px;
+  object-fit: contain;
+  transform: none !important;
+  transition: opacity var(--ui-motion-fast) var(--ui-motion-ease) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .venue-section__route:hover,
+  .gallery-section__link:hover,
+  .tariff-card__button:hover {
+    border-color: var(--ui-cta-border-hover) !important;
+    background: var(--ui-cta-bg-hover) !important;
+    transform: none !important;
+  }
+
+  .venue-section__route:hover img,
+  .gallery-section__link:hover img,
+  .tariff-card__button:hover img {
+    opacity: 0.82;
+    transform: none !important;
+  }
+}
+
+.venue-section__route:focus-visible,
+.gallery-section__link:focus-visible,
+.tariff-card__button:focus-visible {
+  border-color: #56b3ff !important;
+  outline: 2px solid #56b3ff !important;
+  outline-offset: 3px;
+  background: var(--ui-cta-bg-hover) !important;
+  transform: none !important;
+}
+
+.venue-section__route:active,
+.gallery-section__link:active,
+.tariff-card__button:active {
+  background: rgba(6, 69, 145, 0.44) !important;
+}
+
+.tariff-card__button:disabled,
+.tariff-card__button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .fixed-menu::before {
+    background: linear-gradient(90deg, rgba(0, 2, 10, 0.96) 0%, rgba(0, 7, 23, 0.82) 58%, rgba(0, 7, 23, 0) 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venue-section__route,
+  .gallery-section__link,
+  .tariff-card__button,
+  .venue-section__route img,
+  .gallery-section__link img,
+  .tariff-card__button img {
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,8 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { heroPlanetDataUrl } from '../assets/hero-planet/index.js';
+import { assetUrl } from '../lib/assets.js';
 
 const MAX_DPR = 2;
+const HERO_COLORS = {
+  background: [0, 0.008, 0.024],
+  base: [0, 0.227, 0.549],
+  accent: [0.337, 0.702, 1],
+  highlight: [0.812, 0.894, 1],
+};
+const HERO_SETTINGS = {
+  rays: 3.6,
+  contrast: 1.5,
+  sweep: 0.78,
+  falloff: 1.5,
+  aperture: 0.16,
+  direction: 0,
+  speed: 0.48,
+  hover: 0.63,
+};
 
 const VERT_SRC = `
 attribute vec2 a_pos;
@@ -15,17 +31,14 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-
 uniform vec2 uRes;
 uniform float uTime;
 uniform vec2 uMouse;
 uniform float uHover;
 uniform vec3 uBg, uBase, uAccent, uHigh;
 uniform float uRays, uContrast, uSweep, uFall, uAper, uDirection;
-
 const float PI = 3.14159265;
 const float TAU = 6.28318531;
-
 float sat(float x){ return clamp(x, 0.0, 1.0); }
 float pw(float x, float e){ return pow(max(x, 1e-5), e); }
 float hash21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 34.56); return fract(p.x * p.y); }
@@ -44,13 +57,11 @@ float fbm3(vec2 p){
   }
   return s;
 }
-
 void main(){
   float ar = uRes.x / max(uRes.y, 1.0);
   vec2 uv = gl_FragCoord.xy / uRes;
   vec2 p = (uv - 0.5) * vec2(ar, 1.0);
   float t = uTime * 0.07;
-
   float dcs = cos(uDirection), dsn = sin(uDirection);
   mat2 drot = mat2(dcs, -dsn, dsn, dcs);
   p = drot * p;
@@ -58,7 +69,6 @@ void main(){
   vec2 d = p - src;
   float r = max(length(d), 1e-3);
   float th = atan(d.x, d.y);
-
   vec2 mp = drot * ((uMouse - 0.5) * vec2(ar, 1.0));
   vec2 md = mp - src;
   float mr = max(length(md), 1e-3);
@@ -69,17 +79,14 @@ void main(){
   float swell = 1.0 + 0.55 * exp(-pw(abs(r - mr) / 0.40, 2.0));
   float open = h * exp(-pw(ang / aw, 2.0)) * swell;
   float close = h * smoothstep(aw, aw + 0.30, ang);
-
   float v = fbm3(vec2(th * uRays, r * 0.9 - t * 2.4));
   v += 0.50 * vnoise(vec2(th * uRays * 2.4 + 3.0, r * 1.8 - t * 3.6));
   v = pw(sat(v * 1.10 - 0.31), uContrast);
   v = mix(v, smoothstep(0.08, 0.50, v), 0.60 * sat(open));
-
   float env = exp(-pw(max(r - 0.30, 0.0) * uFall, 1.5));
   float aen = exp(-pw(abs(th) / max(uSweep, 0.05), 2.0));
   float body = v * env * aen * (1.0 + 0.90 * open) * (1.0 - 0.55 * close);
   float bloom = exp(-pw(max(r - 0.18, 0.0) * uFall * 1.30, 1.7)) * aen * (1.0 + 0.25 * open);
-
   vec3 col = uBg;
   col += uBase * bloom * 0.90;
   col += mix(uBase, uAccent, sat(body * 1.6)) * body * 2.4;
@@ -101,13 +108,6 @@ function compile(gl, type, source) {
   return shader;
 }
 
-function hexColor(value, fallback) {
-  const hex = String(value || '').replace('#', '');
-  if (hex.length !== 6) return fallback;
-  const rgb = [0, 2, 4].map((offset) => Number.parseInt(hex.slice(offset, offset + 2), 16) / 255);
-  return rgb.every(Number.isFinite) ? rgb : fallback;
-}
-
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
@@ -117,46 +117,140 @@ function RayColumn() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return undefined;
+    const hero = canvas?.closest('.hero-placeholder');
+    if (!canvas || !hero) return undefined;
 
     const gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false });
     if (!gl) return undefined;
 
-    const vertexShader = compile(gl, gl.VERTEX_SHADER, VERT_SRC);
-    const fragmentShader = compile(gl, gl.FRAGMENT_SHADER, FRAG_SRC);
-    if (!vertexShader || !fragmentShader) return undefined;
+    let vertexShader = null;
+    let fragmentShader = null;
+    let program = null;
+    let buffer = null;
+    let frame = 0;
+    let last = performance.now();
+    let clock = 0;
+    let inView = true;
+    let destroyed = false;
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reduceMotion = motionQuery.matches;
 
-    const program = gl.createProgram();
-    if (!program) return undefined;
+    const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, on: 0, target: 0 };
+
+    const cleanupGl = () => {
+      if (buffer) gl.deleteBuffer(buffer);
+      if (program) gl.deleteProgram(program);
+      if (vertexShader) gl.deleteShader(vertexShader);
+      if (fragmentShader) gl.deleteShader(fragmentShader);
+      buffer = null;
+      program = null;
+      vertexShader = null;
+      fragmentShader = null;
+    };
+
+    vertexShader = compile(gl, gl.VERTEX_SHADER, VERT_SRC);
+    fragmentShader = compile(gl, gl.FRAGMENT_SHADER, FRAG_SRC);
+    if (!vertexShader || !fragmentShader) {
+      cleanupGl();
+      return undefined;
+    }
+
+    program = gl.createProgram();
+    if (!program) {
+      cleanupGl();
+      return undefined;
+    }
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Hero RayColumn link:', gl.getProgramInfoLog(program));
+      cleanupGl();
       return undefined;
     }
     gl.useProgram(program);
 
-    const buffer = gl.createBuffer();
+    buffer = gl.createBuffer();
+    if (!buffer) {
+      cleanupGl();
+      return undefined;
+    }
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     const positionLocation = gl.getAttribLocation(program, 'a_pos');
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    const locations = new Map();
-    const uniform = (name) => {
-      if (!locations.has(name)) locations.set(name, gl.getUniformLocation(program, name));
-      return locations.get(name);
+    const uniform = (name) => gl.getUniformLocation(program, name);
+    const uniforms = {
+      res: uniform('uRes'), time: uniform('uTime'), mouse: uniform('uMouse'), hover: uniform('uHover'),
+      bg: uniform('uBg'), base: uniform('uBase'), accent: uniform('uAccent'), high: uniform('uHigh'),
+      rays: uniform('uRays'), contrast: uniform('uContrast'), sweep: uniform('uSweep'), fall: uniform('uFall'),
+      aperture: uniform('uAper'), direction: uniform('uDirection'),
     };
 
-    const pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, on: 0, target: 0 };
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frame = 0;
-    let last = performance.now();
-    let clock = 0;
+    gl.uniform3f(uniforms.bg, ...HERO_COLORS.background);
+    gl.uniform3f(uniforms.base, ...HERO_COLORS.base);
+    gl.uniform3f(uniforms.accent, ...HERO_COLORS.accent);
+    gl.uniform3f(uniforms.high, ...HERO_COLORS.highlight);
+    gl.uniform1f(uniforms.rays, HERO_SETTINGS.rays);
+    gl.uniform1f(uniforms.contrast, HERO_SETTINGS.contrast);
+    gl.uniform1f(uniforms.sweep, HERO_SETTINGS.sweep);
+    gl.uniform1f(uniforms.fall, HERO_SETTINGS.falloff);
+    gl.uniform1f(uniforms.aperture, HERO_SETTINGS.aperture);
+    gl.uniform1f(uniforms.direction, HERO_SETTINGS.direction);
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+      const width = Math.max(1, Math.round(rect.width * dpr));
+      const height = Math.max(1, Math.round(rect.height * dpr));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      gl.viewport(0, 0, width, height);
+      gl.uniform2f(uniforms.res, width, height);
+    };
+
+    const draw = (delta = 0) => {
+      if (destroyed) return;
+      if (!reduceMotion) clock = (clock + delta * HERO_SETTINGS.speed) % 3600;
+      const easing = delta > 0 ? 1 - Math.exp(-6 * delta) : 1;
+      pointer.on += (pointer.target - pointer.on) * easing;
+      pointer.x += ((pointer.target > 0 ? pointer.tx : 0.5) - pointer.x) * easing;
+      pointer.y += ((pointer.target > 0 ? pointer.ty : 0.5) - pointer.y) * easing;
+      gl.uniform1f(uniforms.time, clock);
+      gl.uniform2f(uniforms.mouse, pointer.x, 1 - pointer.y);
+      gl.uniform1f(uniforms.hover, Math.min(1, pointer.on) * HERO_SETTINGS.hover);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
+    const shouldAnimate = () => inView && !document.hidden && !reduceMotion;
+    const render = (now) => {
+      frame = 0;
+      if (!shouldAnimate()) {
+        draw(0);
+        return;
+      }
+      const delta = Math.min(0.05, Math.max(0, (now - last) / 1000));
+      last = now;
+      draw(delta);
+      frame = requestAnimationFrame(render);
+    };
+    const syncAnimation = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = performance.now();
+      if (shouldAnimate()) frame = requestAnimationFrame(render);
+      else draw(0);
+    };
 
     const trackPointer = (event) => {
+      if (!inView || reduceMotion) {
+        pointer.target = 0;
+        return;
+      }
       const rect = canvas.getBoundingClientRect();
       const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
       if (!inside || rect.width <= 0 || rect.height <= 0) {
@@ -165,66 +259,48 @@ function RayColumn() {
       }
       pointer.tx = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       pointer.ty = clamp((event.clientY - rect.top) / rect.height, 0, 1);
-      pointer.target = reduceMotion ? 0 : 1;
+      pointer.target = 1;
     };
-
     const resetPointer = () => { pointer.target = 0; };
-
-    const render = (now) => {
-      const delta = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      if (!reduceMotion) clock = (clock + delta * 0.48) % 3600;
-
-      const easing = 1 - Math.exp(-6 * delta);
-      pointer.on += (pointer.target - pointer.on) * easing;
-      pointer.x += ((pointer.target > 0 ? pointer.tx : 0.5) - pointer.x) * easing;
-      pointer.y += ((pointer.target > 0 ? pointer.ty : 0.5) - pointer.y) * easing;
-
-      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-      const width = Math.max(1, Math.round(canvas.clientWidth * dpr));
-      const height = Math.max(1, Math.round(canvas.clientHeight * dpr));
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
-      gl.viewport(0, 0, width, height);
-
-      gl.uniform2f(uniform('uRes'), width, height);
-      gl.uniform1f(uniform('uTime'), clock);
-      gl.uniform2f(uniform('uMouse'), pointer.x, 1 - pointer.y);
-      gl.uniform1f(uniform('uHover'), Math.min(1, pointer.on) * 0.63);
-
-      const background = hexColor('#000206', [0, 0.008, 0.024]);
-      const base = hexColor('#3D00FF', [0.239, 0, 1]);
-      const accent = hexColor('#6EABF5', [0.431, 0.671, 0.961]);
-      const highlight = hexColor('#CFE4FF', [0.812, 0.894, 1]);
-      gl.uniform3f(uniform('uBg'), ...background);
-      gl.uniform3f(uniform('uBase'), ...base);
-      gl.uniform3f(uniform('uAccent'), ...accent);
-      gl.uniform3f(uniform('uHigh'), ...highlight);
-      gl.uniform1f(uniform('uRays'), 3.6);
-      gl.uniform1f(uniform('uContrast'), 1.5);
-      gl.uniform1f(uniform('uSweep'), 0.78);
-      gl.uniform1f(uniform('uFall'), 1.5);
-      gl.uniform1f(uniform('uAper'), 0.16);
-      gl.uniform1f(uniform('uDirection'), 0);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-      frame = requestAnimationFrame(render);
+    const handleVisibility = () => syncAnimation();
+    const handleMotion = () => {
+      reduceMotion = motionQuery.matches;
+      pointer.target = 0;
+      syncAnimation();
     };
+
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+      draw(0);
+    });
+    resizeObserver.observe(canvas);
+
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      inView = Boolean(entry?.isIntersecting);
+      if (!inView) pointer.target = 0;
+      syncAnimation();
+    }, { threshold: 0.01 });
+    visibilityObserver.observe(hero);
+
+    resize();
+    draw(0);
+    syncAnimation();
 
     window.addEventListener('pointermove', trackPointer, { passive: true });
-    window.addEventListener('pointerleave', resetPointer);
-    frame = requestAnimationFrame(render);
+    window.addEventListener('pointerleave', resetPointer, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibility);
+    motionQuery.addEventListener?.('change', handleMotion);
 
     return () => {
+      destroyed = true;
       cancelAnimationFrame(frame);
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
       window.removeEventListener('pointermove', trackPointer);
       window.removeEventListener('pointerleave', resetPointer);
-      gl.deleteBuffer(buffer);
-      gl.deleteProgram(program);
-      gl.deleteShader(vertexShader);
-      gl.deleteShader(fragmentShader);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      motionQuery.removeEventListener?.('change', handleMotion);
+      cleanupGl();
     };
   }, []);
 
@@ -240,7 +316,6 @@ export function HeroRayColumnPortal() {
       if (nextHero) setHero(nextHero);
       return Boolean(nextHero);
     };
-
     if (attach()) return undefined;
     const observer = new MutationObserver(() => {
       if (attach()) observer.disconnect();
@@ -251,10 +326,20 @@ export function HeroRayColumnPortal() {
 
   if (!hero) return null;
 
+  const planet = assetUrl('assets/hero-experiment/planet.webp');
+  const logo = assetUrl('assets/hero-experiment/logo-main-block.svg');
+
   return createPortal(
     <div className="hero-experiment-background" aria-hidden="true">
       <RayColumn />
-      <img className="hero-experiment-planet" src={heroPlanetDataUrl} alt="" />
+      <img
+        className="hero-experiment-planet"
+        src={planet}
+        alt=""
+        decoding="async"
+        fetchPriority="high"
+      />
+      <img className="hero-experiment-logo" src={logo} alt="" decoding="async" fetchPriority="high" />
     </div>,
     hero,
   );
