@@ -17,27 +17,55 @@ concurrency:
 
 jobs:
   deploy:
-    name: Публикация в GitHub Pages
+    name: Публикация main + sandbox в GitHub Pages
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Получить файлы
+      - name: Получить main
         uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-site
+
+      - name: Получить sandbox
+        uses: actions/checkout@v4
+        with:
+          ref: site-sandbox
+          path: sandbox-site
 
       - name: Установить Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            main-site/package-lock.json
+            sandbox-site/package-lock.json
 
-      - name: Установить зависимости
+      - name: Установить зависимости main
+        working-directory: main-site
         run: npm ci
 
-      - name: Собрать сайт
-        run: npm run build
+      - name: Собрать main
+        working-directory: main-site
+        run: npm run build -- --base=/debt-2026-lite/
+
+      - name: Установить зависимости sandbox
+        working-directory: sandbox-site
+        run: npm ci
+
+      - name: Собрать sandbox
+        working-directory: sandbox-site
+        run: npm run build -- --base=/debt-2026-lite/sandbox/
+
+      - name: Собрать единый Pages-артефакт
+        run: |
+          mkdir -p publish/sandbox
+          cp -a main-site/dist/. publish/
+          cp -a sandbox-site/dist/. publish/sandbox/
 
       - name: Настроить GitHub Pages
         uses: actions/configure-pages@v5
@@ -45,7 +73,7 @@ jobs:
       - name: Подготовить сайт к публикации
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./dist
+          path: ./publish
 
       - name: Опубликовать сайт
         id: deployment
