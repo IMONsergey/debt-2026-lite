@@ -1,9 +1,15 @@
-/* Experimental hero: WebGL light rays + supplied planet/logo/pattern assets. */
+/* Experimental hero: WebGL RayColumn + supplied planet/logo assets. */
 .hero-placeholder {
   overflow: hidden;
   isolation: isolate;
   background: #000206 !important;
   background-image: none !important;
+}
+
+/* The old static hero fade must not sit on top of the experimental scene. */
+.hero-placeholder::after {
+  content: none !important;
+  display: none !important;
 }
 
 .hero-placeholder > .hero-experiment-background {
@@ -16,7 +22,8 @@
 }
 
 .hero-placeholder > :not(.hero-experiment-background) {
-  z-index: 5;
+  position: relative;
+  z-index: 6;
 }
 
 .hero-experiment-rays {
@@ -26,63 +33,46 @@
   display: block;
   width: 100%;
   height: 100%;
+  opacity: 1;
+  filter: brightness(1.14) saturate(1.08);
 }
 
-.hero-experiment-background::before {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 61% 73%, rgba(42, 148, 255, 0.16) 0%, rgba(14, 62, 143, 0.07) 26%, transparent 55%),
-    linear-gradient(90deg, rgba(0, 2, 6, 0.4) 0%, transparent 29%, transparent 82%, rgba(0, 2, 6, 0.18) 100%);
-}
-
+/* No extra darkening over RayColumn. */
+.hero-experiment-background::before,
 .hero-experiment-background::after {
-  content: '';
-  position: absolute;
-  z-index: 4;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 42%;
-  background: linear-gradient(180deg, transparent 0%, rgba(0, 2, 6, 0.1) 30%, rgba(0, 2, 6, 0.56) 100%);
+  content: none;
+  display: none;
 }
 
+/* back-pattern.svg is intentionally removed from the composition. */
 .hero-experiment-pattern {
-  position: absolute;
-  z-index: 2;
-  top: -3vh;
-  right: clamp(-180px, -7vw, -70px);
-  width: clamp(690px, 56vw, 1080px);
-  max-width: none;
-  opacity: 0.64;
-  mix-blend-mode: screen;
-  filter: saturate(1.1) brightness(0.94);
+  display: none !important;
 }
 
 .hero-experiment-orbit-glow {
   position: absolute;
   z-index: 2;
   left: 58%;
-  bottom: -8%;
-  width: min(1120px, 82vw);
-  aspect-ratio: 2.7 / 1;
+  bottom: -3%;
+  width: min(1280px, 88vw);
+  aspect-ratio: 2.8 / 1;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(70, 176, 255, 0.27) 0%, rgba(25, 99, 210, 0.1) 38%, transparent 70%);
-  filter: blur(32px);
+  background: radial-gradient(ellipse, rgba(76, 185, 255, 0.30) 0%, rgba(24, 107, 231, 0.11) 38%, transparent 72%);
+  filter: blur(28px);
 }
 
 .hero-experiment-planet {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   left: 58%;
-  bottom: clamp(-148px, -9vw, -82px);
-  width: max(1120px, 91vw);
+  bottom: clamp(-72px, -3.8vw, -38px);
+  width: min(1960px, 96vw);
   max-width: none;
+  height: auto;
+  opacity: 1;
   transform: translateX(-50%);
-  filter: drop-shadow(0 -20px 55px rgba(35, 139, 255, 0.18));
+  filter: drop-shadow(0 -14px 48px rgba(36, 157, 255, 0.24));
   user-select: none;
 }
 
@@ -94,7 +84,7 @@
   width: clamp(390px, 38vw, 610px);
   max-width: none;
   transform: translateX(-50%);
-  filter: drop-shadow(0 16px 40px rgba(0, 10, 40, 0.34));
+  filter: drop-shadow(0 16px 40px rgba(0, 10, 40, 0.26));
   user-select: none;
 }
 
@@ -110,8 +100,8 @@
   }
 
   .hero-experiment-planet {
-    bottom: -156px;
-    width: max(1080px, 88vw);
+    bottom: -64px;
+    width: min(1840px, 94vw);
   }
 }
 
@@ -120,11 +110,8 @@
     min-height: max(100svh, 760px) !important;
   }
 
-  .hero-experiment-pattern {
-    top: 5svh;
-    right: -54vw;
-    width: 150vw;
-    opacity: 0.48;
+  .hero-experiment-rays {
+    filter: brightness(1.18) saturate(1.08);
   }
 
   .hero-experiment-logo {
@@ -135,19 +122,14 @@
 
   .hero-experiment-planet {
     left: 50%;
-    bottom: clamp(70px, 12svh, 150px);
+    bottom: clamp(48px, 8svh, 108px);
     width: max(980px, 165vw);
   }
 
   .hero-experiment-orbit-glow {
     left: 50%;
-    bottom: 13svh;
+    bottom: 10svh;
     width: 150vw;
-  }
-
-  .hero-experiment-background::after {
-    height: 55%;
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 2, 6, 0.12) 24%, rgba(0, 2, 6, 0.75) 100%);
   }
 }
 
@@ -161,30 +143,18 @@
     width: min(82vw, 410px);
   }
 
-  .hero-experiment-pattern {
-    top: 12svh;
-    right: -78vw;
-    width: 190vw;
-    opacity: 0.42;
-  }
-
   .hero-experiment-planet {
-    bottom: clamp(230px, 31svh, 300px);
+    bottom: clamp(205px, 28svh, 270px);
     width: max(900px, 224vw);
   }
 
   .hero-experiment-orbit-glow {
-    bottom: 32svh;
+    bottom: 29svh;
     width: 190vw;
-  }
-
-  .hero-placeholder::after {
-    opacity: 0.32;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-experiment-pattern,
   .hero-experiment-logo,
   .hero-experiment-planet {
     transform-origin: center;
