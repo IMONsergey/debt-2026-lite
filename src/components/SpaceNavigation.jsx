@@ -6,6 +6,7 @@ const destinations = [
   { id: 'about-forum', targetId: 'about-forum', label: 'О форуме', spy: true },
   { id: 'venue', targetId: 'venue', label: 'Место проведения', spy: true },
   { id: 'gallery', targetId: 'gallery', label: 'Кадры с DEBT TECH 2025', spy: true },
+  { id: 'organizer', targetId: 'organizer', label: 'Организатор', spy: true },
   { id: 'tariffs', targetId: 'tariffs', label: 'Тарифы', spy: true },
   { id: 'contacts', targetId: 'contacts', label: 'Контакты', spy: true },
 ];

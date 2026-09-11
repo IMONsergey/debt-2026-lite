@@ -106,9 +106,17 @@ function preserveMobileScroll(event) {
   });
 }
 
+const CHANNEL_ICON_BY_ID = {
+  telegram: 'telegram-contact.svg',
+  max: 'max-contact.svg',
+  whatsapp: 'whatsapp-contact.svg',
+};
+
 export function ChannelIcon({ id }) {
+  const icon = CHANNEL_ICON_BY_ID[id] ?? CHANNEL_ICON_BY_ID.max;
+
   return (
-    <img src={assetUrl(`assets/icons/${id === 'telegram' ? 'telegram' : 'max'}-contact.svg`)} width="39" height="39" loading="eager" alt="" aria-hidden="true" />
+    <img src={assetUrl(`assets/icons/${icon}`)} width="39" height="39" loading="eager" alt="" aria-hidden="true" />
   );
 }
 

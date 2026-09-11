@@ -102,6 +102,58 @@ const content = {
       alt: `DEBT TECH 2025 — кадр ${index + 1}`,
     })),
   },
+  organizer: {
+    title: 'Организатор\nфорума',
+    contacts: {
+      label: 'Контакты для связи:',
+      phone: '+7 965 786 88 46',
+      phoneHref: 'tel:+79657868846',
+      email: 'redchief@rvzrus.ru',
+      websiteLabel: 'Сайт',
+      websiteHref: 'https://rvzrus.ru/',
+      channels: [
+        { id: 'telegram', label: 'Телеграм', href: 'https://t.me/rvzrus_chat' },
+        { id: 'max', label: 'Макс', href: 'https://max.ru/id9725047250_biz' },
+        { id: 'whatsapp', label: 'Ватсап', href: 'https://wa.me/79657868846' },
+      ],
+    },
+    media: {
+      title: 'СМИ «РЫНОК ВЗЫСКАНИЯ»',
+      license: 'Эл № ФС77-82673 от 10.02.2022',
+      logo: assetUrl('assets/images/organizer/rvz-logo.svg'),
+      href: 'https://rvzrus.ru/',
+    },
+    photo: {
+      image: assetUrl('assets/images/organizer/pko-300-2025.png'),
+      alt: 'Участники рейтинга ПКО-300 2025 с наградами',
+    },
+    rating: {
+      title: 'Рейтинг ПКО-300',
+      description: 'Уникальный инструмент оценки коллекторских компаний',
+      href: 'https://pko300.ru/',
+    },
+    metrics: {
+      title: 'Единственное медиа о профессиональном взыскании',
+      items: [
+        { value: '50 000+', label: 'постоянных читателей' },
+        { value: '1000+', label: 'участников конференций в 2025 году' },
+      ],
+    },
+    features: [
+      'Совместные исследования с лидерами отрасли',
+      'Актуальные новости рынка',
+      'Обзоры it-технологий в коллекшн',
+      'Судебная практика',
+      'Интервью с ключевыми персонами',
+    ],
+    navigator: {
+      title: 'DEBT TECH Навигатор',
+      logo: assetUrl('assets/images/organizer/navigator-logo.svg'),
+      image: assetUrl('assets/images/organizer/navigator-preview.png'),
+      description: 'Навигатор по технологическим решениям для работы с долговыми обязательствами: от аналитики до продажи, взыскания и банкротства.',
+      href: 'https://navigator.debt-tech.ru/',
+    },
+  },
   tariffs: {
     eyebrow: 'Multipass',
     title: 'Welcome',
@@ -243,6 +295,10 @@ export default function App() {
       ...content.tariffs.items.flatMap((item) => [item.background, item.icon]),
       ...content.venue.images.map((item) => item.image),
       ...content.gallery.items.map((item) => item.image),
+      content.organizer.media.logo,
+      content.organizer.photo.image,
+      content.organizer.navigator.logo,
+      content.organizer.navigator.image,
     ], undefined, false);
     const heroImage = window.matchMedia('(max-width: 1180px)').matches
       ? content.hero.backgroundImageAdaptive
