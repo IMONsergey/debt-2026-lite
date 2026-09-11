@@ -4,6 +4,7 @@ import App from './App.jsx';
 import './styles/global.css';
 import './styles/site-fidelity.css';
 import './styles/organizer-section.css';
+import './styles/other-conferences.css';
 import './styles/public-artwork.css';
 import './styles/hero-mobile-grid-fix.css';
 

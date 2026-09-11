@@ -54,6 +54,7 @@ export function SitePage({ content, onOpenApplication }) {
           <VenueSection venue={content.venue} />
           <GallerySection gallery={content.gallery} />
           <OrganizerSection organizer={content.organizer} />
+          <OtherConferencesSection archive={content.otherConferences} />
           <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
           <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} footer={content.footer} />
         </main>
@@ -536,7 +537,7 @@ function OrganizerSection({ organizer }) {
             <p>{typograf(organizer.media.license)}</p>
           </div>
           <span className="organizer-card__arrow" aria-hidden="true">
-            <img src={assetUrl('assets/icons/arrow-up.svg')} width="18" height="18" alt="" />
+            <img src={assetUrl('assets/icons/organizer-arrow.svg')} width="32" height="32" alt="" />
           </span>
         </a>
 
@@ -551,7 +552,7 @@ function OrganizerSection({ organizer }) {
           </div>
           <strong className="organizer-card__rating-number" aria-hidden="true">300</strong>
           <span className="organizer-card__arrow" aria-hidden="true">
-            <img src={assetUrl('assets/icons/arrow-up.svg')} width="18" height="18" alt="" />
+            <img src={assetUrl('assets/icons/organizer-arrow.svg')} width="32" height="32" alt="" />
           </span>
         </a>
 
@@ -583,9 +584,177 @@ function OrganizerSection({ organizer }) {
             <p>{typograf(organizer.navigator.description)}</p>
           </div>
           <span className="organizer-card__arrow" aria-hidden="true">
-            <img src={assetUrl('assets/icons/arrow-up.svg')} width="18" height="18" alt="" />
+            <img src={assetUrl('assets/icons/organizer-arrow.svg')} width="32" height="32" alt="" />
           </span>
         </a>
+      </div>
+    </section>
+  );
+}
+
+function OtherConferencesSection({ archive }) {
+  const items = archive?.items ?? [];
+  const loopItems = useMemo(() => {
+    if (!items.length) return [];
+
+    return Array.from({ length: 3 }, (_, copyIndex) => (
+      items.map((item, sourceIndex) => ({
+        ...item,
+        copyIndex,
+        sourceIndex,
+        virtualKey: `conference-${copyIndex}-${sourceIndex}`,
+      }))
+    )).flat();
+  }, [items]);
+  const viewportRef = useRef(null);
+  const cardRefs = useRef([]);
+  const recenterTimerRef = useRef(null);
+  const isRecenteringRef = useRef(false);
+  const [activeIndex, setActiveIndex] = useState(items.length);
+
+  function centerCardInstantly(index) {
+    const viewport = viewportRef.current;
+    const card = cardRefs.current[index];
+    if (!viewport || !card) return;
+
+    isRecenteringRef.current = true;
+    viewport.classList.add('is-recentering');
+    viewport.scrollLeft = card.offsetLeft - ((viewport.clientWidth - card.offsetWidth) / 2);
+    setActiveIndex(index);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        viewport.classList.remove('is-recentering');
+        isRecenteringRef.current = false;
+      });
+    });
+  }
+
+  useEffect(() => {
+    if (!items.length) return undefined;
+
+    const frame = requestAnimationFrame(() => {
+      centerCardInstantly(items.length);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(recenterTimerRef.current);
+    };
+  }, [items.length]);
+
+  if (!archive || items.length === 0) return null;
+
+  function selectCard(index) {
+    let nextIndex = index;
+    if (nextIndex < 0) nextIndex = (items.length * 2) - 1;
+    if (nextIndex >= loopItems.length) nextIndex = items.length;
+    const viewport = viewportRef.current;
+    const card = cardRefs.current[nextIndex];
+    if (!viewport || !card) return;
+
+    setActiveIndex(nextIndex);
+    viewport.scrollTo({
+      left: card.offsetLeft - ((viewport.clientWidth - card.offsetWidth) / 2),
+      behavior: 'smooth',
+    });
+  }
+
+  function handleScroll() {
+    const viewport = viewportRef.current;
+    if (!viewport || isRecenteringRef.current) return;
+
+    const center = viewport.scrollLeft + (viewport.clientWidth / 2);
+    const nearest = cardRefs.current.reduce((best, card, index) => {
+      if (!card) return best;
+      const bestCard = cardRefs.current[best];
+      const distance = Math.abs((card.offsetLeft + (card.offsetWidth / 2)) - center);
+      const bestDistance = bestCard
+        ? Math.abs((bestCard.offsetLeft + (bestCard.offsetWidth / 2)) - center)
+        : Number.POSITIVE_INFINITY;
+      return distance < bestDistance ? index : best;
+    }, 0);
+
+    setActiveIndex(nearest);
+
+    window.clearTimeout(recenterTimerRef.current);
+    recenterTimerRef.current = window.setTimeout(() => {
+      if (nearest >= items.length && nearest < items.length * 2) return;
+
+      const sourceIndex = ((nearest % items.length) + items.length) % items.length;
+      const middleIndex = items.length + sourceIndex;
+      centerCardInstantly(middleIndex);
+    }, 140);
+  }
+
+  return (
+    <section className="other-conferences-section" id="other-conferences" aria-labelledby="other-conferences-title">
+      <div className="other-conferences-section__heading">
+        <h2 id="other-conferences-title">{typograf(archive.title)}</h2>
+        <span>{typograf(archive.range)}</span>
+      </div>
+
+      <div className="other-conferences-carousel">
+        <div
+          className="other-conferences-carousel__viewport"
+          ref={viewportRef}
+          tabIndex="0"
+          onScroll={handleScroll}
+          onKeyDown={(event) => {
+            if (event.key === 'ArrowLeft') {
+              event.preventDefault();
+              selectCard(activeIndex - 1);
+            }
+            if (event.key === 'ArrowRight') {
+              event.preventDefault();
+              selectCard(activeIndex + 1);
+            }
+          }}
+        >
+          <div className="other-conferences-carousel__track">
+            {loopItems.map((item, index) => (
+              <a
+                className={'conference-link-card' + (index === activeIndex ? ' is-active' : '')}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                key={item.virtualKey}
+                ref={(node) => { cardRefs.current[index] = node; }}
+                onFocus={() => setActiveIndex(index)}
+                tabIndex={item.copyIndex === 1 ? 0 : -1}
+              >
+                <img src={item.image} alt="" loading="lazy" decoding="async" />
+                <span className="conference-link-card__shade" aria-hidden="true" />
+                <span className="conference-link-card__title">
+                  {(item.titleLines ?? [item.title]).map((line) => (
+                    <span key={line}>{typograf(line)}</span>
+                  ))}
+                </span>
+                <strong className="conference-link-card__year">{item.year}</strong>
+                <span className="conference-link-card__arrow" aria-hidden="true">
+                  <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" />
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <button
+          className="other-conferences-carousel__control other-conferences-carousel__control--previous"
+          type="button"
+          aria-label="Предыдущая конференция"
+          onClick={() => selectCard(activeIndex - 1)}
+        >
+          <img className="other-conferences-carousel__control-icon other-conferences-carousel__control-icon--previous" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+        </button>
+        <button
+          className="other-conferences-carousel__control other-conferences-carousel__control--next"
+          type="button"
+          aria-label="Следующая конференция"
+          onClick={() => selectCard(activeIndex + 1)}
+        >
+          <img className="other-conferences-carousel__control-icon other-conferences-carousel__control-icon--next" src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
+        </button>
       </div>
     </section>
   );

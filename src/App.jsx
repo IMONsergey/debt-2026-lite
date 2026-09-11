@@ -154,6 +154,22 @@ const content = {
       href: 'https://navigator.debt-tech.ru/',
     },
   },
+  otherConferences: {
+    title: 'Другие конференции\nСМИ «Рынок Взыскания»',
+    range: '[ 2021 – 2026 ]',
+    items: [
+      { title: 'DOLG TALK Казань', year: '2026', href: 'https://kazan.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2026.png') },
+      { title: 'DOLG TALK', year: '2026', href: 'https://dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-2026.png') },
+      { title: 'DOLG TALK Сибирь', year: '2026', href: 'https://novosib.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-siberia-2026.jpg') },
+      { title: 'DEBT TECH', year: '2025', href: 'https://2025.debt-tech.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2025.jpg') },
+      { title: 'DOLG TALK', year: '2025', href: 'https://dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-2025.png') },
+      { title: 'DOLG TALK Казань', year: '2025', href: 'https://kazan.dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2025.png') },
+      { title: 'DEBT TECH', year: '2024', href: 'https://debttech.rvzrus.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2024.png') },
+      { title: 'Аналитика и финансы долговых портфелей 2.0', titleLines: ['Аналитика и финансы', 'долговых портфелей 2.0'], year: '2023', href: 'https://rvzrus.ru/news/2521', image: assetUrl('assets/images/other-conferences/analytics-finance-2023.png') },
+      { title: 'Аналитика и финансы долговых портфелей', titleLines: ['Аналитика и финансы', 'долговых портфелей'], year: '2022', href: 'https://rvzrus.ru/news/2464', image: assetUrl('assets/images/other-conferences/analytics-finance-2022.png') },
+      { title: 'Петербургский форум взыскателей', titleLines: ['Петербургский форум', 'взыскателей'], year: '2021', href: 'https://rvzrus.ru/news/2083', image: assetUrl('assets/images/other-conferences/petersburg-collectors-2021.png') },
+    ],
+  },
   tariffs: {
     eyebrow: 'Multipass',
     title: 'Welcome',
