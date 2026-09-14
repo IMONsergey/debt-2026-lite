@@ -1,0 +1,50 @@
+name: Install cinematic V4 source
+
+on:
+  push:
+    branches:
+      - experiments/cinematic-v4-reference-ui-2026-09-14
+    paths:
+      - .github/workflows/cinematic-v4-bootstrap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install-v4-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout V4 branch
+        uses: actions/checkout@v4
+        with:
+          ref: experiments/cinematic-v4-reference-ui-2026-09-14
+          fetch-depth: 0
+
+      - name: Decode exact V4 source overlay
+        run: |
+          cat .v4-bootstrap/chunk-*.txt | base64 -d > /tmp/v4-source-overlay.tar.gz
+          tar -xzf /tmp/v4-source-overlay.tar.gz -C .
+
+      - name: Verify source build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+        env:
+          GITHUB_ACTIONS: 'false'
+
+      - name: Commit cinematic V4 source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json src
+          if git diff --cached --quiet; then
+            echo "No V4 source changes to commit"
+            exit 0
+          fi
+          git commit -m "Install cinematic V4 reference-driven UI"
+          git push origin HEAD:experiments/cinematic-v4-reference-ui-2026-09-14
