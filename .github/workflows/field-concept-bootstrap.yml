@@ -23,7 +23,7 @@ jobs:
 
       - name: Decode FIELD source overlay
         run: |
-          base64 -d .field-bootstrap/field-source-overlay.b64 > /tmp/field-source-overlay.tar.gz
+          cat .field-bootstrap/chunk-*.txt | base64 -d > /tmp/field-source-overlay.tar.gz
           tar -xzf /tmp/field-source-overlay.tar.gz -C .
 
       - name: Commit FIELD concept source
