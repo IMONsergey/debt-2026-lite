@@ -1,402 +1,63 @@
-import { useEffect, useState } from 'react';
-import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
-import { ApplicationModal } from './components/ApplicationModal.jsx';
-import { SitePage } from './components/SitePage.jsx';
-import { VideoWidget } from './components/VideoWidget.jsx';
-import { assetUrl } from './lib/assets.js';
-import './styles/hero-only.css';
-import './styles/hero-only-media-fixes.css';
-import './styles/soft-reveal.css';
-import './styles/venue-section.css';
-import './styles/mobile-registration.css';
-import './styles/about-forum.css';
-import './styles/tariffs.css';
-import './styles/contact-info.css';
+import {useEffect,useMemo,useRef,useState} from 'react';
+import SpaceStage from './SpaceStage.jsx';
+import {event,ticker,about,venue,stages,program,privateZones,services,serviceSteps,participants,organizer,conferences,tariffFeatures,tariffs,links} from './content/site.js';
+import {legacyContent} from './content/legacy.js';
+import './style.css';
 
-const galleryImages = [
-  '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
-  '06.webp', '07.webp', '08.webp', '09.webp', '10.jpg',
-  '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg',
-  '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
+const gallerySources=Array.from({length:20},(_,i)=>`/assets/images/gallery/${String(i+1).padStart(2,'0')}.${i<9?'webp':'jpg'}`);
+const stageImages=['/assets/images/venue/event.webp','/assets/images/venue/hall.webp','/assets/images/venue/lounge.webp'];
+const localConference={
+ 'kazan-2026':'/assets/images/other-conferences/dolg-talk-kazan-2026.png',
+ 'dolg-2026':'/assets/images/other-conferences/dolg-talk-2026.png',
+ 'siberia-2026':'/assets/images/other-conferences/dolg-talk-siberia-2026.jpg',
+ 'debt-2025':'/assets/images/other-conferences/debt-tech-2025.jpg',
+ 'dolg-2025':'/assets/images/other-conferences/dolg-talk-2025.png',
+ 'kazan-2025':'/assets/images/other-conferences/dolg-talk-kazan-2025.png',
+ 'debt-2024':'/assets/images/other-conferences/debt-tech-2024.png',
+ 'analytics-2023':'/assets/images/other-conferences/analytics-finance-2023.png',
+ 'analytics-2022':'/assets/images/other-conferences/analytics-finance-2022.png',
+ 'petersburg-2021':'/assets/images/other-conferences/petersburg-collectors-2021.png'
+};
+const chapters=[
+ ['00','Старт','top'],['01','О форуме','about'],['02','Место','venue'],['03','Кадры 2025','gallery'],['04','Программа','program'],['05','Сервисы','services'],['06','Участники','participants'],['07','Организатор','organizer'],['08','Архив','conferences'],['09','Тарифы','tariffs'],['10','Контакты','contacts']
 ];
 
-const content = {
-  pageMode: 'hero-landing',
-  site: {
-    title: 'DEBT TECH 2026',
-    date: '13 ноября 2026',
-    city: 'Москва',
-    logo: assetUrl('assets/debttech-logo.svg'),
-  },
-  menu: {
-    groups: [],
-    cta: {
-      label: 'Ранняя регистрация',
-      href: '#tariffs',
-    },
-    secondaryCta: {
-      label: 'Забронировать стенд',
-      href: 'https://t.me/anna_joys',
-      modal: 'stand-booking',
-    },
-    sidebar: {
-      contactLabel: 'Контакты для связи',
-      contactEmail: 'redchief@rvzrus.ru',
-      organizersLabel: 'ОРГАНИЗАТОРЫ',
-      organizersImage: assetUrl('assets/icons/organizers.svg'),
-    },
-  },
-  hero: {
-    title: 'DEBT TECH 2026',
-    backgroundImage: assetUrl('assets/hero-debttech-2026.png'),
-    backgroundImageAdaptive: assetUrl('assets/hero-debttech-2026-adaptive.png'),
-    bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
-    countdownLabel: 'Время до запуска',
-    countdownTarget: '2026-11-13T00:00:00+03:00',
-    countdown: [
-      { value: '00', label: 'дней' },
-      { value: '00', label: 'часов' },
-      { value: '00', label: 'минут' },
-      { value: '00', label: 'секунд' },
-    ],
-  },
-  ticker: {
-    items: [
-      '800+ делегатов',
-      '70+ спикеров',
-      '50+ участников выставки',
-      '3 сцены',
-      'Креативная вечерняя программа',
-      'Интерактивные зоны',
-      'Пресс-студия',
-      'Фуршет',
-      'VIP-резиденции',
-      'Afterparty',
-    ],
-  },
-  heroVideo: {
-    title: 'Как это было в 2025',
-    previewUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
-    embedUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=true&transparent=true',
-    widgetUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=false&transparent=false',
-  },
-  venue: {
-    title: 'Место проведения',
-    date: '13 ноября 2026',
-    name: 'TAU — пространство музыкальных культур',
-    address: 'Москва, Рязанский проспект, 8Ас10',
-    routeLabel: 'Смотреть на карте',
-    routeHref: 'https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D0%A0%D1%8F%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%2C%208%D0%90%D1%8110',
-    images: [
-      { image: assetUrl('assets/images/venue/event.webp'), alt: 'Событие в пространстве TAU' },
-      { image: assetUrl('assets/images/venue/lounge.webp'), alt: 'Лаунж-зона TAU' },
-      { image: assetUrl('assets/images/venue/hall.webp'), alt: 'Главный зал TAU' },
-    ],
-  },
-  gallery: {
-    title: 'Кадры с DEBT TECH 2025',
-    ctaLabel: 'Смотреть все фото',
-    href: 'https://rvz.bitrix24.ru/~0IZ9x',
-    items: galleryImages.map((name, index) => ({
-      image: assetUrl(`assets/images/gallery/${name}`),
-      alt: `DEBT TECH 2025 — кадр ${index + 1}`,
-    })),
-  },
-  organizer: {
-    title: 'Организатор\nфорума',
-    contacts: {
-      label: 'Контакты для связи:',
-      phone: '+7 965 786 88 46',
-      phoneHref: 'tel:+79657868846',
-      email: 'redchief@rvzrus.ru',
-      websiteLabel: 'Сайт',
-      websiteHref: 'https://rvzrus.ru/',
-      channels: [
-        { id: 'telegram', label: 'Телеграм', href: 'https://t.me/rvzrus_chat' },
-        { id: 'max', label: 'Макс', href: 'https://max.ru/id9725047250_biz' },
-        { id: 'whatsapp', label: 'Ватсап', href: 'https://wa.me/79657868846' },
-      ],
-    },
-    media: {
-      title: 'СМИ «РЫНОК ВЗЫСКАНИЯ»',
-      license: 'Эл № ФС77-82673 от 10.02.2022',
-      logo: assetUrl('assets/images/organizer/rvz-logo.svg'),
-      href: 'https://rvzrus.ru/',
-    },
-    photo: {
-      image: assetUrl('assets/images/organizer/pko-300-2025.png'),
-      alt: 'Участники рейтинга ПКО-300 2025 с наградами',
-    },
-    rating: {
-      title: 'Рейтинг ПКО-300',
-      description: 'Уникальный инструмент оценки коллекторских компаний',
-      href: 'https://pko300.ru/',
-    },
-    metrics: {
-      title: 'Единственное медиа о профессиональном взыскании',
-      items: [
-        { value: '50 000+', label: 'постоянных читателей' },
-        { value: '1000+', label: 'участников конференций в 2025 году' },
-      ],
-    },
-    features: [
-      'Совместные исследования\nс лидерами отрасли',
-      'Актуальные новости рынка',
-      'Обзоры it-технологий в коллекшн',
-      'Судебная практика',
-      'Интервью с ключевыми персонами',
-    ],
-    navigator: {
-      title: 'DEBT TECH Навигатор',
-      logo: assetUrl('assets/images/organizer/navigator-logo.svg'),
-      image: assetUrl('assets/images/organizer/navigator-preview.png'),
-      description: 'Навигатор по технологическим решениям для работы с долговыми обязательствами: от аналитики до продажи, взыскания и банкротства.',
-      href: 'https://navigator.debt-tech.ru/',
-    },
-  },
-  otherConferences: {
-    title: 'Другие конференции\nСМИ «Рынок Взыскания»',
-    range: '[ 2021 – 2026 ]',
-    items: [
-      { title: 'DOLG TALK Казань', year: '2026', href: 'https://kazan.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2026.png') },
-      { title: 'DOLG TALK', year: '2026', href: 'https://dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-2026.png') },
-      { title: 'DOLG TALK Сибирь', year: '2026', href: 'https://novosib.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-siberia-2026.jpg') },
-      { title: 'DEBT TECH', year: '2025', href: 'https://2025.debt-tech.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2025.jpg') },
-      { title: 'DOLG TALK', year: '2025', href: 'https://dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-2025.png') },
-      { title: 'DOLG TALK Казань', year: '2025', href: 'https://kazan.dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2025.png') },
-      { title: 'DEBT TECH', year: '2024', href: 'https://debttech.rvzrus.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2024.png') },
-      { title: 'Аналитика и финансы долговых портфелей 2.0', titleLines: ['Аналитика и финансы', 'долговых портфелей 2.0'], year: '2023', href: 'https://rvzrus.ru/news/2521', image: assetUrl('assets/images/other-conferences/analytics-finance-2023.png') },
-      { title: 'Аналитика и финансы долговых портфелей', titleLines: ['Аналитика и финансы', 'долговых портфелей'], year: '2022', href: 'https://rvzrus.ru/news/2464', image: assetUrl('assets/images/other-conferences/analytics-finance-2022.png') },
-      { title: 'Петербургский форум взыскателей', titleLines: ['Петербургский форум', 'взыскателей'], year: '2021', href: 'https://rvzrus.ru/news/2083', image: assetUrl('assets/images/other-conferences/petersburg-collectors-2021.png') },
-    ],
-  },
-  tariffs: {
-    eyebrow: 'Multipass',
-    title: 'Welcome',
-    logoImage: assetUrl('assets/images/tariffs/logo-form.svg'),
-    handImage: assetUrl('assets/images/tariffs/hand-spaceman.png'),
-    offer: 'Скидка 50% на один билет любого тарифа для представителя компании, которая впервые участвует в DEBT TECH.',
-    agreement: 'Скидка предоставляется по согласованию с организаторами.',
-    note: 'Стоимость актуальна до 25 сентября',
-    ctaLabel: 'Принять участие',
-    ctaModal: 'early-registration',
-    items: [
-      {
-        id: 'business',
-        title: 'Деловой',
-        price: '44 000 ₽',
-        background: assetUrl('assets/images/tariffs/business-bg.svg'),
-        icon: assetUrl('assets/images/tariffs/business-icon.svg'),
-        features: [
-          { label: 'Деловая программа', active: true },
-          { label: 'Кофе-брейк, обед', active: true },
-          { label: 'Фотоотчет', active: true },
-          { label: 'Презентации спикеров', active: true },
-          { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: false },
-          { label: 'Space Disco Afterparty', active: false },
-        ],
-      },
-      {
-        id: 'full',
-        title: 'Полный',
-        price: '49 000 ₽',
-        background: assetUrl('assets/images/tariffs/full-bg.svg'),
-        icon: assetUrl('assets/images/tariffs/full-icon.svg'),
-        features: [
-          { label: 'Деловая программа', active: true },
-          { label: 'Кофе-брейк, обед', active: true },
-          { label: 'Фотоотчет', active: true },
-          { label: 'Презентации спикеров', active: true },
-          { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: true },
-          { label: 'Space Disco Afterparty', active: false },
-        ],
-      },
-      {
-        id: 'full-plus',
-        title: 'Полный Plus',
-        price: '66 000 ₽',
-        background: assetUrl('assets/images/tariffs/full-plus-bg.svg'),
-        icon: assetUrl('assets/images/tariffs/full-plus-icon.svg'),
-        features: [
-          { label: 'Деловая программа', active: true },
-          { label: 'Кофе-брейк, обед', active: true },
-          { label: 'Фотоотчет', active: true },
-          { label: 'Презентации спикеров', active: true },
-          { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: true },
-          { label: 'Space Disco Afterparty', active: true },
-        ],
-      },
-    ],
-  },
-  aboutForum: {
-    eyebrow: 'О форуме',
-    title: 'DEBT TECH 2026',
-    description: 'Ежегодная форум-выставка о технологиях на рынке долговых активов',
-    planetImage: assetUrl('assets/images/about-forum/planet-about.png'),
-    features: [
-      'Эксклюзивная деловая программа с практическими кейсами',
-      'Активное участие представителей государственных органов и СРО',
-      'Спецформаты и услуги для участников',
-      'Доступ к готовым решениям: демостенды, контакты интеграторов и разработчиков',
-      'Новые партнёры и сделки',
-    ],
-    stats: [
-      { value: '800+', label: 'участников' },
-      { value: '400+', label: 'компаний' },
-      { value: '100+', label: 'спикеров' },
-      { value: '50+', label: 'партнеров' },
-    ],
-    tags: [
-      { id: 'artificial-intelligence', label: 'Искусственный интеллект', icon: assetUrl('assets/images/about-forum/tags/artificial-intelligence.svg') },
-      { id: 'big-data', label: 'Big Data', icon: assetUrl('assets/images/about-forum/tags/big-data.svg') },
-      { id: 'ai-agents', label: 'AI-агенты', icon: assetUrl('assets/images/about-forum/tags/ai-agents.svg') },
-      { id: 'speech-analytics', label: 'Речевая аналитика', icon: assetUrl('assets/images/about-forum/tags/speech-analytics.svg') },
-      { id: 'bi', label: 'BI', icon: assetUrl('assets/images/about-forum/tags/bi.svg') },
-      { id: 'low-code', label: 'Low-code', icon: assetUrl('assets/images/about-forum/tags/low-code.svg') },
-      { id: 'import-substitution', label: 'Импортозамещение', icon: assetUrl('assets/images/about-forum/tags/import-substitution.svg') },
-      { id: 'data-driven', label: 'Data driven', icon: assetUrl('assets/images/about-forum/tags/data-driven.svg') },
-      { id: 'e-justice', label: 'Электронное правосудие', icon: assetUrl('assets/images/about-forum/tags/e-justice.svg') },
-      { id: 'distressed-debt', label: 'Проблемный долг', icon: assetUrl('assets/images/about-forum/tags/distressed-debt.svg') },
-      { id: 'cession', label: 'Цессия', icon: assetUrl('assets/images/about-forum/tags/cession.svg') },
-      { id: 'investments', label: 'Инвестиции', icon: assetUrl('assets/images/about-forum/tags/investments.svg') },
-      { id: 'e-auctions', label: 'Электронные торги', icon: assetUrl('assets/images/about-forum/tags/e-auctions.svg') },
-    ],
-  },
-  contacts: {
-    title: 'Контактная информация',
-    accreditationEmail: 'org@rvzrus.ru',
-    tickets: {
-      title: 'Приобрести билет участника:',
-      email: 'a.fefilova@rvzrus.ru',
-      phone: '+7 965 786 88 46',
-      phoneHref: 'tel:+79657868846',
-    },
-    partnership: {
-      title: 'По вопросам партнерства и выступления:',
-      email: 'org@rvzrus.ru',
-      phone: '+7 925 223 67 07',
-      phoneHref: 'tel:+79252236707',
-    },
-    website: 'https://rvzrus.ru/',
-  },
-  footer: {
-    copyright: '© 2026 DEBT TECH. Все права защищены.',
-    privacyLabel: 'Политика конфиденциальности и персональных данных',
-    privacyHref: 'https://rvzrus.ru/politic',
-  },
-  forms: {
-    eventId: 'debt-tech-2026',
-    contactEmail: 'redchief@rvzrus.ru',
-    telegramUrl: 'https://t.me/anna_joys',
-    channels: [
-      { id: 'telegram', label: 'Telegram', href: 'https://t.me/rvzrus_chat' },
-      { id: 'max', label: 'Max', href: 'https://max.ru/id9725047250_biz' },
-    ],
-  },
-};
+function Arrow(){return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M8 5h11v11"/></svg>}
+function Kicker({n,children}){return <div className="kicker"><span>{n}</span><b>{children}</b></div>}
+function Action({children,onClick,href,ghost=false}){const C=href?'a':'button';return <C className={'action '+(ghost?'ghost':'')} onClick={onClick} href={href} target={href?.startsWith('http')?'_blank':undefined} rel="noreferrer"><span>{children}</span><Arrow/></C>}
 
-export default function App() {
-  const [activeForm, setActiveForm] = useState(null);
+function Countdown(){const [now,setNow]=useState(Date.now());useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(id)},[]);const diff=Math.max(0,new Date(event.target).getTime()-now);const cells=[[Math.floor(diff/864e5),'дней'],[Math.floor(diff/36e5)%24,'часов'],[Math.floor(diff/6e4)%60,'минут'],[Math.floor(diff/1e3)%60,'секунд']];return <div className="countdown">{cells.map(([v,l])=><div key={l}><strong>{String(v).padStart(2,'0')}</strong><small>{l}</small></div>)}</div>}
 
-  useEffect(() => {
-    let cancelled = false;
-    document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
-    // Keep downloads eager, but reserve decoding and high priority for the first screen.
-    preloadImages([
-      content.tariffs.logoImage,
-      content.tariffs.handImage,
-      ...content.tariffs.items.flatMap((item) => [item.background, item.icon]),
-      ...content.venue.images.map((item) => item.image),
-      ...content.gallery.items.map((item) => item.image),
-      content.organizer.media.logo,
-      content.organizer.photo.image,
-      content.organizer.navigator.logo,
-      content.organizer.navigator.image,
-    ], undefined, false);
-    const heroImage = window.matchMedia('(max-width: 1180px)').matches
-      ? content.hero.backgroundImageAdaptive
-      : content.hero.backgroundImage;
-    const criticalImages = [...new Set([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)].filter(Boolean))];
-    let completed = 0;
-    const reportProgress = () => {
-      completed += 1;
-      if (!cancelled) document.dispatchEvent(new CustomEvent('debt:progress', { detail: { completed, total: criticalImages.length + 1 } }));
-    };
-    Promise.allSettled([
-      preloadImages(criticalImages, reportProgress),
-      document.fonts.ready.then(reportProgress, reportProgress),
-    ]).then(() => {
-      if (!cancelled) document.dispatchEvent(new Event('debt:ready'));
-    });
-    return () => { cancelled = true; };
-  }, []);
+function ChapterNav({open,setOpen}){return <>
+  <header className="topbar"><a href="#top" className="brand"><img src="/assets/debttech-logo.svg" alt="DEBT TECH 2026"/></a><div className="top-meta"><span>{event.date}</span><span>{event.city}</span></div><button className="menu-toggle" onClick={()=>setOpen(v=>!v)} aria-label="Открыть навигацию"><i/><i/></button></header>
+  <nav className={'chapter-nav '+(open?'open':'')} aria-label="Навигация по сайту"><div className="chapter-nav-inner">{chapters.map(([n,label,id])=><a href={'#'+id} key={id} onClick={()=>setOpen(false)}><span>{n}</span><b>{label}</b></a>)}</div><div className="nav-bottom"><Action href="#tariffs">Ранняя регистрация</Action><a href="mailto:redchief@rvzrus.ru">redchief@rvzrus.ru</a></div></nav>
+  <div className="progress" aria-hidden="true"><span/></div>
+</>}
 
-  return (
-    <>
-      <CosmosPointerEffect />
-      <div className="hero-only-view">
-        <SitePage content={content} onOpenApplication={setActiveForm} />
-      </div>
-      <VideoWidget video={content.heroVideo} />
-      <MobileRegistration cta={content.menu.cta} onOpenApplication={setActiveForm} />
-      {activeForm ? (
-        <ApplicationModal
-          key={typeof activeForm === 'string' ? activeForm : `${activeForm.kind}-${activeForm.tariff?.id ?? 'form'}`}
-          kind={typeof activeForm === 'string' ? activeForm : activeForm.kind}
-          selectedTariff={typeof activeForm === 'string' ? null : activeForm.tariff}
-          config={content.forms}
-          privacyHref={content.footer.privacyHref}
-          onClose={() => setActiveForm(null)}
-        />
-      ) : null}
-    </>
-  );
-}
+function Modal({kind,close,tariff}){const isStand=kind==='stand';const title=isStand?'Забронировать стенд':'Ранняя регистрация';const [sent,setSent]=useState(false);function submit(e){e.preventDefault();const fd=new FormData(e.currentTarget);const subject=encodeURIComponent(`DEBT TECH 2026 — ${title}${tariff?` / ${tariff.title}`:''}`);const body=encodeURIComponent([...fd.entries()].map(([k,v])=>`${k}: ${v}`).join('\n'));window.location.href=`mailto:redchief@rvzrus.ru?subject=${subject}&body=${body}`;setSent(true)}return <div className="modal" onMouseDown={e=>e.target===e.currentTarget&&close()}><section><button className="modal-close" onClick={close}>×</button><Kicker n="FORM">DEBT TECH / 2026</Kicker><h2>{title}</h2>{tariff&&<p className="modal-tariff">{tariff.title} · {tariff.price}</p>}{sent?<div className="modal-note">Почтовое приложение открыто. Если оно не запустилось, напишите на <a href="mailto:redchief@rvzrus.ru">redchief@rvzrus.ru</a>.</div>:<form onSubmit={submit}><label>ФИО<input name="ФИО" required/></label><label>Компания<input name="Компания" required/></label><label>Телефон<input name="Телефон" type="tel" required/></label><label>Email<input name="Email" type="email" required/></label>{isStand&&<label className="wide">Комментарий<textarea name="Комментарий" rows="3"/></label>}<button className="action wide" type="submit"><span>Продолжить</span><Arrow/></button></form>}</section></div>}
 
-function preloadImages(urls, onSettled = () => {}, critical = true) {
-  return Promise.allSettled([...new Set(urls.filter(Boolean))].map((url) => new Promise((resolve) => {
-    const image = new Image();
-    image.decoding = 'async';
-    image.loading = 'eager';
-    image.fetchPriority = critical ? 'high' : 'low';
-    const done = () => { onSettled(); resolve(); };
-    image.onload = () => {
-      if (critical) image.decode().catch(() => {}).finally(done);
-      else done();
-    };
-    image.onerror = done;
-    image.src = url;
-  })));
-}
+function DragRail({children,className=''}){const ref=useRef(null),drag=useRef(null);return <div ref={ref} className={'drag-rail '+className} onPointerDown={e=>{if(e.button!==0)return;drag.current={x:e.clientX,left:ref.current.scrollLeft};ref.current.setPointerCapture(e.pointerId)}} onPointerMove={e=>{if(!drag.current)return;ref.current.scrollLeft=drag.current.left-(e.clientX-drag.current.x)}} onPointerUp={()=>drag.current=null} onPointerCancel={()=>drag.current=null}>{children}</div>}
 
-function MobileRegistration({ cta, onOpenApplication }) {
-  if (!cta) return null;
+function Hero({openRegistration,openStand}){return <section className="scene hero" data-scene id="top"><div className="hero-shade"/><div className="hero-copy reveal"><Kicker n="00">ЕЖЕГОДНАЯ ФОРУМ-ВЫСТАВКА</Kicker><h1><span>DEBT</span><span>TECH</span><em>2026</em></h1><p>{event.headline}</p><div className="hero-actions"><Action onClick={openRegistration}>Ранняя регистрация</Action><Action ghost onClick={openStand}>Забронировать стенд</Action></div></div><div className="hero-orbit-note"><span>13 NOV 2026</span><b>55.75° N / 37.61° E</b></div><div className="hero-count"><small>{event.countdownLabel}</small><Countdown/></div><div className="ticker">{ticker.map((t,i)=><span key={i}>{t}</span>)}</div><a href="#about" className="scroll-cue"><i/>SCROLL TO DISCOVER</a></section>}
 
-  if (cta.modal) {
-    return (
-      <button className="mobile-registration" type="button" onClick={() => onOpenApplication(cta.modal)}>
-        <span>{cta.label}</span>
-        <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
-      </button>
-    );
-  }
+function About(){return <section className="scene editorial" data-scene id="about"><div className="editorial-grid reveal"><Kicker n="01">О ФОРУМЕ</Kicker><h2>{about.lead}</h2><div className="stats">{about.stats.map(s=><div key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>)}</div><div className="feature-list">{about.features.map((f,i)=><div key={f}><span>{String(i+1).padStart(2,'0')}</span><p>{f}</p></div>)}</div><div className="topic-marquee"><div>{[...about.topics,...about.topics].map((t,i)=><span key={i}>{t}</span>)}</div></div></div></section>}
 
-  if (!cta.href) return null;
+function Venue(){const [photo,setPhoto]=useState(0);return <section className="scene venue" data-scene id="venue"><div className="venue-frame reveal"><img src={venue.images[photo]} alt="TAU — пространство музыкальных культур"/><div className="venue-overlay"><Kicker n="02">МЕСТО ПРОВЕДЕНИЯ</Kicker><h2>{venue.name}</h2><p>{venue.address}</p><Action href={venue.route} ghost>Смотреть на карте</Action></div><div className="venue-switch">{venue.images.map((src,i)=><button key={src} className={photo===i?'active':''} onClick={()=>setPhoto(i)}><span>0{i+1}</span><img src={src} alt=""/></button>)}</div></div></section>}
 
-  const isExternal = /^https?:\/\//.test(cta.href);
+function Gallery(){return <section className="scene gallery" data-scene id="gallery"><div className="section-head reveal"><Kicker n="03">КАДРЫ С DEBT TECH 2025</Kicker><h2>Не рендер.<br/>Настоящее событие.</h2><a href={legacyContent.heroVideo.embedUrl} target="_blank" rel="noreferrer">Смотреть видео 2025 <Arrow/></a></div><DragRail className="gallery-rail">{gallerySources.map((src,i)=><figure key={src}><img src={src} alt={`DEBT TECH 2025 — кадр ${i+1}`} draggable="false"/><figcaption>FRAME / {String(i+1).padStart(2,'0')}</figcaption></figure>)}</DragRail><div className="rail-hint">DRAG / SCROLL</div></section>}
 
-  return (
-    <a
-      className="mobile-registration"
-      href={cta.href}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noreferrer' : undefined}
-    >
-      <span>{cta.label}</span>
-      <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
-    </a>
-  );
-}
+function Program(){const [active,setActive]=useState(0);return <section className="scene program" data-scene id="program"><div className="section-head reveal"><Kicker n="04">ЧТО ЖДЁТ УЧАСТНИКОВ</Kicker><h2>Три сцены.<br/><span>Один день в движении.</span></h2></div><div className="stage-system reveal"><div className="stage-media"><img src={stageImages[active]} alt=""/><span>0{active+1} / 03</span><h3>{stages[active].title}</h3><small>{stages[active].label}</small></div><div className="stage-index">{stages.map((s,i)=><button key={s.title} onClick={()=>setActive(i)} className={active===i?'active':''}><span>0{i+1}</span><b>{s.title}</b><small>{s.label}</small></button>)}</div></div><div className="program-grid reveal">{program.map((p,i)=><article key={p.id}><span>0{i+1}</span><h3>{p.title}</h3>{p.items.map(x=><p key={x}>{x}</p>)}</article>)}</div><div className="private-grid reveal">{privateZones.map((p,i)=><article key={p.title}><span>PRIVATE / 0{i+1}</span><h3>{p.title}</h3><p>{p.text}</p></article>)}</div></section>}
+
+function Services(){const [active,setActive]=useState(0);return <section className="scene services" data-scene id="services"><div className="section-head reveal"><Kicker n="05">СЕРВИСЫ НА БОРТУ</Kicker><h2>Не витрина.<br/>Рабочие сценарии.</h2></div><div className="service-console reveal"><div className="service-tabs">{services.map((s,i)=><button key={s.title} className={active===i?'active':''} onClick={()=>setActive(i)}><span>0{i+1}</span><b>{s.title}</b><Arrow/></button>)}</div><article className="service-screen" key={active}><span>SERVICE / 0{active+1}</span><h3>{services[active].title}</h3><p className="service-lead">{services[active].lead}</p><div className="service-lines">{services[active].items.map(x=><p key={x}>{x}</p>)}</div><Action href="mailto:a.fefilova@rvzrus.ru">Связаться с менеджером</Action></article></div><ol className="service-steps reveal">{serviceSteps.map((x,i)=><li key={x}><span>0{i+1}</span><p>{x}</p></li>)}</ol></section>}
+
+function Participants(){const [active,setActive]=useState(0);const angle=i=>`${(360/participants.length)*i}deg`;return <section className="scene participants" data-scene id="participants"><div className="section-head reveal"><Kicker n="06">УЧАСТНИКИ</Kicker><h2>12 групп рынка.<br/><span>Одна орбита встречи.</span></h2></div><div className="participants-layout reveal"><div className="orbit-ui"><div className="orbit-center"><small>DEBT TECH</small><strong>{String(active+1).padStart(2,'0')}</strong><span>{participants[active]}</span></div>{participants.map((p,i)=><button key={p} style={{'--a':angle(i)}} className={active===i?'active':''} onClick={()=>setActive(i)}><span>{String(i+1).padStart(2,'0')}</span></button>)}</div><div className="participant-list">{participants.map((p,i)=><button key={p} onClick={()=>setActive(i)} className={active===i?'active':''}><span>{String(i+1).padStart(2,'0')}</span><b>{p}</b></button>)}</div></div></section>}
+
+function Organizer(){return <section className="scene organizer" data-scene id="organizer"><div className="organizer-layout reveal"><div className="organizer-copy"><Kicker n="07">ОРГАНИЗАТОР ФОРУМА</Kicker><img src="/assets/images/organizer/rvz-logo.svg" alt="Рынок Взыскания"/><h2>{organizer.lead}</h2><p>{organizer.license}</p><div className="organizer-stats">{organizer.stats.map(s=><div key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>)}</div></div><div className="organizer-cases"><article><img src="/assets/images/organizer/pko-300-2025.png" alt="Рейтинг ПКО-300"/><h3>{organizer.rating.title}</h3><p>{organizer.rating.text}</p></article><article><img src="/assets/images/organizer/navigator-preview.png" alt="DEBT TECH Навигатор"/><h3>{organizer.navigator.title}</h3><p>{organizer.navigator.text}</p></article></div></div><div className="organizer-features reveal">{organizer.features.map((f,i)=><p key={f}><span>0{i+1}</span>{f}</p>)}</div></section>}
+
+function Conferences(){return <section className="scene conferences" data-scene id="conferences"><div className="section-head reveal"><Kicker n="08">ДРУГИЕ КОНФЕРЕНЦИИ СМИ «РЫНОК ВЗЫСКАНИЯ» 2021–2026</Kicker><h2>Архив событий.</h2></div><DragRail className="conference-rail">{conferences.map(c=><a href={c.href} target="_blank" rel="noreferrer" key={c.id}><img src={localConference[c.id]||c.image} alt="" draggable="false"/><div><b>{c.title}</b><strong>{c.year}</strong><Arrow/></div></a>)}</DragRail><div className="rail-hint">DRAG / SCROLL</div></section>}
+
+function Tariffs({select}){return <section className="scene tariffs" data-scene id="tariffs"><div className="section-head reveal"><Kicker n="09">ТАРИФЫ</Kicker><h2>Выберите<br/>уровень доступа.</h2><p>Стоимость актуальна до 25 сентября.</p></div><div className="tariff-grid reveal">{tariffs.map((t,i)=><article key={t.id} className={i===1?'featured':''}><span>PASS / 0{i+1}</span><h3>{t.title}</h3><strong>{t.price}</strong><div>{tariffFeatures.map(f=><p key={f}>+ {f}</p>)}</div><Action onClick={()=>select(t)}>Принять участие</Action></article>)}</div></section>}
+
+function Contacts(){return <section className="scene contacts" data-scene id="contacts"><div className="contacts-wrap reveal"><Kicker n="10">КОНТАКТЫ</Kicker><h2>{about.rendezvous}</h2><div className="contact-grid"><div><small>АККРЕДИТАЦИЯ СМИ</small><a href="mailto:org@rvzrus.ru">org@rvzrus.ru</a></div><div><small>БИЛЕТ УЧАСТНИКА</small><a href="mailto:a.fefilova@rvzrus.ru">a.fefilova@rvzrus.ru</a><a href="tel:+79657868846">+7 965 786 88 46</a></div><div><small>ПАРТНЕРСТВО И ВЫСТУПЛЕНИЯ</small><a href="mailto:org@rvzrus.ru">org@rvzrus.ru</a><a href="tel:+79252236707">+7 925 223 67 07</a></div></div><footer><span>© 2026 DEBT TECH</span><a href={links.privacy}>Политика конфиденциальности</a></footer></div></section>}
+
+export default function App(){const [nav,setNav]=useState(false),[modal,setModal]=useState(null),[tariff,setTariff]=useState(null);useEffect(()=>{const io=new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersecting&&e.target.classList.add('seen')),{threshold:.12,rootMargin:'0px 0px -8%'});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));return()=>io.disconnect()},[]);useEffect(()=>{document.body.style.overflow=(nav||modal)?'hidden':'';return()=>{document.body.style.overflow=''}},[nav,modal]);return <><SpaceStage/><ChapterNav open={nav} setOpen={setNav}/><main><Hero openRegistration={()=>setModal('registration')} openStand={()=>setModal('stand')}/><About/><Venue/><Gallery/><Program/><Services/><Participants/><Organizer/><Conferences/><Tariffs select={t=>{setTariff(t);setModal('registration')}}/><Contacts/></main>{modal&&<Modal kind={modal} tariff={tariff} close={()=>{setModal(null);setTariff(null)}}/>}</>}
