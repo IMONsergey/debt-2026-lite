@@ -10,7 +10,7 @@ const destinations = [
   { id: 'contacts', targetId: 'contacts', label: 'Контакты', spy: true },
 ];
 
-const shipImageSrc = `${import.meta.env.BASE_URL}assets/menu-spaceship.png`;
+const shipImageSrc = 'https://raw.githubusercontent.com/IMONsergey/debt-2026-lite/47931091f6d12f29ba1b3e6edb3af88026c6d2e3/public/assets/menu-spaceship.png';
 const shipDockX = 12;
 const shipOrbitX = -3;
 
@@ -66,7 +66,8 @@ export function SpaceNavigation({ mobile = false }) {
     window.addEventListener('resize', schedule);
     window.addEventListener('wheel', interrupt, { passive: true });
     window.addEventListener('touchstart', interrupt, { passive: true });
-    window.addEventListener('scrollend', interrupt);
+    const onScrollEnd = () => { if (!scrollAnimationRef.current) interrupt(); };
+    window.addEventListener('scrollend', onScrollEnd);
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
@@ -74,7 +75,7 @@ export function SpaceNavigation({ mobile = false }) {
       window.removeEventListener('resize', schedule);
       window.removeEventListener('wheel', interrupt);
       window.removeEventListener('touchstart', interrupt);
-      window.removeEventListener('scrollend', interrupt);
+      window.removeEventListener('scrollend', onScrollEnd);
     };
   }, []);
 

@@ -1,13 +1,13 @@
 {
-  "name": "debt-2026-lite",
-  "version": "1.0.0",
+  "name": "debt-tech-field-concept",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview",
-    "forms:telegram": "node server/forms-telegram.mjs"
+    "preview": "vite preview --host 127.0.0.1",
+    "setup": "node scripts/setup-assets.mjs --fonts-only"
   },
   "dependencies": {
     "lucide-react": "^1.43.0",
@@ -17,5 +17,8 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",
     "vite": "^7.1.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

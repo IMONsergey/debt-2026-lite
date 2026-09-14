@@ -1,318 +1,75 @@
-import { useEffect, useState } from 'react';
-import { ApplicationModal } from './components/ApplicationModal.jsx';
-import { SitePage } from './components/SitePage.jsx';
-import { VideoWidget } from './components/VideoWidget.jsx';
-import { assetUrl } from './lib/assets.js';
-import './styles/hero-only.css';
-import './styles/hero-only-media-fixes.css';
-import './styles/soft-reveal.css';
-import './styles/venue-section.css';
-import './styles/mobile-registration.css';
-import './styles/about-forum.css';
-import './styles/tariffs.css';
-import './styles/contact-info.css';
-
-const galleryImages = [
-  '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
-  '06.webp', '07.webp', '08.webp', '09.webp', '10.jpg',
-  '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg',
-  '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
-];
-
-const content = {
-  pageMode: 'hero-landing',
-  site: {
-    title: 'DEBT TECH 2026',
-    date: '13 ноября 2026',
-    city: 'Москва',
-    logo: assetUrl('assets/debttech-logo.svg'),
-  },
-  menu: {
-    groups: [],
-    cta: {
-      label: 'Ранняя регистрация',
-      href: '#tariffs',
-    },
-    secondaryCta: {
-      label: 'Забронировать стенд',
-      href: 'https://t.me/anna_joys',
-      modal: 'stand-booking',
-    },
-    sidebar: {
-      contactLabel: 'Контакты для связи',
-      contactEmail: 'redchief@rvzrus.ru',
-      organizersLabel: 'ОРГАНИЗАТОРЫ',
-      organizersImage: assetUrl('assets/icons/organizers.svg'),
-    },
-  },
-  hero: {
-    title: 'DEBT TECH 2026',
-    bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
-    countdownLabel: 'Время до запуска',
-    countdownTarget: '2026-11-13T00:00:00+03:00',
-    countdown: [
-      { value: '00', label: 'дней' },
-      { value: '00', label: 'часов' },
-      { value: '00', label: 'минут' },
-      { value: '00', label: 'секунд' },
-    ],
-  },
-  ticker: {
-    items: [
-      '800+ делегатов',
-      '70+ спикеров',
-      '50+ участников выставки',
-      '3 сцены',
-      'Креативная вечерняя программа',
-      'Интерактивные зоны',
-      'Пресс-студия',
-      'Фуршет',
-      'VIP-резиденции',
-      'Afterparty',
-    ],
-  },
-  heroVideo: {
-    title: 'Как это было в 2025',
-    previewUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=true&controls=false&loop=true&muted=true&transparent=false',
-    embedUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=true&transparent=true',
-    widgetUrl: 'https://kinescope.io/embed/dd7dQ3BMbTCeSfteZFXCiS?autopause=false&autoplay=true&background=false&controls=true&loop=true&muted=false&transparent=false',
-  },
-  venue: {
-    title: 'Место проведения',
-    date: '13 ноября 2026',
-    name: 'TAU — пространство музыкальных культур',
-    address: 'Москва, Рязанский проспект, 8Ас10',
-    routeLabel: 'Смотреть на карте',
-    routeHref: 'https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D0%A0%D1%8F%D0%B7%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%2C%208%D0%90%D1%8110',
-    images: [
-      { image: assetUrl('assets/images/venue/event.webp'), alt: 'Событие в пространстве TAU' },
-      { image: assetUrl('assets/images/venue/lounge.webp'), alt: 'Лаунж-зона TAU' },
-      { image: assetUrl('assets/images/venue/hall.webp'), alt: 'Главный зал TAU' },
-    ],
-  },
-  gallery: {
-    title: 'Кадры с DEBT TECH 2025',
-    ctaLabel: 'Смотреть все фото',
-    href: 'https://rvz.bitrix24.ru/~0IZ9x',
-    items: galleryImages.map((name, index) => ({
-      image: assetUrl(`assets/images/gallery/${name}`),
-      alt: `DEBT TECH 2025 — кадр ${index + 1}`,
-    })),
-  },
-  tariffs: {
-    eyebrow: 'Multipass',
-    title: 'Welcome',
-    logoImage: assetUrl('assets/images/tariffs/logo-form.svg'),
-    handImage: assetUrl('assets/images/tariffs/hand-spaceman.png'),
-    offer: 'Скидка 50% на один билет любого тарифа для представителя компании, которая впервые участвует в DEBT TECH.',
-    agreement: 'Скидка предоставляется по согласованию с организаторами.',
-    note: 'Стоимость актуальна до 25 сентября',
-    ctaLabel: 'Принять участие',
-    ctaModal: 'early-registration',
-    items: [
-      {
-        id: 'business',
-        title: 'Деловой',
-        price: '44 000 ₽',
-        background: assetUrl('assets/images/tariffs/business-bg.svg'),
-        icon: assetUrl('assets/images/tariffs/business-icon.svg'),
-        features: [
-          { label: 'Деловая программа', active: true },
-          { label: 'Кофе-брейк, обед', active: true },
-          { label: 'Фотоотчет', active: true },
-          { label: 'Презентации спикеров', active: true },
-          { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: false },
-          { label: 'Space Disco Afterparty', active: false },
-        ],
-      },
-      {
-        id: 'full',
-        title: 'Полный',
-        price: '49 000 ₽',
-        background: assetUrl('assets/images/tariffs/full-bg.svg'),
-        icon: assetUrl('assets/images/tariffs/full-icon.svg'),
-        features: [
-          { label: 'Деловая программа', active: true },
-          { label: 'Кофе-брейк, обед', active: true },
-          { label: 'Фотоотчет', active: true },
-          { label: 'Презентации спикеров', active: true },
-          { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: true },
-          { label: 'Space Disco Afterparty', active: false },
-        ],
-      },
-      {
-        id: 'full-plus',
-        title: 'Полный Plus',
-        price: '66 000 ₽',
-        background: assetUrl('assets/images/tariffs/full-plus-bg.svg'),
-        icon: assetUrl('assets/images/tariffs/full-plus-icon.svg'),
-        features: [
-          { label: 'Деловая программа', active: true },
-          { label: 'Кофе-брейк, обед', active: true },
-          { label: 'Фотоотчет', active: true },
-          { label: 'Презентации спикеров', active: true },
-          { label: 'Видеозапись конференции', active: true },
-          { label: 'Креативная вечерняя программа', active: true },
-          { label: 'Space Disco Afterparty', active: true },
-        ],
-      },
-    ],
-  },
-  aboutForum: {
-    eyebrow: 'О форуме',
-    title: 'DEBT TECH 2026',
-    description: 'Ежегодная форум-выставка о технологиях на рынке долговых активов',
-    planetImage: assetUrl('assets/images/about-forum/planet-about.png'),
-    features: [
-      'Эксклюзивная деловая программа с практическими кейсами',
-      'Активное участие представителей государственных органов и СРО',
-      'Спецформаты и услуги для участников',
-      'Доступ к готовым решениям: демостенды, контакты интеграторов и разработчиков',
-      'Новые партнёры и сделки',
-    ],
-    stats: [
-      { value: '800+', label: 'участников' },
-      { value: '400+', label: 'компаний' },
-      { value: '100+', label: 'спикеров' },
-      { value: '50+', label: 'партнеров' },
-    ],
-    tags: [
-      { id: 'artificial-intelligence', label: 'Искусственный интеллект', icon: assetUrl('assets/images/about-forum/tags/artificial-intelligence.svg') },
-      { id: 'big-data', label: 'Big Data', icon: assetUrl('assets/images/about-forum/tags/big-data.svg') },
-      { id: 'ai-agents', label: 'AI-агенты', icon: assetUrl('assets/images/about-forum/tags/ai-agents.svg') },
-      { id: 'speech-analytics', label: 'Речевая аналитика', icon: assetUrl('assets/images/about-forum/tags/speech-analytics.svg') },
-      { id: 'bi', label: 'BI', icon: assetUrl('assets/images/about-forum/tags/bi.svg') },
-      { id: 'low-code', label: 'Low-code', icon: assetUrl('assets/images/about-forum/tags/low-code.svg') },
-      { id: 'import-substitution', label: 'Импортозамещение', icon: assetUrl('assets/images/about-forum/tags/import-substitution.svg') },
-      { id: 'data-driven', label: 'Data driven', icon: assetUrl('assets/images/about-forum/tags/data-driven.svg') },
-      { id: 'e-justice', label: 'Электронное правосудие', icon: assetUrl('assets/images/about-forum/tags/e-justice.svg') },
-      { id: 'distressed-debt', label: 'Проблемный долг', icon: assetUrl('assets/images/about-forum/tags/distressed-debt.svg') },
-      { id: 'cession', label: 'Цессия', icon: assetUrl('assets/images/about-forum/tags/cession.svg') },
-      { id: 'investments', label: 'Инвестиции', icon: assetUrl('assets/images/about-forum/tags/investments.svg') },
-      { id: 'e-auctions', label: 'Электронные торги', icon: assetUrl('assets/images/about-forum/tags/e-auctions.svg') },
-    ],
-  },
-  contacts: {
-    title: 'Контактная информация',
-    accreditationEmail: 'org@rvzrus.ru',
-    tickets: {
-      title: 'Приобрести билет участника:',
-      email: 'a.fefilova@rvzrus.ru',
-      phone: '+7 965 786 88 46',
-      phoneHref: 'tel:+79657868846',
-    },
-    partnership: {
-      title: 'По вопросам партнерства и выступления:',
-      email: 'org@rvzrus.ru',
-      phone: '+7 925 223 67 07',
-      phoneHref: 'tel:+79252236707',
-    },
-    website: 'https://rvzrus.ru/',
-  },
-  footer: {
-    copyright: '© 2026 DEBT TECH. Все права защищены.',
-    privacyLabel: 'Политика конфиденциальности и персональных данных',
-    privacyHref: 'https://rvzrus.ru/politic',
-  },
-  forms: {
-    eventId: 'debt-tech-2026',
-    contactEmail: 'redchief@rvzrus.ru',
-    telegramUrl: 'https://t.me/anna_joys',
-    channels: [
-      { id: 'telegram', label: 'Telegram', href: 'https://t.me/rvzrus_chat' },
-      { id: 'max', label: 'Max', href: 'https://max.ru/id9725047250_biz' },
-    ],
-  },
-};
-
-export default function App() {
-  const [activeForm, setActiveForm] = useState(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
-    const criticalImages = [
-      assetUrl('assets/hero-experiment/planet.webp'),
-      assetUrl('assets/hero-experiment/logo-main-block.svg'),
-    ];
-    let completed = 0;
-    const reportProgress = () => {
-      completed += 1;
-      if (!cancelled) document.dispatchEvent(new CustomEvent('debt:progress', { detail: { completed, total: criticalImages.length + 1 } }));
-    };
-    Promise.allSettled([
-      preloadImages(criticalImages, reportProgress),
-      document.fonts.ready.then(reportProgress, reportProgress),
-    ]).then(() => {
-      if (!cancelled) document.dispatchEvent(new Event('debt:ready'));
-    });
-    return () => { cancelled = true; };
-  }, []);
-
-  return (
-    <>
-      <div className="hero-only-view">
-        <SitePage content={content} onOpenApplication={setActiveForm} />
-      </div>
-      <VideoWidget video={content.heroVideo} />
-      <MobileRegistration cta={content.menu.cta} onOpenApplication={setActiveForm} />
-      {activeForm ? (
-        <ApplicationModal
-          key={typeof activeForm === 'string' ? activeForm : `${activeForm.kind}-${activeForm.tariff?.id ?? 'form'}`}
-          kind={typeof activeForm === 'string' ? activeForm : activeForm.kind}
-          selectedTariff={typeof activeForm === 'string' ? null : activeForm.tariff}
-          config={content.forms}
-          privacyHref={content.footer.privacyHref}
-          onClose={() => setActiveForm(null)}
-        />
-      ) : null}
-    </>
-  );
-}
-
-function preloadImages(urls, onSettled = () => {}, critical = true) {
-  return Promise.allSettled([...new Set(urls.filter(Boolean))].map((url) => new Promise((resolve) => {
-    const image = new Image();
-    image.decoding = 'async';
-    image.loading = 'eager';
-    image.fetchPriority = critical ? 'high' : 'low';
-    const done = () => { onSettled(); resolve(); };
-    image.onload = () => {
-      if (critical) image.decode().catch(() => {}).finally(done);
-      else done();
-    };
-    image.onerror = done;
-    image.src = url;
-  })));
-}
-
-function MobileRegistration({ cta, onOpenApplication }) {
-  if (!cta) return null;
-
-  if (cta.modal) {
-    return (
-      <button className="mobile-registration" type="button" onClick={() => onOpenApplication(cta.modal)}>
-        <span>{cta.label}</span>
-        <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
-      </button>
-    );
-  }
-
-  if (!cta.href) return null;
-
-  const isExternal = /^https?:\/\//.test(cta.href);
-
-  return (
-    <a
-      className="mobile-registration"
-      href={cta.href}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noreferrer' : undefined}
-    >
-      <span>{cta.label}</span>
-      <img src={assetUrl('assets/icons/arrow-up.svg')} alt="" aria-hidden="true" />
-    </a>
-  );
+import {useState,useEffect,useRef,lazy,Suspense} from 'react';
+import {FixedMenu} from './components/FixedMenu.jsx';
+import {legacyContent} from './content/legacy.js';
+import {event,about,venue,gallery,stages,program,privateZones,services,serviceSteps,participants,organizer,conferences,tariffFeatures,tariffs,links} from './content/site.js';
+const Horizon=lazy(()=>import('./vendor/BeyondHorizon.adapted.tsx'));
+const NeonBorder=lazy(()=>import('./vendor/NeonBorder.original.tsx'));
+const n=(v)=>String(v).padStart(2,'0');
+function useVisible(ref){const [visible,set]=useState(false);useEffect(()=>{if(!ref.current)return;let inside=false;const sync=()=>set(inside&&!document.hidden);const o=new IntersectionObserver(([e])=>{inside=e.isIntersecting;sync()},{rootMargin:'40px'});o.observe(ref.current);document.addEventListener('visibilitychange',sync);return()=>{o.disconnect();document.removeEventListener('visibilitychange',sync)}},[ref]);return visible}
+function Arrow(){return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 18 18 5M5 5h13v13" stroke="currentColor" strokeWidth="1.5"/></svg>}
+function Plus({on=false}){return <span aria-hidden="true">{on?'✓':'+'}</span>}
+function Tag({children}){return <span className="f-tag">{children}</span>}
+function Cta({children,onClick,href,quiet=false}){return href?<a className={'f-cta '+(quiet?'is-quiet':'')} href={href} target={href.startsWith('http')?'_blank':undefined} rel="noreferrer">{children}<Arrow/></a>:<button className={'f-cta '+(quiet?'is-quiet':'')} onClick={onClick}>{children}<Arrow/></button>}
+function OpticalField({motion}){const host=useRef(null),visible=useVisible(host);return <div ref={host} className="optical-field" aria-hidden="true">
+  <div className="field-haze"/><div className="field-caustic"/>
+  <svg viewBox="0 0 780 1000" className="field-lens" fill="none">
+  <defs><linearGradient id="edge" x1="600" y1="0" x2="230" y2="880" gradientUnits="userSpaceOnUse"><stop stopColor="#93c6ff" stopOpacity="0"/><stop offset=".33" stopColor="#0c3f9d"/><stop offset=".6" stopColor="#81baff"/><stop offset=".7" stopColor="#ffffff"/><stop offset=".77" stopColor="#53afff"/><stop offset="1" stopColor="#154bff" stopOpacity="0"/></linearGradient><linearGradient id="glass" x1="350" y1="310" x2="630" y2="540" gradientUnits="userSpaceOnUse"><stop stopColor="#071124" stopOpacity=".2"/><stop offset=".75" stopColor="#4481d5" stopOpacity=".13"/><stop offset="1" stopColor="#b8e4ff" stopOpacity=".35"/></linearGradient><linearGradient id="glint" x1="330" y1="780" x2="590" y2="-10"><stop stopColor="#026fff"/><stop offset=".34" stopColor="#e5f6ff"/><stop offset="1" stopColor="#759aff" stopOpacity="0"/></linearGradient><filter id="haze"><feGaussianBlur stdDeviation="33"/></filter><filter id="bloom"><feGaussianBlur stdDeviation="9"/></filter></defs>
+  <path d="M553 -110 740 -48 435 1000 249 939Z" fill="url(#glass)"/>
+  <path d="M618 -135 281 1016" stroke="url(#edge)" strokeWidth="112" filter="url(#haze)" opacity=".6"/>
+  <path d="M649 -92 366 837 Q351 888 308 958" stroke="url(#edge)" strokeWidth="20" filter="url(#bloom)"/>
+  <path d="M649 -92 366 837 Q351 888 308 958" stroke="url(#edge)" strokeWidth="3"/>
+  {Array.from({length:21},(_,i)=><path key={i} d={`M${528+i*8} -120 ${226+i*8} 950`} stroke="url(#glint)" strokeWidth={i%4===0?1.7:.6} opacity={.12+i*.014}/>)}
+  <path d="M105 860Q438 1010 698 480" stroke="url(#edge)" strokeWidth="16" filter="url(#bloom)" opacity=".65"/>
+  <path d="M105 860Q438 1010 698 480" stroke="url(#edge)" strokeWidth="1.3"/>
+  </svg>
+  {motion&&visible&&<Suspense fallback={null}><div className="original-horizon"><Horizon style={{minWidth:0,minHeight:0}} background="#02040a" coreColor="#e6f5ff" midColor="#397cff" deepColor="#071b72" horizonY={.7} horizonRadius={.85} coreSize={.008} coreHover={.027} haze={.08} brightness={.55} speed={.12}/></div></Suspense>}
+</div>}
+function EdgeAccent({motion}){const ref=useRef(null),visible=useVisible(ref);return <div ref={ref} className="source-edge" aria-hidden="true">{visible&&motion&&<Suspense fallback={null}><NeonBorder color="#9acfff" thickness={1.5} rounded={12} glow={18} speed={3} borderSize={26}/></Suspense>}</div>}
+function Countdown(){const[t,set]=useState(Date.now());useEffect(()=>{let id=setInterval(()=>set(Date.now()),1000);return()=>clearInterval(id)},[]);const left=Math.max(0,new Date(event.target).valueOf()-t);return <div className="f-countdown" aria-label="Время для запуска"><small>ВРЕМЯ ДЛЯ ЗАПУСКА</small><div>{[[Math.floor(left/864e5),'дней'],[Math.floor(left/36e5)%24,'часов'],[Math.floor(left/6e4)%60,'минут'],[Math.floor(left/1e3)%60,'секунд']].map(([v,l])=><span key={l}><b>{n(v)}</b><i>{l}</i></span>)}</div></div>}
+function InterestButton({label,chosen,toggle}){return <button className={'interest-btn '+(chosen?'chosen':'')} onClick={()=>toggle(label)} aria-pressed={chosen}><Plus on={chosen}/>{label}</button>}
+function Heading({index,title,side}){return <div className="f-heading"><div><Tag>{index}</Tag><h2>{title}</h2></div>{side&&<span>{side}</span>}</div>}
+function Dialog({children,title,close}){const d=useRef(null);useEffect(()=>{const el=d.current;el.showModal();return()=>{el.close()}},[]);return <dialog className="f-dialog" aria-label={title} ref={d} onCancel={close} onClick={e=>{if(e.target===d.current)close()}}><div className="dialog-top"><h2>{title}</h2><button onClick={close} aria-label="Закрыть">×</button></div>{children}</dialog>}
+export default function App(){
+ const [motion,setMotion]=useState(false),[purpose,setPurpose]=useState(0),[stage,setStage]=useState(0),[service,setService]=useState(0),[photo,setPhoto]=useState(0),[year,setYear]=useState('Все'),[tier,setTier]=useState(1),[dialog,setDialog]=useState(null),[lightbox,setLightbox]=useState(null),[selected,setSelected]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('debt-field-interests')||'[]');return Array.isArray(saved)?saved.filter(x=>typeof x==='string'):[]}catch{return[]}});
+ const [copyStatus,setCopyStatus]=useState('');
+ useEffect(()=>{try{localStorage.setItem('debt-field-interests',JSON.stringify(selected))}catch{}},[selected]);
+ useEffect(()=>{document.documentElement.dataset.motion=motion?'enabled':'paused';return()=>{delete document.documentElement.dataset.motion}},[motion]);
+ useEffect(()=>{if(lightbox===null)return;const key=e=>{if(e.key==='ArrowRight')setLightbox(i=>(i+1)%gallery.length);if(e.key==='ArrowLeft')setLightbox(i=>(i-1+gallery.length)%gallery.length)};document.addEventListener('keydown',key);return()=>document.removeEventListener('keydown',key)},[lightbox]);
+ useEffect(()=>{const key=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key))return;const list=e.target.closest?.('.field-main [role=tablist]');if(!list)return;const tabs=[...list.querySelectorAll('[role=tab]')];let i=tabs.indexOf(e.target);if(i<0)return;e.preventDefault();i=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(['ArrowLeft','ArrowUp'].includes(e.key)?-1:1)+tabs.length)%tabs.length;tabs[i].focus();tabs[i].click()};document.addEventListener('keydown',key);return()=>document.removeEventListener('keydown',key)},[]);
+ const toggle=s=>setSelected(v=>v.includes(s)?v.filter(x=>x!==s):[...v,s]);
+ const purposes=[{title:'Изучить решения',to:'#program',text:'Масштабная выставка продуктовых решений и технологий',items:['Деловая программа','Выставка решений','DEBT TECH / НАВИГАТОР']},{title:'Найти контакты',to:'#services',text:'Помогаем найти контакты и договориться о встрече',items:['Сервис деловых знакомств','TALK ZONE','Зона переговоров и сделок']},{title:'Представить компанию',to:'#services',text:'Проводим видеоинтервью с гостями',items:['Пресс-студия «Рынка Взыскания»','Зона переговоров и сделок','Выставка решений']}];
+ const choices=purposes[purpose];
+ const contactHref=`mailto:a.fefilova@rvzrus.ru?subject=${encodeURIComponent('DEBT TECH 2026 — участие')}&body=${encodeURIComponent('Здравствуйте! Интересует участие в DEBT TECH 2026.\nТариф: '+tariffs[tier].title+'\nМои интересы: '+selected.join(', '))}`;
+ return <><FixedMenu {...legacyContent} video={legacyContent.heroVideo} onOpenApplication={()=>setDialog('stand')}/><main className="field-main">
+ <section className="field-hero" id="top" onPointerMove={e=>{if(e.pointerType==='mouse'){const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--mx',(e.clientX-r.left)/r.width-.5);e.currentTarget.style.setProperty('--my',(e.clientY-r.top)/r.height-.5)}}} onPointerLeave={e=>{e.currentTarget.style.setProperty('--mx',0);e.currentTarget.style.setProperty('--my',0)}}>
+  <OpticalField motion={motion}/><div className="hero-topline"><span>ЕЖЕГОДНАЯ ФОРУМ-ВЫСТАВКА</span><span>{event.date} · {event.city}</span></div>
+  <div className="hero-story"><p className="hero-kicker">О технологиях на рынке<br/>долговых активов</p><h1>DEBT<br/>TECH<span>/ 2026</span></h1><p className="hero-summary">{event.headline}</p><Cta href="#tariffs">Ранняя регистрация</Cta></div>
+  <div className="hero-pass"><span className="pass-edge"/><div><span>МОСКВА</span><b>13.11</b><small>TAU</small></div><span className="pass-year">2026</span></div>
+  <div className="hero-bottom"><Countdown/><button className="f-micro" onClick={()=>setMotion(v=>!v)} aria-pressed={motion}><span className={'motion-lamp '+(motion?'on':'')}/>{motion?'Живой свет включён':'Включить живой свет'}</button></div>
+ </section>
+ <section className="about-field" id="about-forum"><div className="about-top"><Tag>01 / О ФОРУМЕ</Tag><p>{about.lead}</p><span className="about-return">13 ноября<br/>Москва</span></div>
+ <div className="stats-line">{about.stats.map(s=><div key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>)}</div>
+ <div className="benefits-line">{about.features.map((t,i)=><div key={t}><span>{n(i+1)}</span><p>{t}</p></div>)}</div>
+ <div className="intent-workspace"><div className="intent-question"><Tag>ВАШЕ УЧАСТИЕ</Tag><h2>С чего<br/>начнём?</h2><p>Выберите интересы.<br/>Ваш выбор останется под рукой.</p><button className="f-link" onClick={()=>setDialog('plan')}>Мой выбор <span>{n(selected.length)}</span> <Arrow/></button></div>
+ <div className="intent-surface"><EdgeAccent motion={motion}/><div className="intent-tabs" role="tablist" aria-label="Цель посещения">{purposes.map((c,i)=><button key={c.title} role="tab" aria-selected={purpose===i} aria-controls="purpose-panel" id={'purpose-'+i} onClick={()=>setPurpose(i)}>{c.title}</button>)}</div><div role="tabpanel" id="purpose-panel" aria-labelledby={'purpose-'+purpose}><span className="intent-number">0{purpose+1}</span><h3>{choices.text}</h3><div className="interest-list">{choices.items.map(s=><InterestButton key={s} label={s} chosen={selected.includes(s)} toggle={toggle}/>)}</div><a className="f-link" href={choices.to}>Посмотреть форматы <Arrow/></a></div><div className="surface-light"/></div></div>
+ <div className="topic-rail" aria-label="Темы форума">{[...new Set(about.topics)].map(s=><InterestButton key={s} label={s} chosen={selected.includes(s)} toggle={toggle}/>)}</div>
+ </section>
+ <section className="program-field" id="program"><Heading index="02 / ПРОГРАММА" title={<>Три сцены.<br/><span>Разные перспективы.</span></>} side="Три сцены с деловой программой"/>
+ <div className="stage-viewport"><div className="stage-image" style={{backgroundImage:`url('${venue.images[stage]}')`}}/><div className="stage-vignette"/><div className="stage-top"><span>DEBT TECH / 2026</span><span>0{stage+1} — 03</span></div><div className="stage-title" key={stage}><Tag>{stages[stage].label}</Tag><h3>{stages[stage].title}</h3><InterestButton label={stages[stage].title} chosen={selected.includes(stages[stage].title)} toggle={toggle}/></div><div className="stage-tabs" role="tablist" aria-label="Сцены форума">{stages.map((s,i)=><button key={s.title} role="tab" aria-selected={stage===i} onClick={()=>setStage(i)}><span>0{i+1}</span>{s.label}<Arrow/></button>)}</div></div><p className="image-note">Фотографии пространства TAU. Не схема расположения сцен.</p>
+ <div className="program-formats">{program.map((c,i)=><details key={c.id} open={i===0}><summary><span>{n(i+1)}</span><h3>{c.title}</h3><b>+</b></summary><div>{c.items.map(t=><p key={t}>{t}</p>)}<InterestButton label={c.title} chosen={selected.includes(c.title)} toggle={toggle}/></div></details>)}</div>
+ <div className="private-zones">{privateZones.map(z=><div key={z.title}><h3>{z.title}</h3><p>{z.text}</p><InterestButton label={z.title} chosen={selected.includes(z.title)} toggle={toggle}/></div>)}</div>
+ </section>
+ <section className="venue-field" id="venue"><Heading index="03 / МЕСТО ПРОВЕДЕНИЯ" title="Пространство встречи."/><div className="venue-picture"><img src={venue.images[photo]} alt="Пространство TAU" loading="lazy"/><div className="venue-word">TAU</div><div className="venue-switch">{venue.images.map((s,i)=><button key={s} onClick={()=>setPhoto(i)} className={photo===i?'active':''} aria-label={'Фото площадки '+(i+1)}>{n(i+1)}</button>)}</div></div><div className="venue-caption"><div><h3>{venue.name}</h3><p>{venue.address}</p></div><Cta quiet href={venue.route}>Смотреть на карте</Cta></div></section>
+ <section className="gallery-field" id="gallery"><Heading index="04 / КАДРЫ" title={<>DEBT TECH <span>2025</span></>} side="20 фотографий прошлого форума"/><div className="gallery-strip" tabIndex={0} aria-label="Фотографии, прокрутите горизонтально">{gallery.map((g,i)=><button key={g.src} onClick={()=>setLightbox(i)} aria-label={'Открыть фотографию '+(i+1)}><img src={g.src} alt={g.alt} loading="lazy"/><span>{n(i+1)} / 20 <b>↗</b></span></button>)}</div></section>
+ <section className="services-field" id="services"><Heading index="05 / СЕРВИСЫ" title={<>Не только<br/><span>деловая программа.</span></>}/><div className="service-workspace"><div className="service-rail" role="tablist" aria-label="Сервисы на борту">{services.map((s,i)=><button key={s.title} role="tab" aria-selected={i===service} onClick={()=>setService(i)}><small>0{i+1}</small><span>{s.title}</span><Arrow/></button>)}</div><div className="service-detail"><Tag>СЕРВИСЫ НА БОРТУ DEBT TECH 2026</Tag><h3>{services[service].lead}</h3><ul>{services[service].items.map(s=><li key={s}>{s}</li>)}</ul>{service===1&&<ol>{serviceSteps.map(s=><li key={s}>{s}</li>)}</ol>}<Cta href={service===2?'mailto:redchief@rvzrus.ru':'mailto:org@rvzrus.ru'} quiet>{service===2?'Записаться на интервью':'Связаться с организаторами'}</Cta><div className="detail-light"/></div></div></section>
+ <section className="people-field" id="participants"><Heading index="06 / ОБ УЧАСТНИКАХ" title={<>Вся отрасль.<br/><span>В одном пространстве.</span></>}/><p className="section-explainer">Отметьте категории, которые вам интересны. Это личный список, а не подтверждённые встречи.</p><div className="participants-list">{participants.map((s,i)=><button key={s} onClick={()=>toggle(s)} aria-pressed={selected.includes(s)}><small>{n(i+1)}</small><span>{s}</span><Plus on={selected.includes(s)}/></button>)}</div></section>
+ <section className="organizer-field"><Heading index="07 / ОРГАНИЗАТОР" title="Рынок Взыскания"/><div className="organizer-editorial"><div><h3>{organizer.lead}</h3><p>{organizer.license}</p><div className="organizer-stats">{organizer.stats.map(s=><div key={s.label}><b>{s.value}</b><span>{s.label}</span></div>)}</div><Cta quiet href={links.organizer}>Сайт организатора</Cta></div><ol>{organizer.features.map(s=><li key={s}>{s}</li>)}</ol></div><div className="organizer-tools"><div><Tag>{organizer.rating.title}</Tag><p>{organizer.rating.text}</p></div><div><Tag>{organizer.navigator.title}</Tag><p>{organizer.navigator.text}</p></div></div></section>
+ <section className="archive-field" id="conferences"><Heading index="08 / АРХИВ" title={<>Другие конференции<br/><span>СМИ «Рынок Взыскания»</span></>} side="2021–2026"/><div className="year-filter" aria-label="Выбрать год">{['Все',2026,2025,2024,2023,2022,2021].map(y=><button key={y} onClick={()=>setYear(y)} aria-pressed={year===y}>{y}</button>)}</div><div className="archive-list">{conferences.filter(c=>year==='Все'||c.year===year).map(c=><a href={c.href} key={c.id} target="_blank" rel="noreferrer"><span className="archive-name">{c.title}</span><b>{c.year}</b><Arrow/></a>)}</div><p className="image-note">В этом концепте проверяется временная навигация. Финальные карточки архива сохранят фотографии, синюю плашку названия и год снизу.</p></section>
+ <section className="tickets-field" id="tariffs"><Heading index="09 / УЧАСТИЕ" title={<>Ваш <span>Multipass.</span></>} side="Стоимость актуальна до 25 сентября"/><div className="ticket-workspace"><div className="tariff-selector" role="tablist" aria-label="Тарифы">{tariffs.map((t,i)=><button key={t.id} role="tab" aria-selected={tier===i} onClick={()=>setTier(i)}><span>{t.title}</span><b>{t.price}</b><Arrow/></button>)}<p>В исходном Word у всех тарифов одинаковый состав. Различия необходимо подтвердить у организаторов; в концепте они не придуманы.</p></div><div className="boarding-pass"><div className="pass-head"><span>DEBT TECH / 2026</span><span>МОСКВА</span></div><small>MULTIPASS WELCOME</small><h3>{tariffs[tier].title}</h3><ul>{tariffFeatures.map(t=><li key={t}>✓ <span>{t}</span></li>)}</ul><div className="ticket-price"><strong>{tariffs[tier].price}</strong><span>13 / 11 / 2026</span></div><Cta onClick={()=>setDialog('registration')}>Принять участие</Cta><div className="ticket-glow"/></div></div></section>
+ <section className="contacts-field" id="contacts"><Heading index="10 / КОНТАКТЫ" title={<>До встречи<br/><span>13 ноября в Москве.</span></>}/><div className="contact-actions"><a href="mailto:a.fefilova@rvzrus.ru"><small>ПРИОБРЕСТИ БИЛЕТ УЧАСТНИКА</small><b>a.fefilova@rvzrus.ru</b><span>+7 965 786 88 46</span><Arrow/></a><a href="mailto:org@rvzrus.ru"><small>ПАРТНЕРСТВО И ВЫСТУПЛЕНИЯ</small><b>org@rvzrus.ru</b><span>+7 925 223 67 07</span><Arrow/></a><a href="mailto:org@rvzrus.ru"><small>АККРЕДИТАЦИЯ СМИ</small><b>org@rvzrus.ru</b><Arrow/></a></div><footer><span>© 2026 DEBT TECH. Все права защищены.</span><a href={links.privacy} target="_blank" rel="noreferrer">Политика конфиденциальности и персональных данных</a><a href={links.telegram}>Телеграм ↗</a><a href={links.max}>Макс ↗</a></footer></section>
+ </main>
+ <button className="plan-dock" onClick={()=>setDialog('plan')} aria-label={'Мой выбор: '+selected.length}><span>Мой выбор</span><b>{n(selected.length)}</b><Arrow/></button>
+ {dialog&&<Dialog title={dialog==='plan'?'Мой выбор':dialog==='stand'?'Забронировать стенд':'Участие в DEBT TECH'} close={()=>setDialog(null)}>{dialog==='plan'?<><p>Список интересов хранится только в этом браузере. Встречи и места не бронируются.</p><div className="plan-items">{selected.length?selected.map(s=><button key={s} onClick={()=>toggle(s)}>{s}<span>×</span></button>):<p>Пока ничего не выбрано. Отметьте темы, форматы или категории участников.</p>}</div><div className="dialog-actions"><button className="f-cta" onClick={async()=>{const text=selected.join('\n');try{await navigator.clipboard.writeText(text);setCopyStatus('Скопировано')}catch{setCopyStatus('Браузер не разрешил копирование. Текст можно выделить в списке.')}}}>Копировать список <Arrow/></button><button className="f-link" onClick={()=>setSelected([])}>Очистить</button></div><p role="status">{copyStatus}</p></>:<><p>Это дизайн-прототип. Он не отправляет заявку и не подтверждает бронирование.</p>{dialog==='registration'&&<p>Выбран тариф: <strong>{tariffs[tier].title}</strong> — {tariffs[tier].price}.</p>}<Cta href={dialog==='stand'?'https://t.me/anna_joys':contactHref}>Связаться с организатором</Cta></>}</Dialog>}
+ {lightbox!==null&&<Dialog title={gallery[lightbox].alt} close={()=>setLightbox(null)}><img className="lightbox-image" src={gallery[lightbox].src} alt={gallery[lightbox].alt}/><div className="lightbox-controls"><button onClick={()=>setLightbox(i=>(i-1+gallery.length)%gallery.length)}>← Назад</button><span>{n(lightbox+1)} / 20</span><button onClick={()=>setLightbox(i=>(i+1)%gallery.length)}>Далее →</button></div></Dialog>}
+ </>;
 }
