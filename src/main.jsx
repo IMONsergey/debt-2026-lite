@@ -1,9 +1,10 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import App from './App.jsx';
 import './styles/navigation-tokens.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/navigation.css';
 import './styles/components.css';
-createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
+import './styles/cinema-v5.css';
+createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);

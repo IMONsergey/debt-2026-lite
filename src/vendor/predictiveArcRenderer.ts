@@ -91,14 +91,15 @@ export function createPredictiveArcRenderer(
             b = Math.min(255, b + 110 * coreBoost);
           }
         } else {
-          r = Math.min(255, 60 * intensity + 100 * Math.pow(intensity, 3));
-          g = Math.min(255, 20 * intensity + 60 * Math.pow(intensity, 4));
-          b = Math.min(255, 120 * intensity + 135 * Math.pow(intensity, 2));
+          // Reference-driven V5 palette: deep cobalt field with icy blue/white core.
+          r = Math.min(255, 8 * intensity + 58 * Math.pow(intensity, 3));
+          g = Math.min(255, 54 * intensity + 122 * Math.pow(intensity, 3));
+          b = Math.min(255, 138 * intensity + 116 * Math.pow(intensity, 2));
           if (intensity > 0.7) {
             const coreBoost = (intensity - 0.7) * 3.3;
-            r = Math.min(255, r + 150 * coreBoost);
-            g = Math.min(255, g + 150 * coreBoost);
-            b = Math.min(255, b + 150 * coreBoost);
+            r = Math.min(255, r + 155 * coreBoost);
+            g = Math.min(255, g + 145 * coreBoost);
+            b = Math.min(255, b + 115 * coreBoost);
           }
         }
         context.fillStyle = `rgb(${Math.floor(r * options.brightness)}, ${Math.floor(g * options.brightness)}, ${Math.floor(b * options.brightness)})`;
