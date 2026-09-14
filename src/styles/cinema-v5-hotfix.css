@@ -1,0 +1,33 @@
+/* V5 final art-direction fallback: visible planetary depth even without WebGL. */
+.v5-hero::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  left:20%;
+  right:-11%;
+  bottom:-11%;
+  height:62%;
+  background:url('/assets/hero-experiment/planet.webp') center bottom/100% auto no-repeat;
+  opacity:.78;
+  filter:saturate(1.08) contrast(1.08) drop-shadow(0 -14px 42px rgba(45,160,255,.14));
+  transform:translate3d(calc(var(--hx,0)*-15px),calc(var(--hy,0)*-10px),0);
+  transition:transform .18s linear;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 100%);
+}
+.v5-hero-planet{display:none!important}
+.v5-hero-copy,.v5-hero-control,.v5-hero-meta,.v5-hero-ticker{z-index:4}
+.v5-hero::before{z-index:2;background:linear-gradient(90deg,rgba(2,5,11,.94) 0%,rgba(2,5,11,.58) 39%,rgba(2,5,11,.06) 72%),linear-gradient(180deg,rgba(2,5,11,.08),rgba(2,5,11,0) 55%,rgba(2,5,11,.42) 100%)}
+.v5-contact-horizon::after{
+  content:"";position:absolute;inset:22% -2% -4% 12%;pointer-events:none;
+  background:url('/assets/hero-experiment/planet.webp') center bottom/100% auto no-repeat;
+  opacity:.42;filter:saturate(.9) contrast(1.08);mix-blend-mode:screen;
+}
+.v5-gallery .v5-grain-wrap{filter:brightness(1.12) saturate(.92)}
+.v5-service-arc{opacity:.82!important}
+.v5-service-stage{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 40px 120px rgba(0,0,0,.28)}
+@media(max-width:860px){
+ .v5-hero::after{left:-12%;right:-50%;bottom:8%;height:48%;background-size:130% auto;opacity:.6}
+ .v5-contact-horizon::after{inset:35% -45% -3% -15%;background-size:150% auto;opacity:.35}
+}
