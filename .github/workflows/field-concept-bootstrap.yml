@@ -1,0 +1,39 @@
+name: Install FIELD concept source
+
+on:
+  push:
+    branches:
+      - experiments/field-concept-vercel-2026-09-14
+    paths:
+      - .github/workflows/field-concept-bootstrap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install-field-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: experiments/field-concept-vercel-2026-09-14
+          fetch-depth: 0
+
+      - name: Decode FIELD source overlay
+        run: |
+          base64 -d .field-bootstrap/field-source-overlay.b64 > /tmp/field-source-overlay.tar.gz
+          tar -xzf /tmp/field-source-overlay.tar.gz -C .
+
+      - name: Commit FIELD concept source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html package.json vite.config.js src
+          if git diff --cached --quiet; then
+            echo "No source changes to commit"
+            exit 0
+          fi
+          git commit -m "Install FIELD concept source"
+          git push origin HEAD:experiments/field-concept-vercel-2026-09-14
