@@ -1,0 +1,56 @@
+name: Install cinematic V5 source
+
+on:
+  push:
+    branches:
+      - experiments/cinematic-v5-clean-2026-09-14
+    paths:
+      - .github/workflows/cinematic-v5-bootstrap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install-v5-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout V5 branch
+        uses: actions/checkout@v4
+        with:
+          ref: experiments/cinematic-v5-clean-2026-09-14
+          fetch-depth: 0
+
+      - name: Decode V5 source overlay
+        run: |
+          cat .v5-bootstrap/chunk-*.txt | base64 -d > /tmp/v5-source-overlay.tar.gz
+          tar -xzf /tmp/v5-source-overlay.tar.gz -C .
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run checks
+        run: npm run check
+
+      - name: Build cinematic V5
+        run: npm run build
+        env:
+          GITHUB_ACTIONS: 'false'
+
+      - name: Commit cinematic V5 source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src
+          if git diff --cached --quiet; then
+            echo "No V5 source changes to commit"
+            exit 0
+          fi
+          git commit -m "Install cinematic V5 clean reference UI"
+          git push origin HEAD:experiments/cinematic-v5-clean-2026-09-14
