@@ -68,7 +68,7 @@ export default function SpaceStage(){
     const earthGroup=new THREE.Group();scene.add(earthGroup);
     const earth=new THREE.Mesh(new THREE.SphereGeometry(1.26,96,96),new THREE.MeshStandardMaterial({map:tex,roughness:.82,metalness:.02,color:'#c8def8'}));earthGroup.add(earth);
     const atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.31,96,96),atmosphereMaterial());earthGroup.add(atmosphere);
-    const darkShell=new THREE.Mesh(new THREE.SphereGeometry(1.267,96,96),new THREE.MeshBasicMaterial({color:'#001022',transparent:true,opacity:.11,blending:THREE.MultiplyBlending}));earthGroup.add(darkShell);
+    const darkShell=new THREE.Mesh(new THREE.SphereGeometry(1.267,96,96),new THREE.MeshBasicMaterial({color:'#001022',transparent:true,opacity:.11,blending:THREE.MultiplyBlending,premultipliedAlpha:true}));earthGroup.add(darkShell);
     earthGroup.position.set(...PRESETS[0].earth);earthGroup.scale.setScalar(PRESETS[0].scale);
 
     const rings=new THREE.Group();
