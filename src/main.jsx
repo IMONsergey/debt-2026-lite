@@ -7,4 +7,5 @@ import './styles/base.css';
 import './styles/navigation.css';
 import './styles/components.css';
 import './styles/cinema-v5.css';
+import './styles/cinema-v5-hotfix.css';
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
