@@ -1,13 +1,15 @@
 {
-  "name": "debt-tech-field-concept",
-  "version": "0.1.0",
+  "name": "debt-tech-2026-cinema",
+  "version": "5.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "setup": "node scripts/setup-assets.mjs",
+    "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1",
-    "setup": "node scripts/setup-assets.mjs --fonts-only"
+    "preview": "vite preview",
+    "check": "node --test tests/*.test.mjs",
+    "forms:telegram": "node server/forms-telegram.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.43.0",
