@@ -117,8 +117,10 @@
 }
 
 .corporate-discount__description {
+  display: grid;
+  align-items: center;
   max-width: 255px;
-  min-height: 3.2em;
+  min-height: 4.8em;
   margin: 0;
   color: #e2edff;
   font-size: clamp(11px, 1.08cqi, 15px);
