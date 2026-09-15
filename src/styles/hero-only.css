@@ -133,6 +133,12 @@
   -webkit-backdrop-filter: blur(18px);
 }
 
+.application-modal--space {
+  background: rgba(0, 7, 25, 0.52);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
 .application-modal__dialog {
   position: relative;
   width: min(760px, 100%);
@@ -144,6 +150,48 @@
   background: #021132;
   box-shadow: 0 36px 100px rgba(0, 0, 0, 0.5);
   color: #ffffff;
+}
+
+.application-modal__dialog--space {
+  isolation: isolate;
+  background: #01081f;
+  box-shadow: 0 36px 100px rgba(0, 0, 0, 0.56), inset 0 0 46px rgba(31, 133, 235, 0.08);
+}
+
+.application-modal__space {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.application-modal__stardrift {
+  animation: preload-stardrift 22s ease-in-out infinite alternate;
+}
+
+.application-modal__starlight {
+  animation: preload-starlight 6s ease-in-out infinite alternate;
+}
+
+.application-modal__dialog--space .application-modal__close {
+  z-index: 2;
+}
+
+.application-modal__dialog--space .application-modal__heading,
+.application-modal__dialog--space .application-modal__form,
+.application-modal__dialog--space .application-modal__success {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .application-modal__stardrift,
+  .application-modal__starlight {
+    animation: none;
+  }
 }
 
 .application-modal__close {

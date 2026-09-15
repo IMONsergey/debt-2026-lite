@@ -206,7 +206,9 @@
 }
 
 .other-conferences-carousel__control:hover,
-.other-conferences-carousel__control:focus-visible {
+.other-conferences-carousel__control:focus-visible,
+.other-conferences-carousel__control:active {
+  border-color: #43abff;
   background: #43abff;
   transform: translateY(-50%) scale(1.06);
 }

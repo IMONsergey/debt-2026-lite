@@ -7,6 +7,7 @@ import './styles/organizer-section.css';
 import './styles/other-conferences.css';
 import './styles/public-artwork.css';
 import './styles/hero-mobile-grid-fix.css';
+import './styles/ticket-offer-modal.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

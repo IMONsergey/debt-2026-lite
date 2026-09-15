@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CosmosPointerEffect } from './components/CosmosPointerEffect.jsx';
 import { ApplicationModal } from './components/ApplicationModal.jsx';
 import { SitePage } from './components/SitePage.jsx';
+import { TicketOfferModal } from './components/TicketOfferModal.jsx';
 import { VideoWidget } from './components/VideoWidget.jsx';
 import { assetUrl } from './lib/assets.js';
 import './styles/hero-only.css';
@@ -235,7 +236,11 @@ const content = {
     eyebrow: 'О форуме',
     title: 'DEBT TECH 2026',
     description: 'Ежегодная форум-выставка о технологиях на рынке долговых активов',
-    planetImage: assetUrl('assets/images/about-forum/planet-about.png'),
+    titleLines: ['Ежегодная', 'форум-выставка', 'о технологиях', 'на рынке долговых', 'активов'],
+    planetImage: assetUrl('assets/images/about-forum/planet-v3.png'),
+    shuttleImage: assetUrl('assets/images/about-forum/shuttle-v3.png'),
+    logoImage: assetUrl('assets/debttech-logo.svg'),
+    meetingLines: ['До встречи', '13 ноября в Москве'],
     features: [
       'Эксклюзивная деловая программа с практическими кейсами',
       'Активное участие представителей государственных органов и СРО',
@@ -300,6 +305,8 @@ const content = {
 
 export default function App() {
   const [activeForm, setActiveForm] = useState(null);
+  const [ticketOfferReady, setTicketOfferReady] = useState(false);
+  const [ticketOfferDismissed, setTicketOfferDismissed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -319,7 +326,12 @@ export default function App() {
     const heroImage = window.matchMedia('(max-width: 1180px)').matches
       ? content.hero.backgroundImageAdaptive
       : content.hero.backgroundImage;
-    const criticalImages = [...new Set([heroImage, content.aboutForum.planetImage, ...content.aboutForum.tags.map((tag) => tag.icon)].filter(Boolean))];
+    const criticalImages = [...new Set([
+      heroImage,
+      content.aboutForum.planetImage,
+      content.aboutForum.shuttleImage,
+      content.aboutForum.logoImage,
+    ].filter(Boolean))];
     let completed = 0;
     const reportProgress = () => {
       completed += 1;
@@ -333,6 +345,23 @@ export default function App() {
     });
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setTicketOfferReady(true), 15000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  function handleTicketOfferBuy() {
+    setTicketOfferDismissed(true);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const tariffsSection = document.getElementById('tariffs');
+        if (!tariffsSection) return;
+        window.history.pushState(null, '', '#tariffs');
+        tariffsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
 
   return (
     <>
@@ -350,6 +379,14 @@ export default function App() {
           config={content.forms}
           privacyHref={content.footer.privacyHref}
           onClose={() => setActiveForm(null)}
+        />
+      ) : null}
+      {ticketOfferReady && !ticketOfferDismissed && !activeForm ? (
+        <TicketOfferModal
+          logo={assetUrl('assets/images/ticket-offer-logo.svg')}
+          countdownTarget="2026-09-25T00:00:00+03:00"
+          onClose={() => setTicketOfferDismissed(true)}
+          onBuy={handleTicketOfferBuy}
         />
       ) : null}
     </>

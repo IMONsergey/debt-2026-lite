@@ -65,59 +65,6 @@ export function SitePage({ content, onOpenApplication }) {
 
 function AboutForumSection({ about }) {
   const tags = about?.tags ?? [];
-  const rotationTimerRef = useRef(0);
-  const transitionTimerRef = useRef(0);
-  const transitionFrameRef = useRef(0);
-  const [visibleTags, setVisibleTags] = useState(() => tags.slice(0, 5));
-  const [transitionPhase, setTransitionPhase] = useState('');
-
-  const clearTagTimers = () => {
-    window.clearTimeout(rotationTimerRef.current);
-    window.clearTimeout(transitionTimerRef.current);
-    window.cancelAnimationFrame(transitionFrameRef.current);
-  };
-
-  const scheduleTagRotation = () => {
-    window.clearTimeout(rotationTimerRef.current);
-    if (tags.length <= 5) return;
-    rotationTimerRef.current = window.setTimeout(() => {
-      switchTags();
-    }, 4200);
-  };
-
-  const switchTags = () => {
-    if (tags.length <= 5) return;
-    clearTagTimers();
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      setVisibleTags((current) => selectForumTags(tags, current));
-      return;
-    }
-    setTransitionPhase('out');
-    transitionTimerRef.current = window.setTimeout(() => {
-      setVisibleTags((current) => selectForumTags(tags, current));
-      setTransitionPhase('out');
-      transitionFrameRef.current = window.requestAnimationFrame(() => {
-        transitionFrameRef.current = window.requestAnimationFrame(() => {
-          setTransitionPhase('in');
-          transitionTimerRef.current = window.setTimeout(() => {
-            setTransitionPhase('');
-            scheduleTagRotation();
-          }, 720);
-        });
-      });
-    }, 420);
-  };
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-    clearTagTimers();
-    setVisibleTags(tags.slice(0, 5));
-    setTransitionPhase('');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion) scheduleTagRotation();
-    return clearTagTimers;
-  }, [tags]);
 
   if (!about) return null;
 
@@ -130,35 +77,42 @@ function AboutForumSection({ about }) {
       <div className="about-forum-section__content">
         <div className="about-forum-section__copy">
           <span className="about-forum-section__eyebrow">{typograf(about.eyebrow)}</span>
-          <h2 id="about-forum-title">{typograf(about.title)}</h2>
-          <p className="about-forum-section__lead">{typograf(about.description)}</p>
+          <h2 id="about-forum-title">
+            {(about.titleLines ?? [about.description]).map((line) => (
+              <span key={line}>{typograf(line)}</span>
+            ))}
+          </h2>
 
           <div className="about-forum-section__features">
             {(about.features ?? []).map((feature) => (
-              <p key={feature}>{typograf(feature)}</p>
+              <div className="about-forum-section__feature" key={feature}>
+                <span aria-hidden="true" />
+                <p>{typograf(feature)}</p>
+              </div>
             ))}
           </div>
         </div>
 
         <div className="about-tags" aria-label="Темы форума">
-          <img className="about-tags__planet" src={about.planetImage} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
-          <div className={`about-tags__grid${transitionPhase ? ` about-tags__grid--switching-${transitionPhase}` : ''}`}>
-            {visibleTags.map((tag, index) => (
-              <button
-                className={`about-tags__card about-tags__card--${index}`}
-                type="button"
-                key={tag.id}
-                onClick={switchTags}
-              >
-                <span className="about-tags__card-title">{formatForumTagLabel(tag)}</span>
-                <img className="about-tags__card-icon" src={tag.icon} alt="" aria-hidden="true" loading="eager" fetchPriority="high" />
-              </button>
+          <div className="about-tags__planet-wrap" aria-hidden="true">
+            <img className="about-tags__planet" src={about.planetImage} alt="" loading="eager" fetchPriority="high" />
+            <img className="about-tags__logo" src={about.logoImage} alt="" loading="eager" fetchPriority="high" />
+          </div>
+
+          <div className="about-tags__orbit" role="list">
+            {tags.map((tag) => (
+              <span className={`about-tags__pill about-tags__pill--${tag.id}`} role="listitem" key={tag.id}>
+                {typograf(tag.label)}
+              </span>
             ))}
           </div>
-          <div className="about-tags__preload" aria-hidden="true">
-            {tags.map((tag) => (
-              <img src={tag.icon} alt="" key={`preload-${tag.id}`} loading="eager" fetchPriority="high" />
-            ))}
+
+          <div className="about-forum-section__launch">
+            <p>
+              {(about.meetingLines ?? []).map((line) => <span key={line}>{typograf(line)}</span>)}
+            </p>
+            <img className="about-forum-section__shuttle" src={about.shuttleImage} alt="" aria-hidden="true" loading="eager" />
+            <img className="about-forum-section__launch-logo" src={about.logoImage} alt="DEBT TECH 2026" loading="eager" />
           </div>
         </div>
 
@@ -173,29 +127,6 @@ function AboutForumSection({ about }) {
       </div>
     </section>
   );
-}
-
-const forumTagBreaks = {
-  'import-substitution': ['Импорто-', 'замещение'],
-};
-
-function formatForumTagLabel(tag) {
-  const parts = forumTagBreaks[tag.id];
-  if (!parts) return typograf(tag.label);
-
-  return parts.map((part, index) => (
-    <span className="about-tags__label-line" key={`${tag.id}-${part}`}>
-      {typograf(part)}
-      {index < parts.length - 1 ? <br /> : null}
-    </span>
-  ));
-}
-
-function selectForumTags(tags, current) {
-  const currentIds = new Set(current.map((tag) => tag.id));
-  const freshTags = tags.filter((tag) => !currentIds.has(tag.id));
-  const source = freshTags.length >= 5 ? freshTags : tags;
-  return [...source].sort(() => Math.random() - 0.5).slice(0, 5);
 }
 
 function VenueSection({ venue }) {

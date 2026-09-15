@@ -120,8 +120,57 @@ export function ChannelIcon({ id }) {
   );
 }
 
+function ApplicationModalSpace() {
+  return (
+    <svg
+      className="application-modal__space"
+      viewBox="0 0 1600 1000"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <pattern id="application-stars-far" width="337" height="293" patternUnits="userSpaceOnUse">
+          <g fill="#77b6e8">
+            <circle cx="18" cy="27" r=".7" /><circle cx="86" cy="61" r="1" />
+            <circle cx="168" cy="19" r=".6" /><circle cx="299" cy="88" r=".8" />
+            <circle cx="213" cy="106" r=".6" /><circle cx="46" cy="171" r=".8" />
+            <circle cx="142" cy="128" r=".6" /><circle cx="267" cy="217" r=".9" />
+            <circle cx="113" cy="267" r=".7" /><circle cx="201" cy="245" r=".6" />
+            <circle cx="317" cy="278" r=".6" /><circle cx="23" cy="253" r=".6" />
+          </g>
+        </pattern>
+        <pattern id="application-stars-near" width="563" height="457" patternUnits="userSpaceOnUse">
+          <g fill="#d1f4ff">
+            <circle cx="59" cy="82" r="1.3" /><circle cx="361" cy="36" r="1" />
+            <circle cx="251" cy="269" r="1.2" /><circle cx="504" cy="389" r="1.4" />
+            <circle cx="106" cy="427" r="1" />
+          </g>
+          <path d="M443 145v10m-5-5h10" stroke="#7cdbff" strokeWidth=".8" />
+          <circle cx="443" cy="150" r="1.4" fill="#e0fbff" />
+        </pattern>
+        <linearGradient id="application-space-light" x1="100" y1="1000" x2="1490" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#036eec" stopOpacity="0" />
+          <stop offset=".28" stopColor="#036eec" />
+          <stop offset=".66" stopColor="#2eb9ff" />
+          <stop offset="1" stopColor="#036eec" stopOpacity="0" />
+        </linearGradient>
+        <filter id="application-space-haze" x="-20%" y="-30%" width="140%" height="160%">
+          <feGaussianBlur stdDeviation="22" />
+        </filter>
+      </defs>
+      <g className="application-modal__stardrift">
+        <path d="M-120 980C280 750 355 750 700 500S1160 180 1730-100" fill="none" stroke="url(#application-space-light)" strokeWidth="175" opacity=".1" filter="url(#application-space-haze)" />
+        <path d="M-120 960C320 770 305 700 720 496S1240 148 1730-100" fill="none" stroke="url(#application-space-light)" strokeWidth="35" opacity=".11" filter="url(#application-space-haze)" />
+        <rect x="-30" y="-30" width="1660" height="1060" fill="url(#application-stars-far)" opacity=".65" />
+        <rect className="application-modal__starlight" x="-30" y="-30" width="1660" height="1060" fill="url(#application-stars-near)" opacity=".85" />
+      </g>
+    </svg>
+  );
+}
+
 export function ApplicationModal({ kind, selectedTariff = null, config, privacyHref, onClose }) {
   const details = FORM_DETAILS[kind] ?? FORM_DETAILS['early-registration'];
+  const usesSpaceTheme = kind === 'stand-booking' || Boolean(selectedTariff);
   const firstFieldRef = useRef(null);
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
@@ -209,19 +258,20 @@ export function ApplicationModal({ kind, selectedTariff = null, config, privacyH
 
   return createPortal(
     <div
-      className="application-modal"
+      className={`application-modal${usesSpaceTheme ? ' application-modal--space' : ''}`}
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <section
-        className={`application-modal__dialog application-modal__dialog--${status}`}
+        className={`application-modal__dialog application-modal__dialog--${status}${usesSpaceTheme ? ' application-modal__dialog--space' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${details.id}-title`}
         aria-describedby={descriptionId}
       >
+        {usesSpaceTheme ? <ApplicationModalSpace /> : null}
         <button className="application-modal__close" type="button" onClick={onClose} aria-label="Закрыть окно">×</button>
         <div className="application-modal__heading">
           <h2 id={`${details.id}-title`}>{details.title}</h2>
