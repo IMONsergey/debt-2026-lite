@@ -88,8 +88,8 @@
 
 .organizer-contact-strip__socials a {
   display: grid;
-  width: clamp(32px, 2.54cqi, 36px);
-  height: clamp(32px, 2.54cqi, 36px);
+  width: 44px;
+  height: 44px;
   place-items: center;
   border-radius: 50%;
   transition: background-color 240ms ease, transform 240ms ease;
@@ -97,8 +97,13 @@
 
 .organizer-contact-strip__socials img {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: clamp(32px, 2.54cqi, 36px);
+  height: clamp(32px, 2.54cqi, 36px);
+}
+
+.organizer-contact-strip__socials a:focus-visible {
+  outline: 2px solid #56b3ff;
+  outline-offset: 3px;
 }
 
 .organizer-contact-strip__socials a:hover,
@@ -413,12 +418,24 @@
 
   .organizer-contact-strip {
     margin: 0;
+    justify-self: start;
   }
 
   .organizer-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-top: clamp(64px, 8vw, 92px);
   }
+}
+
+@media (max-width: 1320px) {
+  .organizer-card {
+    min-height: 280px;
+  }
+
+  .organizer-card--brand p {
+    white-space: normal;
+  }
+
 }
 
 @media (min-width: 1181px) {

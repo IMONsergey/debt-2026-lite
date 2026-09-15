@@ -119,8 +119,8 @@
   .gallery-slide.is-active { opacity: 1; }
 
   .gallery-carousel__arrow {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-color: rgba(255, 255, 255, 0.7);
     background: #ffffff;
     color: #071126;

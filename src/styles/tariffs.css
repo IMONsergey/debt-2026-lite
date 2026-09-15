@@ -89,6 +89,8 @@
 
 .tariff-card {
   position: relative;
+  display: flex;
+  min-width: 0;
   overflow: hidden;
   min-height: clamp(420px, 34vw, 530px);
   border: 0;
@@ -137,6 +139,8 @@
   position: relative;
   z-index: 1;
   display: flex;
+  flex: 1;
+  min-width: 0;
   min-height: clamp(420px, 34vw, 530px);
   flex-direction: column;
   padding: clamp(26px, 2.25vw, 40px) clamp(24px, 2.2vw, 36px) clamp(22px, 2vw, 32px);
@@ -236,35 +240,7 @@
 .tariff-card__button {
   display: inline-flex;
   width: 100%;
-  min-height: 48px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
   margin-top: clamp(16px, 1.6vw, 24px);
-  padding: 0 16px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  border-radius: 4px;
-  background: rgba(1, 15, 43, 0.34);
-  color: #ffffff;
-  font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 320ms ease,
-    background 320ms ease,
-    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 360ms ease;
-}
-
-.tariff-card__button img {
-  display: block;
-  width: 13px;
-  height: 13px;
-  flex: 0 0 auto;
-  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .tariff-card:hover,
@@ -281,19 +257,6 @@
 .tariff-card__features li:not(.is-muted):hover {
   transform: translate3d(3px, 0, 0);
   background: rgba(255, 255, 255, 0.1);
-}
-
-.tariff-card__button:hover,
-.tariff-card__button:focus-visible {
-  border-color: #43abff;
-  background: rgba(67, 171, 255, 0.14);
-  outline: none;
-  transform: translateY(-2px);
-}
-
-.tariff-card__button:hover img,
-.tariff-card__button:focus-visible img {
-  transform: translate(2px, -2px);
 }
 
 @media (max-width: 1180px) {
@@ -334,6 +297,7 @@
     grid-template-columns: 1fr;
     max-width: 720px;
     margin-top: 26px;
+    margin-inline: auto;
   }
 
   .tariff-card,
@@ -405,10 +369,6 @@
     font-size: 32px;
   }
 
-  .tariff-card__button {
-    min-height: 46px;
-    font-size: 13px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

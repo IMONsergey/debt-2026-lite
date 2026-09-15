@@ -392,6 +392,12 @@
   --dimmed: rgba(255, 255, 255, 0.38);
   --accent: #43abff;
   --accent-2: #43abff;
+  --ui-cta-height: 54px;
+  --ui-cta-radius: 7px;
+  --ui-cta-border: rgba(104, 193, 255, 0.48);
+  --ui-cta-border-hover: rgba(104, 193, 255, 0.82);
+  --ui-cta-bg: rgba(8, 59, 121, 0.22);
+  --ui-cta-bg-hover: rgba(8, 82, 170, 0.34);
   --edge: clamp(28px, 2.2vw, 42px);
   --gap: clamp(10px, 1vw, 16px);
   --content-gap: clamp(20px, 1.8vw, 32px);
@@ -531,7 +537,7 @@ button {
   padding-left: 16px;
   padding-right: 0;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
   scrollbar-width: none;
 }
 
@@ -835,15 +841,16 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  min-height: clamp(48px, 5.4vh, 62px);
+  min-height: var(--ui-cta-height);
+  gap: 12px;
   margin-top: clamp(6px, 0.8vh, 12px);
   border: 0;
-  border-radius: 6px;
-  padding-inline: clamp(13px, 1vw, 18px);
+  border-radius: var(--ui-cta-radius);
+  padding: 10px clamp(13px, 1vw, 18px);
   background: linear-gradient(90deg, #155ecf 0%, #0788e4 100%);
   color: var(--text);
   font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: clamp(15px, 1.65vh, 18px);
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.2;
   text-transform: uppercase;
@@ -851,16 +858,10 @@ button {
 
 .fixed-menu__cta-icon {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
-  margin-left: 12px;
-  transition: transform 220ms ease;
-}
-
-.fixed-menu__cta:hover .fixed-menu__cta-icon,
-.fixed-menu__cta:focus-visible .fixed-menu__cta-icon {
-  transform: translate(2px, -2px);
+  object-fit: contain;
 }
 
 .page-flow {
@@ -1486,7 +1487,7 @@ button {
 
   .route-link,
   .fixed-menu__cta {
-    min-height: 42px;
+    min-height: 44px;
   }
 }
 
@@ -1892,7 +1893,7 @@ button {
   }
 
   .mobile-hero-info .fixed-menu__cta {
-    min-height: 58px;
+    min-height: var(--ui-cta-height);
   }
 
   .admin-shell {
@@ -2050,16 +2051,11 @@ button {
   .mobile-hero-info .fixed-menu__cta {
     grid-column: 7 / -1;
     grid-row: 4;
-    height: clamp(52px, 5.8vw, 62px);
-    min-height: 0;
-    padding-inline: clamp(12px, 1.7vw, 18px);
+    height: auto;
+    min-height: var(--ui-cta-height);
+    padding: 12px 18px;
     align-self: stretch;
-    font-size: clamp(13px, 1.6vw, 16px);
-  }
-
-  .mobile-hero-info .fixed-menu__cta-icon {
-    width: clamp(10px, 1.6vw, 12px);
-    height: clamp(10px, 1.6vw, 12px);
+    font-size: 14px;
   }
 }
 
@@ -2357,8 +2353,8 @@ button {
 
 .gallery-arrow-icon {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
 }
 
 .gallery-arrow-icon--previous {
@@ -2385,40 +2381,89 @@ button {
 
 .gallery-section__link {
   display: inline-flex;
-  min-height: 54px;
-  align-items: center;
-  gap: 28px;
   margin-top: clamp(28px, 3vw, 40px);
-  padding: 0 20px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  border-radius: 4px;
-  color: #ffffff;
-  font-family: Inter, 'IBM Plex Sans', Arial, sans-serif;
+}
+
+/* Button geometry from the clean experiment, shared without cascade overrides. */
+.venue-section__route,
+.gallery-section__link,
+.tariff-card__button {
+  min-height: var(--ui-cta-height);
+  max-width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 18px;
+  border: 1px solid var(--ui-cta-border);
+  border-radius: var(--ui-cta-radius);
+  background: var(--ui-cta-bg);
+  color: #fff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  text-decoration: none;
   text-transform: uppercase;
-  transition:
-    border-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  transition: border-color 220ms ease, background-color 220ms ease;
 }
 
-.gallery-section__link:hover {
-  border-color: #43abff;
-  background: rgba(67, 171, 255, 0.12);
-  transform: translate3d(0, -1px, 0);
-}
-
-.gallery-section__link img {
+.venue-section__route img,
+.gallery-section__link img,
+.tariff-card__button img {
   display: block;
-  width: 11px;
-  height: 11px;
-  flex: 0 0 auto;
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  object-fit: contain;
 }
 
-.gallery-section__link:hover img {
-  transform: translate(2px, -2px);
+@media (hover: hover) and (pointer: fine) {
+  .venue-section__route:hover,
+  .gallery-section__link:hover,
+  .tariff-card__button:not(:disabled):hover {
+    border-color: var(--ui-cta-border-hover);
+    background: var(--ui-cta-bg-hover);
+  }
+}
+
+.venue-section__route:focus-visible,
+.gallery-section__link:focus-visible,
+.tariff-card__button:focus-visible {
+  border-color: var(--ui-cta-border-hover);
+  background: var(--ui-cta-bg-hover);
+}
+
+.fixed-menu__cta:focus-visible,
+.venue-section__route:focus-visible,
+.gallery-section__link:focus-visible,
+.tariff-card__button:focus-visible,
+.mobile-registration:focus-visible,
+.application-modal__submit:focus-visible,
+.application-modal__success button:focus-visible {
+  outline: 2px solid #56b3ff;
+  outline-offset: 3px;
+}
+
+.venue-section__route:active,
+.gallery-section__link:active,
+.tariff-card__button:not(:disabled):active {
+  background: rgba(6, 69, 145, 0.44);
+}
+
+.tariff-card__button:disabled,
+.application-modal__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venue-section__route,
+  .gallery-section__link,
+  .tariff-card__button {
+    transition: none;
+  }
 }
 
 .gallery-lightbox {
@@ -2693,17 +2738,6 @@ button {
     gap: 12px;
   }
 
-  .gallery-carousel__arrow {
-    width: 38px;
-    height: 38px;
-    font-size: 19px;
-  }
-
-  .gallery-arrow-icon {
-    width: 11px;
-    height: 11px;
-  }
-
   .gallery-lightbox {
     padding: 58px 18px 24px;
   }
@@ -2866,6 +2900,10 @@ button {
     grid-row: 3;
   }
 
+  .mobile-hero-info .fixed-menu__cta--secondary {
+    grid-row: 4;
+  }
+
   .about-section {
     padding: var(--adaptive-section-space) var(--adaptive-inline);
   }
@@ -3003,8 +3041,7 @@ button {
     min-height: clamp(230px, 64vw, 300px);
   }
 
-  .mobile-hero-info .route-link,
-  .mobile-hero-info .fixed-menu__cta {
+  .mobile-hero-info .route-link {
     height: 56px;
     min-height: 56px;
   }

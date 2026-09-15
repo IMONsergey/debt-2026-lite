@@ -89,6 +89,12 @@
 
 .hero-only-view .fixed-menu__cta {
   width: 100%;
+  text-align: left;
+  transition: filter 220ms ease, border-color 220ms ease, background-color 220ms ease;
+}
+
+.hero-only-view .fixed-menu__cta:not(.fixed-menu__cta--secondary):hover {
+  filter: brightness(1.12);
 }
 
 .hero-only-view .fixed-menu__cta--secondary {
@@ -102,7 +108,6 @@
 .hero-only-view .fixed-menu__cta--secondary:focus-visible {
   border-color: rgba(104, 193, 255, 0.72);
   background: rgba(9, 91, 184, 0.38);
-  outline: none;
 }
 
 /* The ticker is reused from the full website and remains the first block after hero. */
@@ -199,8 +204,8 @@
   top: 18px;
   right: 18px;
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -363,13 +368,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 48px;
-  padding: 0 16px;
+  min-height: var(--ui-cta-height);
+  gap: 18px;
+  padding: 12px 18px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--ui-cta-radius);
   background: linear-gradient(90deg, #155ecf 0%, #0788e4 100%);
   color: #ffffff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 14px;
   font-weight: 600;
+  line-height: 1.25;
   text-transform: uppercase;
 }
 
@@ -385,10 +394,10 @@
 
 .application-modal__submit-icon {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
-  margin-left: 12px;
+  object-fit: contain;
 }
 
 .application-modal__submit:disabled {
@@ -600,7 +609,6 @@
   .application-modal__submit,
   .application-modal__success button {
     width: 100%;
-    min-height: 52px;
   }
 
   .application-modal__success {

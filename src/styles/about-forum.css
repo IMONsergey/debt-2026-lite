@@ -56,7 +56,7 @@
 
 .about-forum-section h2 span {
   display: block;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .about-forum-section__features {
@@ -333,16 +333,8 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 1180px) {
-  .about-forum-section {
-    --about-stage-height: 700px;
-    width: auto;
-    min-height: auto;
-    margin-left: 0;
-    padding-right: var(--adaptive-inline, 24px);
-    padding-left: var(--adaptive-inline, 24px);
-  }
-
+/* The three-column composition needs room beyond the fixed desktop rail. */
+@media (max-width: 1320px) {
   .about-forum-section__content {
     grid-template-columns: minmax(300px, 0.78fr) minmax(440px, 1.22fr);
   }
@@ -365,6 +357,17 @@
 
   .about-forum-section__stat {
     min-height: 126px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .about-forum-section {
+    --about-stage-height: 700px;
+    width: auto;
+    min-height: auto;
+    margin-left: 0;
+    padding-right: var(--adaptive-inline, 24px);
+    padding-left: var(--adaptive-inline, 24px);
   }
 }
 
@@ -413,7 +416,7 @@
   .about-forum-section h2 {
     max-width: 100%;
     margin-top: 26px;
-    font-size: clamp(23px, 7vw, 29px);
+    font-size: clamp(19px, 6vw, 29px);
     line-height: 1.08;
   }
 
