@@ -13,6 +13,8 @@ export function VideoWidget({ video }) {
   useEffect(() => {
     const media = window.matchMedia(DESKTOP_QUERY);
     let frame = 0;
+    let measureFrame = 0;
+    let disposed = false;
     let slot = null;
 
     const findSlot = () => {
@@ -65,15 +67,26 @@ export function VideoWidget({ video }) {
     };
 
     measure();
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(measureFrame);
+      measureFrame = window.requestAnimationFrame(measure);
+    };
+    const observer = new ResizeObserver(scheduleMeasure);
+    const hero = document.querySelector('.hero-placeholder');
+    if (hero) observer.observe(hero);
+    document.fonts.ready.then(() => { if (!disposed) scheduleMeasure(); });
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', measure);
-    media.addEventListener?.('change', measure);
+    window.addEventListener('resize', scheduleMeasure);
+    media.addEventListener?.('change', scheduleMeasure);
 
     return () => {
+      disposed = true;
+      observer.disconnect();
       window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(measureFrame);
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', measure);
-      media.removeEventListener?.('change', measure);
+      window.removeEventListener('resize', scheduleMeasure);
+      media.removeEventListener?.('change', scheduleMeasure);
     };
   }, []);
 
