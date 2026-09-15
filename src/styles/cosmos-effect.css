@@ -1,15 +1,11 @@
 .cosmos-pointer-layer {
-  --cosmos-shift-x: 0px;
-  --cosmos-shift-y: 0px;
-  --cosmos-far-shift-x: 0px;
-  --cosmos-far-shift-y: 0px;
   position: fixed;
   z-index: 0;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
   contain: layout paint style;
-  opacity: 0.54;
+  background: #01081f;
 }
 
 .hero-only-view {
@@ -17,95 +13,72 @@
   z-index: 1;
 }
 
+/* Overlapping gradients create a continuous nebula, without a downloaded image. */
 .cosmos-pointer-layer::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -10%;
   background:
-    radial-gradient(circle at 76% 22%, rgba(43, 145, 255, 0.12), transparent 30vw),
-    radial-gradient(circle at 22% 72%, rgba(72, 157, 255, 0.08), transparent 34vw);
-  filter: blur(0.2px);
-  opacity: 0.68;
-  transition: opacity 220ms ease;
+    radial-gradient(ellipse at 12% 72%, rgba(0, 89, 255, 0.18), transparent 37%),
+    radial-gradient(ellipse at 83% 14%, rgba(0, 110, 244, 0.12), transparent 40%),
+    radial-gradient(ellipse at 63% 88%, rgba(0, 127, 204, 0.12), transparent 34%),
+    radial-gradient(ellipse at 38% 40%, rgba(18, 29, 102, 0.22), transparent 50%);
 }
 
-.cosmos-pointer-layer__stars {
+.cosmos-pointer-layer__stars,
+.cosmos-pointer-layer__dust {
   position: absolute;
-  inset: -12vh -12vw;
+  inset: -48px;
   display: block;
-  transform: translate3d(var(--cosmos-shift-x), var(--cosmos-shift-y), 0);
-  will-change: transform;
-}
-
-.cosmos-pointer-layer__stars--near {
-  opacity: 0.46;
-  background-image:
-    radial-gradient(circle at 8% 16%, rgba(255, 255, 255, 0.92) 0 1.1px, transparent 1.35px),
-    radial-gradient(circle at 27% 74%, rgba(112, 190, 255, 0.82) 0 1px, transparent 1.25px),
-    radial-gradient(circle at 52% 32%, rgba(232, 247, 255, 0.72) 0 0.9px, transparent 1.2px),
-    radial-gradient(circle at 78% 62%, rgba(86, 174, 255, 0.78) 0 1.2px, transparent 1.45px);
-  background-size: 238px 214px, 311px 263px, 401px 337px, 487px 391px;
-  animation: cosmos-star-drift-near 112s linear infinite;
 }
 
 .cosmos-pointer-layer__stars--far {
-  opacity: 0.34;
+  opacity: 0.66;
   background-image:
-    radial-gradient(circle at 14% 44%, rgba(214, 236, 255, 0.55) 0 0.8px, transparent 1.05px),
-    radial-gradient(circle at 41% 12%, rgba(94, 177, 255, 0.46) 0 0.75px, transparent 1px),
-    radial-gradient(circle at 66% 84%, rgba(255, 255, 255, 0.5) 0 0.7px, transparent 0.95px),
-    radial-gradient(circle at 91% 28%, rgba(149, 209, 255, 0.44) 0 0.85px, transparent 1.1px);
-  background-size: 179px 157px, 283px 241px, 359px 317px, 541px 467px;
-  animation: cosmos-star-drift-far 172s linear infinite;
-  transform: translate3d(var(--cosmos-far-shift-x), var(--cosmos-far-shift-y), 0);
+    radial-gradient(circle at 14% 44%, #2368ad 0 0.55px, transparent 1px),
+    radial-gradient(circle at 41% 12%, #408fe2 0 0.6px, transparent 1.1px),
+    radial-gradient(circle at 66% 84%, #1774d4 0 0.7px, transparent 1.1px),
+    radial-gradient(circle at 91% 28%, #5ab1ee 0 0.5px, transparent 1px),
+    radial-gradient(circle at 24% 68%, #216aac 0 0.6px, transparent 1px),
+    radial-gradient(circle at 72% 47%, #1b63b8 0 0.5px, transparent 0.9px);
+  background-size: 97px 113px, 139px 157px, 179px 137px, 229px 191px, 151px 211px, 263px 173px;
 }
 
-.cosmos-pointer-effect {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100vw;
-  height: 100vh;
-  opacity: 0.46;
+.cosmos-pointer-layer__stars--near {
+  opacity: 0.8;
+  background-image:
+    radial-gradient(circle at 8% 16%, #bee9ff 0 0.8px, rgba(0, 130, 255, 0.45) 1.2px, transparent 3px),
+    radial-gradient(circle at 27% 74%, #37b6ff 0 0.9px, rgba(0, 130, 255, 0.25) 1.4px, transparent 4px),
+    radial-gradient(circle at 52% 32%, #86c7ff 0 0.7px, transparent 1.4px),
+    radial-gradient(circle at 78% 62%, #058eff 0 1px, rgba(0, 130, 255, 0.3) 1.5px, transparent 3.5px),
+    radial-gradient(circle at 37% 91%, #c3efff 0 0.6px, transparent 1.3px);
+  background-size: 389px 353px, 431px 283px, 307px 397px, 541px 467px, 619px 509px;
+  animation: cosmos-star-drift 100s ease-in-out infinite alternate;
+}
+
+/* Finer blue dust is concentrated in an oblique band, rather than a uniform grid. */
+.cosmos-pointer-layer__dust {
+  opacity: 0.3;
+  background-image:
+    radial-gradient(circle at 23% 41%, #1679dc 0 0.5px, transparent 0.9px),
+    radial-gradient(circle at 69% 17%, #009fff 0 0.55px, transparent 1px),
+    radial-gradient(circle at 47% 83%, #1257a5 0 0.5px, transparent 0.9px);
+  background-size: 37px 53px, 67px 43px, 83px 71px;
+  -webkit-mask-image: linear-gradient(130deg, transparent 16%, #000 42%, transparent 72%);
+  mask-image: linear-gradient(130deg, transparent 16%, #000 42%, transparent 72%);
 }
 
 .is-site-loading .cosmos-pointer-layer__stars {
   animation-play-state: paused;
 }
 
-@media (max-width: 1180px) {
-  .cosmos-pointer-layer {
-    opacity: 0.46;
-  }
-
-  .cosmos-pointer-layer__stars--near {
-    opacity: 0.38;
-  }
-
-  .cosmos-pointer-layer__stars--far {
-    opacity: 0.28;
-  }
-
-  .cosmos-pointer-effect {
-    opacity: 0.38;
-  }
-}
-
 @media (max-width: 699px) {
-  .cosmos-pointer-layer {
-    opacity: 0.38;
-  }
-
   .cosmos-pointer-layer__stars--near {
-    opacity: 0.32;
+    opacity: 0.65;
   }
 
-  .cosmos-pointer-layer__stars--far {
+  .cosmos-pointer-layer__dust {
     opacity: 0.22;
-  }
-
-  .cosmos-pointer-effect {
-    opacity: 0.3;
   }
 }
 
@@ -113,28 +86,9 @@
   .cosmos-pointer-layer__stars {
     animation: none;
   }
-
-  .cosmos-pointer-effect {
-    opacity: 0.24;
-  }
 }
 
-@keyframes cosmos-star-drift-near {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(calc(var(--cosmos-shift-x) - 110px), calc(var(--cosmos-shift-y) + 78px), 0);
-  }
-}
-
-@keyframes cosmos-star-drift-far {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(calc(var(--cosmos-far-shift-x) + 84px), calc(var(--cosmos-far-shift-y) - 58px), 0);
-  }
+@keyframes cosmos-star-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-24px, 18px, 0); }
 }

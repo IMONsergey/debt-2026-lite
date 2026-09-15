@@ -3,6 +3,7 @@ import { FixedMenu, SidebarInfo } from './FixedMenu.jsx';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 import { ChannelIcon } from './ApplicationModal.jsx';
+import { CorporatePackagesSection } from './CorporatePackagesSection.jsx';
 
 export function SitePage({ content, onOpenApplication }) {
   const countdown = useCountdown(content.hero.countdownTarget, content.hero.countdown);
@@ -56,6 +57,7 @@ export function SitePage({ content, onOpenApplication }) {
           <OrganizerSection organizer={content.organizer} />
           <OtherConferencesSection archive={content.otherConferences} />
           <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
+          <CorporatePackagesSection tariffs={content.tariffs} privacyHref={content.footer.privacyHref} />
           <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} footer={content.footer} />
         </main>
       </div>
