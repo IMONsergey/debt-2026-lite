@@ -57,7 +57,7 @@ export function SitePage({ content, onOpenApplication }) {
           <OrganizerSection organizer={content.organizer} />
           <OtherConferencesSection archive={content.otherConferences} />
           <TariffsSection tariffs={content.tariffs} onOpenApplication={onOpenApplication} />
-          <CorporatePackagesSection tariffs={content.tariffs} privacyHref={content.footer.privacyHref} />
+          <CorporatePackagesSection tariffs={content.tariffs} privacyHref={content.footer.privacyHref} config={content.forms} />
           <ContactInfoSection contacts={content.contacts} venue={content.venue} channels={content.forms.channels} footer={content.footer} />
         </main>
       </div>

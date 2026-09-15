@@ -122,6 +122,7 @@ function escapeHtml(value) {
 
 function formTitle(formId) {
   if (formId === 'stand-booking-form') return 'Бронирование стенда';
+  if (formId === 'corporate-package-form') return 'Корпоративный пакет';
   if (formId === 'early-registration-form') return 'Ранняя регистрация';
   return clean(formId || 'Заявка');
 }
@@ -380,9 +381,11 @@ function validatePayload(payload) {
   if (payload.consent !== true) return 'consent_required';
 
   const formId = clean(payload.form_id);
-  if (!['early-registration-form', 'stand-booking-form'].includes(formId)) return 'invalid_form';
+  if (!['early-registration-form', 'stand-booking-form', 'corporate-package-form'].includes(formId)) return 'invalid_form';
 
-  const required = ['full_name', 'company', 'phone', 'email'];
+  const required = formId === 'corporate-package-form'
+    ? ['full_name', 'phone', 'participants_count', 'tariff_id']
+    : ['full_name', 'company', 'phone', 'email'];
   if (formId === 'early-registration-form') required.push('participants_count');
   for (const field of required) {
     if (!clean(payload[field])) return 'required_fields';
@@ -391,7 +394,7 @@ function validatePayload(payload) {
   const phoneDigits = clean(payload.phone, 40).replace(/\D/g, '');
   if (phoneDigits.length < 10 || phoneDigits.length > 15) return 'invalid_phone';
 
-  if (!EMAIL_PATTERN.test(clean(payload.email, 160))) return 'invalid_email';
+  if (payload.email && !EMAIL_PATTERN.test(clean(payload.email, 160))) return 'invalid_email';
 
   return null;
 }
