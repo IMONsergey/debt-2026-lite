@@ -24,21 +24,28 @@
 }
 
 .organizer-contact-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 20px;
+  display: grid;
+  justify-self: end;
+  gap: 12px;
   min-width: 0;
+  max-width: 100%;
   margin: 0;
   font-style: normal;
   font-weight: 500;
   text-transform: uppercase;
 }
 .organizer-contact-strip__label {
-  flex-basis: 100%;
   color: #9fb2cc;
   font-size: 14px;
   line-height: 1.4;
+}
+.organizer-contact-strip__items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px 20px;
+  min-width: 0;
 }
 .organizer-contact-strip__link {
   display: inline-flex;
