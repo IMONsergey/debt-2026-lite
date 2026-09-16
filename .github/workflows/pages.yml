@@ -3,25 +3,20 @@ name: Публикация сайта
 on:
   push:
     branches:
-      - main
+      - codex/global-layout-cleanup
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Публикация main + sandbox в GitHub Pages
+  build:
+    name: Сборка main + sandbox + cleanup
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Получить main
@@ -29,12 +24,20 @@ jobs:
         with:
           ref: main
           path: main-site
+          persist-credentials: false
 
       - name: Получить sandbox
         uses: actions/checkout@v4
         with:
           ref: site-sandbox
           path: sandbox-site
+          persist-credentials: false
+
+      - name: Получить текущую версию cleanup
+        uses: actions/checkout@v4
+        with:
+          path: cleanup-site
+          persist-credentials: false
 
       - name: Установить Node.js
         uses: actions/setup-node@v4
@@ -44,6 +47,33 @@ jobs:
           cache-dependency-path: |
             main-site/package-lock.json
             sandbox-site/package-lock.json
+            cleanup-site/package-lock.json
+
+      - name: Установить зависимости cleanup
+        working-directory: cleanup-site
+        run: npm ci
+
+      - name: Проверить cleanup
+        working-directory: cleanup-site
+        run: npm run check
+
+      - name: Собрать cleanup для GitHub Pages
+        working-directory: cleanup-site
+        run: npm run build -- --base=/debt-2026-lite/cleanup/
+
+      - name: Настроить адрес сервиса заявок для статического хостинга
+        working-directory: cleanup-site
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import assert from 'node:assert/strict';
+          const path = 'dist/index.html';
+          const html = readFileSync(path, 'utf8');
+          const meta = '<meta name="debt-tech-forms-endpoint" content="/api/lead" />';
+          assert.ok(html.includes(meta), 'Не найден адрес сервиса заявок');
+          writeFileSync(path, html.replace(meta,
+            '<meta name="debt-tech-forms-endpoint" content="https://debt-2026-lite.176.98.177.253.sslip.io/api/lead" />'));
+          NODE
 
       - name: Установить зависимости main
         working-directory: main-site
@@ -63,17 +93,29 @@ jobs:
 
       - name: Собрать единый Pages-артефакт
         run: |
-          mkdir -p publish/sandbox
+          mkdir -p publish/sandbox publish/cleanup
           cp -a main-site/dist/. publish/
           cp -a sandbox-site/dist/. publish/sandbox/
-
-      - name: Настроить GitHub Pages
-        uses: actions/configure-pages@v5
+          cp -a cleanup-site/dist/. publish/cleanup/
 
       - name: Подготовить сайт к публикации
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./publish
+
+  deploy:
+    name: Публикация в GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}cleanup/
+    steps:
+      - name: Настроить GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Опубликовать сайт
         id: deployment
