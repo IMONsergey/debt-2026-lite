@@ -9,8 +9,8 @@ export function VenueSection({ venue }) {
   const routeIsExternal = /^https?:\/\//.test(venue.routeHref ?? '');
 
   return (
-    <section className="venue-section" id="venue" aria-labelledby="venue-title">
-      <h2 id="venue-title">{typograf(venue.title)}</h2>
+    <section className="venue-section page-section" id="venue" aria-labelledby="venue-title">
+      <h2 className="section-title" id="venue-title">{typograf(venue.title)}</h2>
 
       <div className="venue-section__layout">
         <div className="venue-section__details">

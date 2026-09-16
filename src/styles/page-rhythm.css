@@ -1,0 +1,39 @@
+/* One vertical rhythm for the content sections; adjacent half-gaps add up. */
+:root {
+  --section-half-gap: 56px;
+  --section-heading-gap: 40px;
+  --section-title-size: clamp(30px, 2.4vw, 40px);
+}
+
+.page-section {
+  padding-block: var(--section-half-gap);
+  scroll-margin-top: 24px;
+}
+
+.section-title {
+  min-width: 0;
+  margin: 0;
+  font-family: 'Unbounded', Arial, sans-serif;
+  font-size: var(--section-title-size);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+@media (max-width: 1180px) {
+  :root {
+    --section-half-gap: 44px;
+    --section-heading-gap: 32px;
+    --section-title-size: clamp(26px, 3.1vw, 32px);
+  }
+}
+
+@media (max-width: 699px) {
+  :root {
+    --section-half-gap: 32px;
+    --section-heading-gap: 24px;
+    --section-title-size: clamp(22px, 5.5vw, 26px);
+  }
+}

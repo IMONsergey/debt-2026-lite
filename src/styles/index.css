@@ -1,5 +1,6 @@
 /* Explicit entry point: reset, components, and shared controls. */
 @import './global.css';
+@import './page-rhythm.css';
 @import './cosmos-effect.css';
 @import './space-navigation.css';
 @import './corporate-packages.css';

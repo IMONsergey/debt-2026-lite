@@ -9,9 +9,9 @@ export function OrganizerSection({ organizer }) {
   const channels = contacts.channels ?? [];
 
   return (
-    <section className="organizer-section content-section" id="organizer" aria-labelledby="organizer-title">
+    <section className="organizer-section content-section page-section" id="organizer" aria-labelledby="organizer-title">
       <div className="organizer-section__heading">
-        <h2 className="organizer-section__title" id="organizer-title">{typograf(organizer.title)}</h2>
+        <h2 className="organizer-section__title section-title" id="organizer-title">{typograf(organizer.title)}</h2>
         <address className="organizer-contact-strip" aria-label="Контакты организатора форума">
           <span className="organizer-contact-strip__label">{typograf(contacts.label)}</span>
           <a className="organizer-contact-strip__link" href={contacts.phoneHref}>{contacts.phone}</a>

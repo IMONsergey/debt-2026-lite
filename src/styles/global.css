@@ -76,7 +76,6 @@
   --section-callout-block-pad: clamp(18px, 1.7vw, 26px);
   --menu-pad: clamp(20px, 2.8vh, 32px);
   --hero-bottom-offset: clamp(34px, 4.2vh, 58px);
-  --ticker-next-gap: 220px;
   --desktop-column-width: calc((100vw - (var(--edge) * 2) - (var(--gap) * 14)) / 15);
   --desktop-menu-track-width: calc((var(--desktop-column-width) * 3) + (var(--gap) * 2));
   --desktop-content-right: var(--edge);
@@ -84,9 +83,6 @@
   --desktop-menu-visual-width: min(250px, var(--desktop-menu-track-width));
   --desktop-content-left: calc(var(--edge) + (var(--desktop-column-width) * 3) + (var(--gap) * 3));
   --desktop-content-width: calc(100vw - var(--desktop-content-left) - var(--desktop-content-right));
-  --section-space: clamp(140px, 13vw, 210px);
-  --type-section-min: 36px;
-  --type-section-max: 44px;
   --type-hero: 42px;
   --type-card-title: 18px;
   --type-body-large-min: 20px;
@@ -256,7 +252,6 @@ button {
 :root {
   --adaptive-inline: clamp(18px, 4vw, 42px);
   --adaptive-block-gap: clamp(28px, 4vw, 46px);
-  --adaptive-section-space: clamp(88px, 11vw, 140px);
 }
 
 .content-section {
@@ -267,7 +262,6 @@ button {
   :root {
     --adaptive-inline: 18px;
     --adaptive-block-gap: 28px;
-    --adaptive-section-space: 82px;
   }
 }
 
@@ -281,8 +275,6 @@ button {
 
 @media (max-width: 1180px) {
   :root {
-    --type-section-min: 32px;
-    --type-section-max: 40px;
     --type-hero: 38px;
     --type-card-title: 15px;
     --type-body-large-min: 18px;
@@ -294,8 +286,6 @@ button {
 
 @media (max-width: 699px) {
   :root {
-    --type-section-min: 28px;
-    --type-section-max: 34px;
     --type-hero: 30px;
     --type-card-title: 13px;
     --type-body-large-min: 18px;

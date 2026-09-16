@@ -1,15 +1,13 @@
 .other-conferences-section {
   position: relative;
   container-type: inline-size;
-  padding-block: clamp(104px, 9vw, 138px) clamp(132px, 11vw, 176px);
-  scroll-margin-top: 32px;
 }
 
 .other-conferences-section__heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 32px;
+  gap: 24px;
 }
 
 .other-conferences-section__heading h2 {
@@ -17,12 +15,6 @@
   margin: 0;
   white-space: pre-line;
   color: #eef4ff;
-  font-family: 'Unbounded', Arial, sans-serif;
-  font-size: clamp(38px, 4cqi, 58px);
-  font-weight: 600;
-  line-height: 1.38;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   background: linear-gradient(102deg, #ffffff 0%, #edf3ff 48%, #8fb5ec 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -46,7 +38,7 @@
   --conference-control-inset: clamp(18px, 2.2cqi, 32px);
   position: relative;
   isolation: isolate;
-  margin-top: clamp(54px, 5cqi, 72px);
+  margin-top: var(--section-heading-gap);
 }
 
 .other-conferences-carousel__viewport {
@@ -252,16 +244,10 @@
 @media (max-width: 1180px) {
   .other-conferences-section {
     margin-inline: var(--adaptive-inline);
-    padding-block: clamp(92px, 10vw, 124px);
   }
 
   .other-conferences-section__heading {
     display: grid;
-  }
-
-  .other-conferences-section__heading h2 {
-    font-size: clamp(32px, 5.2vw, 44px);
-    line-height: 1.32;
   }
 
   .other-conferences-section__heading > span {
@@ -277,18 +263,6 @@
 @media (max-width: 699px) {
   .other-conferences-section {
     margin-inline: 18px;
-    padding-block: 82px 104px;
-    scroll-margin-top: 120px;
-  }
-
-  .other-conferences-section__heading {
-    gap: 20px;
-  }
-
-  .other-conferences-section__heading h2 {
-    font-size: clamp(24px, 7.1vw, 30px);
-    line-height: 1.35;
-    letter-spacing: 0.08em;
   }
 
   .other-conferences-section__heading > span {
@@ -299,7 +273,6 @@
   .other-conferences-carousel {
     --conference-card-width: 100cqi;
     --conference-control-inset: 14px;
-    margin-top: 38px;
     padding-bottom: 60px;
   }
 

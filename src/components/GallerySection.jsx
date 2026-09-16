@@ -146,8 +146,8 @@ export function GallerySection({ gallery }) {
   }
 
   return (
-    <section className="gallery-section content-section" id="gallery" aria-labelledby="gallery-title">
-      <h2 id="gallery-title">{typograf(gallery.title)}</h2>
+    <section className="gallery-section content-section page-section" id="gallery" aria-labelledby="gallery-title">
+      <h2 className="section-title" id="gallery-title">{typograf(gallery.title)}</h2>
       <div className="gallery-carousel">
         <div
           className="gallery-carousel__viewport"

@@ -104,9 +104,9 @@ export function OtherConferencesSection({ archive }) {
   }
 
   return (
-    <section className="other-conferences-section" id="other-conferences" aria-labelledby="other-conferences-title">
+    <section className="other-conferences-section page-section" id="other-conferences" aria-labelledby="other-conferences-title">
       <div className="other-conferences-section__heading">
-        <h2 id="other-conferences-title">{typograf(archive.title)}</h2>
+        <h2 className="section-title" id="other-conferences-title">{typograf(archive.title)}</h2>
         <span>{typograf(archive.range)}</span>
       </div>
 

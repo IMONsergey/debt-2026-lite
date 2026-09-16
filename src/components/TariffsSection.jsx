@@ -5,11 +5,11 @@ export function TariffsSection({ tariffs, onOpenApplication }) {
   if (!tariffs || !Array.isArray(tariffs.items) || tariffs.items.length === 0) return null;
 
   return (
-    <section className="tariffs-section" id="tariffs" aria-labelledby="tariffs-title">
+    <section className="tariffs-section page-section" id="tariffs" aria-labelledby="tariffs-title">
       <div className="tariffs-section__hero">
         <div className="tariffs-section__intro">
           <span className="tariffs-section__eyebrow">{typograf(tariffs.eyebrow)}</span>
-          <h2 id="tariffs-title">{typograf(tariffs.title)}</h2>
+          <h2 className="section-title" id="tariffs-title">{typograf(tariffs.title)}</h2>
         </div>
 
         <div className="tariffs-section__visual" aria-hidden="true">

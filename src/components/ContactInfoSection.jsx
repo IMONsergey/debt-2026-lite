@@ -7,10 +7,10 @@ export function ContactInfoSection({ contacts, venue, channels, footer }) {
   const mapUrl = `https://yandex.ru/map-widget/v1/?${new URLSearchParams({ text: venue.address, z: '16' })}`;
 
   return (
-    <section className="contact-info" id="contacts" aria-labelledby="contact-info-title">
+    <section className="contact-info page-section" id="contacts" aria-labelledby="contact-info-title">
       <img className="contact-info__artwork" src={assetUrl('assets/images/contacts-rocket.png')} width="1752" height="1752" loading="lazy" alt="" aria-hidden="true" />
       <div className="contact-info__heading">
-        <h2 id="contact-info-title">{contacts.title}</h2>
+        <h2 className="section-title" id="contact-info-title">{contacts.title}</h2>
         <a className="contact-info__accreditation" href={`mailto:${contacts.accreditationEmail}`}>
           <span>Аккредитация СМИ:<strong>{contacts.accreditationEmail}</strong></span>
           <span className="contact-info__info-icon" aria-hidden="true">i</span>

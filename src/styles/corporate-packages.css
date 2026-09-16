@@ -1,9 +1,7 @@
 .corporate-packages {
   width: var(--desktop-content-width);
   margin-left: calc(var(--desktop-content-left) - var(--edge));
-  padding-block: clamp(64px, 6vw, 96px);
   container: corporate-packages / inline-size;
-  scroll-margin-top: 32px;
 }
 
 .corporate-packages__panel {
@@ -30,7 +28,7 @@
   margin: 0;
   color: #fff;
   font-family: 'Unbounded', Arial, sans-serif;
-  font-size: clamp(22px, 2.73cqi, 38px);
+  font-size: min(var(--section-title-size), clamp(22px, 2.25cqi, 30px));
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0.01em;
@@ -140,9 +138,9 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  font-size: clamp(22px, 2.25cqi, 32px);
+  font-size: clamp(20px, 2cqi, 26px);
   font-weight: 500;
-  line-height: 1.08;
+  line-height: 1.25;
   text-transform: uppercase;
 }
 
@@ -323,7 +321,7 @@
   }
 
   .corporate-packages__title {
-    font-size: clamp(22px, 4.2cqi, 34px);
+    font-size: min(var(--section-title-size), 28px);
   }
 
   .corporate-packages__cards {
@@ -337,7 +335,7 @@
   .corporate-packages__form-title {
     margin-bottom: 24px;
     padding-bottom: 24px;
-    font-size: clamp(22px, 3.5cqi, 28px);
+    font-size: clamp(20px, 2cqi, 26px);
   }
 }
 
@@ -349,7 +347,7 @@
   }
 
   .corporate-packages__title {
-    font-size: clamp(20px, 5cqi, 23px);
+    font-size: clamp(20px, 5cqi, 22px);
   }
 
   .corporate-packages__cards {

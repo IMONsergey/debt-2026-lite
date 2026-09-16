@@ -3,17 +3,16 @@
   z-index: 1;
   width: var(--desktop-content-width);
   margin-left: calc(var(--desktop-content-left) - var(--edge));
-  padding: clamp(84px, 7vw, 124px) 0 clamp(126px, 11vw, 190px);
+  padding-inline: 0;
   background: transparent;
 }
 
 .tariffs-section__hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(260px, 0.42fr);
-  gap: clamp(32px, 5vw, 84px);
-  min-height: clamp(235px, 20vw, 310px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: var(--section-heading-gap);
+  align-items: center;
 }
 
 .tariffs-section__intro {
@@ -31,9 +30,9 @@
   background-clip: text;
   color: transparent;
   font-family: 'Unbounded', Arial, sans-serif;
-  font-size: clamp(58px, 6.2vw, 104px);
+  font-size: calc(var(--section-title-size) * 1.4);
   font-weight: 600;
-  line-height: 0.88;
+  line-height: 1.12;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -42,40 +41,36 @@
   margin: 8px 0 0;
   color: transparent;
   -webkit-text-stroke: 1px rgba(221, 240, 255, 0.95);
-  font-family: 'Unbounded', Arial, sans-serif;
-  font-size: clamp(40px, 4.1vw, 72px);
   font-weight: 400;
-  line-height: 0.9;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .tariffs-section__visual {
-  position: absolute;
+  position: relative;
   z-index: 1;
-  top: -74px;
-  right: calc(clamp(28px, 5vw, 78px) * -1.2);
-  width: min(690px, 48vw);
-  min-height: 360px;
+  width: 100%;
+  height: clamp(180px, 18vw, 260px);
   pointer-events: none;
 }
 
 .tariffs-section__slash {
   position: absolute;
-  top: -18px;
-  right: 24%;
-  width: min(430px, 28vw);
-  height: auto;
+  top: 0;
+  right: 25%;
+  width: 60%;
+  height: 90%;
+  object-fit: contain;
   opacity: 0.98;
   filter: drop-shadow(0 0 46px rgba(25, 139, 255, 0.28));
 }
 
 .tariffs-section__hand {
   position: absolute;
-  top: 124px;
-  right: -126px;
-  width: min(520px, 39vw);
-  height: auto;
+  top: 35%;
+  right: 0;
+  width: 88%;
+  height: 65%;
+  object-fit: contain;
   filter: drop-shadow(0 24px 72px rgba(18, 153, 255, 0.32));
 }
 
@@ -83,7 +78,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(14px, 1.35vw, 22px);
-  margin-top: clamp(0px, 0.8vw, 14px);
+  margin-top: var(--section-heading-gap);
 }
 
 .tariff-card {
@@ -262,40 +257,16 @@
   .tariffs-section {
     width: auto;
     margin: 0;
-    padding: clamp(72px, 8vw, 104px) var(--adaptive-inline) clamp(104px, 12vw, 150px);
-  }
-
-  .tariffs-section__hero {
-    grid-template-columns: 1fr;
-    min-height: 0;
+    padding-inline: var(--adaptive-inline);
   }
 
   .tariffs-section__intro {
     max-width: 760px;
   }
 
-  .tariffs-section__visual {
-    top: -28px;
-    right: calc(var(--adaptive-inline) * -1);
-    width: min(520px, 54vw);
-    min-height: 310px;
-  }
-
-  .tariffs-section__slash {
-    right: 34%;
-    width: min(280px, 28vw);
-  }
-
-  .tariffs-section__hand {
-    top: 96px;
-    right: -92px;
-    width: min(420px, 46vw);
-  }
-
   .tariffs-section__cards {
     grid-template-columns: 1fr;
     max-width: 640px;
-    margin-top: 26px;
     margin-inline: auto;
   }
 
@@ -311,42 +282,22 @@
 
 @media (max-width: 699px) {
   .tariffs-section {
-    padding: 62px 18px 104px;
+    padding-inline: 18px;
   }
 
-  .tariffs-section__eyebrow {
-    font-size: clamp(38px, 12vw, 54px);
-    line-height: 0.94;
-  }
-
-  .tariffs-section h2 {
-    font-size: clamp(27px, 9vw, 40px);
-    letter-spacing: 0.18em;
+  .tariffs-section__hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 
   .tariffs-section__visual {
-    position: relative;
-    right: auto;
-    top: auto;
-    width: 100%;
-    min-height: 210px;
-    margin-top: -14px;
-  }
-
-  .tariffs-section__slash {
-    right: 31%;
-    width: 174px;
-  }
-
-  .tariffs-section__hand {
-    top: 62px;
-    right: -122px;
-    width: 356px;
+    justify-self: end;
+    width: min(100%, 360px);
+    height: 180px;
   }
 
   .tariffs-section__cards {
     gap: 14px;
-    margin-top: 20px;
   }
 
   .tariff-card,

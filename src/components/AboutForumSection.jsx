@@ -7,7 +7,7 @@ export function AboutForumSection({ about }) {
 
   return (
     <section
-      className="about-forum-section"
+      className="about-forum-section page-section"
       id="about-forum"
       aria-labelledby="about-forum-title"
     >

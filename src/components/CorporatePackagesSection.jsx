@@ -47,7 +47,7 @@ export function CorporatePackagesSection({ tariffs, privacyHref, config }) {
   }
 
   return (
-    <section className="corporate-packages" id="corporate-packages" aria-labelledby="corporate-packages-title">
+    <section className="corporate-packages page-section" id="corporate-packages" aria-labelledby="corporate-packages-title">
       <div className="corporate-packages__panel">
         <div className="corporate-packages__offer">
           <h2 className="corporate-packages__title" id="corporate-packages-title">Корпоративные<br />пакеты*</h2>
