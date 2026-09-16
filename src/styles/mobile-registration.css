@@ -3,7 +3,7 @@
 }
 
 @media (max-width: 1180px) {
-  .hero-only-view {
+  .site-shell {
     padding-bottom: calc(78px + env(safe-area-inset-bottom));
   }
 

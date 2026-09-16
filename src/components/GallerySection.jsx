@@ -1,6 +1,7 @@
+import { ResponsiveImage } from './ResponsiveImage.jsx';
 import { useDialog } from '../hooks/useDialog.js';
 import { useCarouselResize } from '../hooks/useCarouselResize.js';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
@@ -18,6 +19,11 @@ export function GallerySection({ gallery }) {
   const touchStartRef = useRef(null);
   const lightboxCloseTimerRef = useRef(null);
   const lightboxOpenFrameRef = useRef(null);
+  const moveLightbox = useCallback((direction) => {
+    if (lightboxIndex === null || lightboxState === 'exit') return;
+    setLightboxMotion(direction > 0 ? 'next' : 'previous');
+    setLightboxIndex((index) => (index + direction + items.length) % items.length);
+  }, [items.length, lightboxIndex, lightboxState]);
   useCarouselResize(carouselRef, () => scrollToSlide(activeIndex, 'instant'));
 
   useEffect(() => {
@@ -52,7 +58,7 @@ export function GallerySection({ gallery }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [items.length, lightboxIndex]);
+  }, [lightboxIndex, moveLightbox]);
 
   useDialog({ dialogRef: lightboxRef, open: lightboxIndex !== null, onClose: closeLightbox });
 
@@ -104,12 +110,6 @@ export function GallerySection({ gallery }) {
     selectSlide((activeIndex + direction + items.length) % items.length);
   }
 
-  function isPriorityGalleryImage(index) {
-    if (!items.length) return false;
-    const distance = Math.abs(index - activeIndex);
-    return distance <= 1 || distance >= items.length - 1;
-  }
-
   function openLightbox(index) {
     window.clearTimeout(lightboxCloseTimerRef.current);
     if (lightboxOpenFrameRef.current) window.cancelAnimationFrame(lightboxOpenFrameRef.current);
@@ -137,12 +137,6 @@ export function GallerySection({ gallery }) {
       setLightboxState('closed');
       setLightboxMotion('open');
     }, 320);
-  }
-
-  function moveLightbox(direction) {
-    if (lightboxIndex === null || lightboxState === 'exit') return;
-    setLightboxMotion(direction > 0 ? 'next' : 'previous');
-    setLightboxIndex((index) => (index + direction + items.length) % items.length);
   }
 
   return (
@@ -179,12 +173,11 @@ export function GallerySection({ gallery }) {
                 aria-label={`${typograf(item.alt)}. Кадр ${index + 1} из ${items.length}`}
                 onClick={() => openLightbox(index)}
               >
-                <img
+                <ResponsiveImage
+                  sizes="(max-width: 699px) 92vw, (max-width: 1180px) 72vw, min(56.82vw, 818px)"
                   src={item.image}
                   alt={item.alt}
                   decoding="async"
-                  loading={isPriorityGalleryImage(index) ? 'eager' : 'lazy'}
-                  fetchPriority={isPriorityGalleryImage(index) ? 'high' : 'auto'}
                 />
               </button>
             ))}
@@ -238,7 +231,9 @@ export function GallerySection({ gallery }) {
               moveLightbox(start > end ? 1 : -1);
             }}
           >
-            <img
+            <ResponsiveImage
+              sizes="92vw"
+              loading="eager"
               key={`${lightboxIndex}-${lightboxMotion}`}
               className="gallery-lightbox__image"
               src={items[lightboxIndex].image}

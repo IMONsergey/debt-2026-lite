@@ -1,3 +1,4 @@
+import { ResponsiveImage } from './ResponsiveImage.jsx';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 import { ChannelIcon } from './ChannelIcon.jsx';
@@ -8,7 +9,7 @@ export function ContactInfoSection({ contacts, venue, channels, footer }) {
 
   return (
     <section className="contact-info page-section" id="contacts" aria-labelledby="contact-info-title">
-      <img className="contact-info__artwork" src={assetUrl('assets/images/contacts-rocket.png')} width="1752" height="1752" loading="lazy" alt="" aria-hidden="true" />
+      <ResponsiveImage className="contact-info__artwork" src={assetUrl('assets/images/contacts-rocket.webp')} width="1752" height="1752" loading="lazy" alt="" aria-hidden="true" />
       <div className="contact-info__heading">
         <h2 className="section-title" id="contact-info-title">{contacts.title}</h2>
         <a className="contact-info__accreditation" href={`mailto:${contacts.accreditationEmail}`}>

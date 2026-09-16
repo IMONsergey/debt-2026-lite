@@ -39,8 +39,8 @@ export async function sendLead(payload, { endpoint, fetchImpl = fetch, timeoutMs
     }
     return result;
   } catch (error) {
-    if (controller.signal.aborted) throw new Error('Сервер не ответил. Попробуйте отправить заявку ещё раз.');
-    if (error instanceof TypeError) throw new Error('Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.');
+    if (controller.signal.aborted) throw new Error('Сервер не ответил. Попробуйте отправить заявку ещё раз.', { cause: error });
+    if (error instanceof TypeError) throw new Error('Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.', { cause: error });
     throw error;
   } finally {
     clearTimeout(timer);

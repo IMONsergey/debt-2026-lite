@@ -1,3 +1,4 @@
+import { ResponsiveImage } from './ResponsiveImage.jsx';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
@@ -36,7 +37,7 @@ export function VenueSection({ venue }) {
               className={`venue-bento__tile${index === 0 ? ' venue-bento__tile--primary' : ''}`}
               key={item.image}
             >
-              <img src={item.image} alt={item.alt} loading="lazy" decoding="async" />
+              <ResponsiveImage src={item.image} alt={item.alt} loading="lazy" decoding="async"  sizes="(max-width: 699px) 92vw, (max-width: 1180px) 60vw, 40vw" />
             </figure>
           ))}
         </div>

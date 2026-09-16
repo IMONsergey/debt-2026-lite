@@ -49,3 +49,17 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-button { transition: none; }
 }
+.dialog-loading {
+  position: fixed;
+  z-index: 12010;
+  inset: auto 20px 88px auto;
+  margin: 0;
+  padding: 14px 20px;
+  border: 1px solid var(--ui-cta-border);
+  border-radius: var(--ui-cta-radius);
+  background: var(--panel-solid);
+  color: var(--text);
+  font-size: 16px;
+  max-width: min(360px, calc(100vw - 40px));
+}
+.dialog-loading p { margin: 0 0 12px; }

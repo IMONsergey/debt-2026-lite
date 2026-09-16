@@ -4,6 +4,7 @@
 @import './cosmos-effect.css';
 @import './space-navigation.css';
 @import './corporate-packages.css';
+@import './desktop-video.css';
 @import './video-widget.css';
 @import './soft-reveal.css';
 @import './venue-section.css';
@@ -13,6 +14,9 @@
 @import './contact-info.css';
 @import './fixed-menu.css';
 @import './hero.css';
+@import './countdown.css';
+@import './ticker.css';
+@import './hero-info.css';
 @import './gallery.css';
 @import './application-modal.css';
 @import './organizer-section.css';

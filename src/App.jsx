@@ -1,42 +1,18 @@
 import { content } from './data/content.js';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { CosmosBackground } from './components/CosmosBackground.jsx';
-import { ApplicationModal } from './components/ApplicationModal.jsx';
+import { DialogBoundary } from './components/DialogBoundary.jsx';
 import { SitePage } from './components/SitePage.jsx';
-import { TicketOfferModal } from './components/TicketOfferModal.jsx';
 import { VideoWidget } from './components/VideoWidget.jsx';
 import { assetUrl } from './lib/assets.js';
+
+const ApplicationModal = lazy(() => import('./components/ApplicationModal.jsx').then(module => ({ default: module.ApplicationModal })));
+const TicketOfferModal = lazy(() => import('./components/TicketOfferModal.jsx').then(module => ({ default: module.TicketOfferModal })));
 
 export default function App() {
   const [activeForm, setActiveForm] = useState(null);
   const [ticketOfferReady, setTicketOfferReady] = useState(false);
   const [ticketOfferDismissed, setTicketOfferDismissed] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    document.title = 'DEBT TECH 2026 - Вселенная технологий | 13 ноября | Москва';
-    const heroImage = window.matchMedia('(max-width: 1180px)').matches
-      ? content.hero.backgroundImageAdaptive
-      : content.hero.backgroundImage;
-    const criticalImages = [...new Set([
-      heroImage,
-      content.aboutForum.planetImage,
-      content.aboutForum.shuttleImage,
-      content.aboutForum.logoImage,
-    ].filter(Boolean))];
-    let completed = 0;
-    const reportProgress = () => {
-      completed += 1;
-      if (!cancelled) document.dispatchEvent(new CustomEvent('debt:progress', { detail: { completed, total: criticalImages.length + 1 } }));
-    };
-    Promise.allSettled([
-      preloadImages(criticalImages, reportProgress),
-      document.fonts.ready.then(reportProgress, reportProgress),
-    ]).then(() => {
-      if (!cancelled) document.dispatchEvent(new Event('debt:ready'));
-    });
-    return () => { cancelled = true; };
-  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setTicketOfferReady(true), 15000);
@@ -58,46 +34,35 @@ export default function App() {
   return (
     <>
       <CosmosBackground />
-      <div className="hero-only-view">
+      <div className="site-shell">
         <SitePage content={content} onOpenApplication={setActiveForm} />
       </div>
       <VideoWidget video={content.heroVideo} />
       <MobileRegistration cta={content.menu.cta} onOpenApplication={setActiveForm} />
-      {activeForm ? (
-        <ApplicationModal
-          key={typeof activeForm === 'string' ? activeForm : `${activeForm.kind}-${activeForm.tariff?.id ?? 'form'}`}
-          kind={typeof activeForm === 'string' ? activeForm : activeForm.kind}
-          selectedTariff={typeof activeForm === 'string' ? null : activeForm.tariff}
-          config={content.forms}
-          privacyHref={content.footer.privacyHref}
-          onClose={() => setActiveForm(null)}
-        />
-      ) : null}
-      {ticketOfferReady && !ticketOfferDismissed && !activeForm ? (
-        <TicketOfferModal
-          logo={assetUrl('assets/images/ticket-offer-logo.svg')}
-          countdownTarget="2026-09-25T00:00:00+03:00"
-          onClose={() => setTicketOfferDismissed(true)}
-          onBuy={handleTicketOfferBuy}
-        />
-      ) : null}
+      <DialogBoundary key={activeForm ? 'application' : ticketOfferReady && !ticketOfferDismissed ? 'offer' : 'closed'} onClose={() => { setActiveForm(null); setTicketOfferDismissed(true); }}>
+        <Suspense fallback={<p className="dialog-loading" role="status">Загрузка…</p>}>
+          {activeForm ? (
+            <ApplicationModal
+              key={typeof activeForm === 'string' ? activeForm : `${activeForm.kind}-${activeForm.tariff?.id ?? 'form'}`}
+              kind={typeof activeForm === 'string' ? activeForm : activeForm.kind}
+              selectedTariff={typeof activeForm === 'string' ? null : activeForm.tariff}
+              config={content.forms}
+              privacyHref={content.footer.privacyHref}
+              onClose={() => setActiveForm(null)}
+            />
+          ) : null}
+          {ticketOfferReady && !ticketOfferDismissed && !activeForm ? (
+            <TicketOfferModal
+              logo={assetUrl('assets/images/ticket-offer-logo.svg')}
+              countdownTarget="2026-09-25T00:00:00+03:00"
+              onClose={() => setTicketOfferDismissed(true)}
+              onBuy={handleTicketOfferBuy}
+            />
+          ) : null}
+        </Suspense>
+      </DialogBoundary>
     </>
   );
-}
-
-function preloadImages(urls, onSettled = () => {}) {
-  return Promise.allSettled([...new Set(urls.filter(Boolean))].map((url) => new Promise((resolve) => {
-    const image = new Image();
-    image.decoding = 'async';
-    image.loading = 'eager';
-    image.fetchPriority = 'high';
-    const done = () => { onSettled(); resolve(); };
-    image.onload = () => {
-      image.decode().catch(() => {}).finally(done);
-    };
-    image.onerror = done;
-    image.src = url;
-  })));
 }
 
 function MobileRegistration({ cta, onOpenApplication }) {

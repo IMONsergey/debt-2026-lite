@@ -1,41 +1,41 @@
 /* fixed-menu: layout and responsive rules, in cascade order. */
-.hero-only-view .fixed-menu__brand {
+.site-shell .fixed-menu__brand {
   margin-bottom: clamp(24px, 3.2vh, 42px);
 }
 
 @media (min-width: 1181px) {
-  .hero-only-view .fixed-menu__brand {
+  .site-shell .fixed-menu__brand {
     width: clamp(168px, 17vh, 210px);
   }
 }
 
-.hero-only-view .fixed-menu__info {
+.site-shell .fixed-menu__info {
   --menu-info-gap: clamp(12px, 1.45vh, 18px);
 }
 
-.hero-only-view .fixed-menu__cta {
+.site-shell .fixed-menu__cta {
   width: 100%;
   text-align: left;
 }
 
-.hero-only-view .fixed-menu__cta:not(.fixed-menu__cta--secondary):hover {
+.site-shell .fixed-menu__cta:not(.fixed-menu__cta--secondary):hover {
   filter: brightness(1.12);
 }
 
-.hero-only-view .fixed-menu__cta--secondary {
+.site-shell .fixed-menu__cta--secondary {
   margin-top: 0;
   box-shadow: inset 0 0 24px rgba(0, 140, 255, 0.08);
 }
 
-.hero-only-view .fixed-menu__cta--secondary:hover,
-.hero-only-view .fixed-menu__cta--secondary:focus-visible {
+.site-shell .fixed-menu__cta--secondary:hover,
+.site-shell .fixed-menu__cta--secondary:focus-visible {
   border-color: rgba(104, 193, 255, 0.72);
   background: rgba(9, 91, 184, 0.38);
 }
 
 @media (max-width: 699px) {
 
-  .hero-only-view .fixed-menu__info {
+  .site-shell .fixed-menu__info {
     --menu-info-gap: 16px;
   }
 }

@@ -1,3 +1,4 @@
+import { ResponsiveImage } from './ResponsiveImage.jsx';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 import { ChannelIcon } from './ChannelIcon.jsx';
@@ -47,7 +48,7 @@ export function OrganizerSection({ organizer }) {
         </a>
 
         <figure className="organizer-card organizer-card--photo">
-          <img src={organizer.photo.image} alt={organizer.photo.alt} loading="lazy" decoding="async" />
+          <ResponsiveImage src={organizer.photo.image} alt={organizer.photo.alt} loading="lazy" decoding="async"  sizes="(max-width: 639px) 92vw, (max-width: 1180px) 46vw, 26vw" />
         </figure>
 
         <a className="organizer-card organizer-card--rating organizer-card--link" href={organizer.rating.href} target="_blank" rel="noreferrer">
@@ -83,7 +84,7 @@ export function OrganizerSection({ organizer }) {
         </article>
 
         <a className="organizer-card organizer-card--navigator organizer-card--link" href={organizer.navigator.href} target="_blank" rel="noreferrer">
-          <img src={organizer.navigator.image} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+          <ResponsiveImage src={organizer.navigator.image} alt="" aria-hidden="true" loading="lazy" decoding="async"  sizes="(max-width: 639px) 92vw, (max-width: 1180px) 46vw, 26vw" />
           <div>
             <img className="organizer-card__navigator-logo" src={organizer.navigator.logo} width="306" height="39" alt={organizer.navigator.title} loading="lazy" decoding="async" />
             <p>{typograf(organizer.navigator.description)}</p>

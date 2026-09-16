@@ -148,7 +148,7 @@ export function VideoWidget({ video }) {
               src={video.previewUrl ?? video.embedUrl}
               title={`${video.title} - превью`}
               allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock"
-              loading="eager"
+              loading="lazy"
               tabIndex="-1"
             />
           </div>
@@ -164,6 +164,8 @@ export function VideoWidget({ video }) {
             className="video-widget__close video-widget__close--preview"
             type="button"
             aria-label="Скрыть видео"
+            tabIndex={isFloating ? 0 : -1}
+            aria-hidden={!isFloating}
             onClick={() => setIsHidden(true)}
           >
             ×

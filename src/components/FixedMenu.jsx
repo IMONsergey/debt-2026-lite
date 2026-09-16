@@ -98,7 +98,7 @@ function SidebarVideo({ video, onOpenChange }) {
             src={video.previewUrl ?? video.embedUrl}
             title={`${video.title} - превью`}
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock"
-            loading="eager"
+            loading="lazy"
             allowFullScreen
             tabIndex={-1}
             aria-hidden="true"

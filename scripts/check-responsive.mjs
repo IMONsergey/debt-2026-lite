@@ -49,8 +49,8 @@ function check(actual, expected, message) {
 }
 
 for (const width of widths) for (const height of heights) {
-  const primary = ['.ui-button', '.fixed-menu__cta', '.hero-only-view .fixed-menu__cta', '.mobile-hero-info .fixed-menu__cta', '.hero-only-view .mobile-hero-info .fixed-menu__cta'];
-  const secondary = [...primary, '.hero-only-view .fixed-menu__cta--secondary', '.mobile-hero-info .fixed-menu__cta--secondary', '.hero-only-view .mobile-hero-info .fixed-menu__cta--secondary'];
+  const primary = ['.ui-button', '.fixed-menu__cta', '.site-shell .fixed-menu__cta', '.mobile-hero-info .fixed-menu__cta', '.site-shell .mobile-hero-info .fixed-menu__cta'];
+  const secondary = [...primary, '.site-shell .fixed-menu__cta--secondary', '.mobile-hero-info .fixed-menu__cta--secondary', '.site-shell .mobile-hero-info .fixed-menu__cta--secondary'];
   if (width <= 1180) {
     check(value(primary, 'min-height', width, height), 'var(--ui-cta-height)', `${width}: primary height`);
     check(value(secondary, 'grid-row', width, height), width >= 700 ? '3' : 'auto', `${width}: secondary row`);
@@ -61,9 +61,9 @@ for (const width of widths) for (const height of heights) {
     check(value(['.ui-button', cls], 'min-height', width, height), 'var(--ui-cta-height)', `${width}: ${cls} height`);
     check(value(['.ui-button', cls], 'border-radius', width, height), 'var(--ui-cta-radius)', `${width}: ${cls} radius`);
     check(value([`${cls} img`], 'width', width, height), '16px', `${width}: ${cls} icon`);
-    check(value([cls, `${cls}:hover`, `.hero-only-view ${cls}:hover`], 'transform', width, height), undefined, `${width}: ${cls} hover movement`);
+    check(value([cls, `${cls}:hover`, `.site-shell ${cls}:hover`], 'transform', width, height), undefined, `${width}: ${cls} hover movement`);
   }
-  for (const cls of ['.gallery-carousel__arrow', '.other-conferences-carousel__control', '.application-modal__close', '.ticket-offer-modal__close']) {
+  for (const cls of ['.gallery-carousel__arrow', '.other-conferences-carousel__control', '.application-modal__close', '.ticket-offer-modal__close', '.video-widget__close']) {
     check(value([cls], 'width', width, height), '44px', `${width}: ${cls} touch target`);
     check(value([cls], 'height', width, height), '44px', `${width}: ${cls} touch target`);
   }

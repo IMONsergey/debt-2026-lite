@@ -1,3 +1,4 @@
+import { ResponsiveImage } from './ResponsiveImage.jsx';
 import { typograf } from '../lib/typography.js';
 
 export function AboutForumSection({ about }) {
@@ -32,8 +33,8 @@ export function AboutForumSection({ about }) {
 
         <div className="about-tags" aria-label="Темы форума">
           <div className="about-tags__planet-wrap" aria-hidden="true">
-            <img className="about-tags__planet" src={about.planetImage} alt="" loading="eager" fetchPriority="high" />
-            <img className="about-tags__logo" src={about.logoImage} alt="" loading="eager" fetchPriority="high" />
+            <ResponsiveImage className="about-tags__planet" src={about.planetImage} alt="" loading="lazy" decoding="async" />
+            <img className="about-tags__logo" src={about.logoImage} alt="" loading="lazy" decoding="async" />
           </div>
 
           <div className="about-tags__orbit" role="list">
@@ -48,8 +49,8 @@ export function AboutForumSection({ about }) {
             <p>
               {(about.meetingLines ?? []).map((line) => <span key={line}>{typograf(line)}</span>)}
             </p>
-            <img className="about-forum-section__shuttle" src={about.shuttleImage} alt="" aria-hidden="true" loading="eager" />
-            <img className="about-forum-section__launch-logo" src={about.logoImage} alt="DEBT TECH 2026" loading="eager" />
+            <ResponsiveImage className="about-forum-section__shuttle" src={about.shuttleImage} alt="" aria-hidden="true" loading="lazy" />
+            <img className="about-forum-section__launch-logo" src={about.logoImage} alt="DEBT TECH 2026" loading="lazy" />
           </div>
         </div>
 

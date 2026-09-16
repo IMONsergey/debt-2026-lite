@@ -2,9 +2,9 @@ import { assetUrl } from '../lib/assets.js';
 
 const galleryImages = [
   '01.webp', '02.webp', '03.webp', '04.webp', '05.webp',
-  '06.webp', '07.webp', '08.webp', '09.webp', '10.jpg',
-  '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg',
-  '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
+  '06.webp', '07.webp', '08.webp', '09.webp', '10.webp',
+  '11.webp', '12.webp', '13.webp', '14.webp', '15.webp',
+  '16.webp', '17.webp', '18.webp', '19.webp', '20.webp',
 ];
 
 export const content = {
@@ -33,8 +33,8 @@ export const content = {
   },
   hero: {
     title: 'DEBT TECH 2026',
-    backgroundImage: assetUrl('assets/hero-debttech-2026.png'),
-    backgroundImageAdaptive: assetUrl('assets/hero-debttech-2026-adaptive.png'),
+    backgroundImage: assetUrl('assets/hero-debttech-2026.webp'),
+    backgroundImageAdaptive: assetUrl('assets/hero-debttech-2026-adaptive.webp'),
     bottomTitle: 'Стратегии, технологии и инновационные сервисы для работы с долговыми обязательствами',
     countdownLabel: 'Время до запуска',
     countdownTarget: '2026-11-13T00:00:00+03:00',
@@ -109,7 +109,7 @@ export const content = {
       href: 'https://rvzrus.ru/',
     },
     photo: {
-      image: assetUrl('assets/images/organizer/pko-300-2025.png'),
+      image: assetUrl('assets/images/organizer/pko-300-2025.webp'),
       alt: 'Участники рейтинга ПКО-300 2025 с наградами',
     },
     rating: {
@@ -134,7 +134,7 @@ export const content = {
     navigator: {
       title: 'DEBT TECH Навигатор',
       logo: assetUrl('assets/images/organizer/navigator-logo.svg'),
-      image: assetUrl('assets/images/organizer/navigator-preview.png'),
+      image: assetUrl('assets/images/organizer/navigator-preview.webp'),
       description: 'Навигатор по технологическим решениям для работы с долговыми обязательствами: от аналитики до продажи, взыскания и банкротства.',
       href: 'https://navigator.debt-tech.ru/',
     },
@@ -143,23 +143,23 @@ export const content = {
     title: 'Другие конференции\nСМИ «Рынок Взыскания»',
     range: '[ 2021 – 2026 ]',
     items: [
-      { title: 'DOLG TALK Казань', year: '2026', href: 'https://kazan.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2026.png') },
-      { title: 'DOLG TALK', year: '2026', href: 'https://dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-2026.png') },
-      { title: 'DOLG TALK Сибирь', year: '2026', href: 'https://novosib.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-siberia-2026.jpg') },
-      { title: 'DEBT TECH', year: '2025', href: 'https://2025.debt-tech.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2025.jpg') },
-      { title: 'DOLG TALK', year: '2025', href: 'https://dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-2025.png') },
-      { title: 'DOLG TALK Казань', year: '2025', href: 'https://kazan.dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2025.png') },
-      { title: 'DEBT TECH', year: '2024', href: 'https://debttech.rvzrus.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2024.png') },
-      { title: 'Аналитика и финансы долговых портфелей 2.0', titleLines: ['Аналитика и финансы', 'долговых портфелей 2.0'], year: '2023', href: 'https://rvzrus.ru/news/2521', image: assetUrl('assets/images/other-conferences/analytics-finance-2023.png') },
-      { title: 'Аналитика и финансы долговых портфелей', titleLines: ['Аналитика и финансы', 'долговых портфелей'], year: '2022', href: 'https://rvzrus.ru/news/2464', image: assetUrl('assets/images/other-conferences/analytics-finance-2022.png') },
-      { title: 'Петербургский форум взыскателей', titleLines: ['Петербургский форум', 'взыскателей'], year: '2021', href: 'https://rvzrus.ru/news/2083', image: assetUrl('assets/images/other-conferences/petersburg-collectors-2021.png') },
+      { title: 'DOLG TALK Казань', year: '2026', href: 'https://kazan.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2026.webp') },
+      { title: 'DOLG TALK', year: '2026', href: 'https://dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-2026.webp') },
+      { title: 'DOLG TALK Сибирь', year: '2026', href: 'https://novosib.dolgtalk.ru/', image: assetUrl('assets/images/other-conferences/dolg-talk-siberia-2026.webp') },
+      { title: 'DEBT TECH', year: '2025', href: 'https://2025.debt-tech.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2025.webp') },
+      { title: 'DOLG TALK', year: '2025', href: 'https://dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-2025.webp') },
+      { title: 'DOLG TALK Казань', year: '2025', href: 'https://kazan.dolgtalk.ru/2025', image: assetUrl('assets/images/other-conferences/dolg-talk-kazan-2025.webp') },
+      { title: 'DEBT TECH', year: '2024', href: 'https://debttech.rvzrus.ru/', image: assetUrl('assets/images/other-conferences/debt-tech-2024.webp') },
+      { title: 'Аналитика и финансы долговых портфелей 2.0', titleLines: ['Аналитика и финансы', 'долговых портфелей 2.0'], year: '2023', href: 'https://rvzrus.ru/news/2521', image: assetUrl('assets/images/other-conferences/analytics-finance-2023.webp') },
+      { title: 'Аналитика и финансы долговых портфелей', titleLines: ['Аналитика и финансы', 'долговых портфелей'], year: '2022', href: 'https://rvzrus.ru/news/2464', image: assetUrl('assets/images/other-conferences/analytics-finance-2022.webp') },
+      { title: 'Петербургский форум взыскателей', titleLines: ['Петербургский форум', 'взыскателей'], year: '2021', href: 'https://rvzrus.ru/news/2083', image: assetUrl('assets/images/other-conferences/petersburg-collectors-2021.webp') },
     ],
   },
   tariffs: {
     eyebrow: 'Multipass',
     title: 'Welcome',
     logoImage: assetUrl('assets/images/tariffs/logo-form.svg'),
-    handImage: assetUrl('assets/images/tariffs/hand-spaceman.png'),
+    handImage: assetUrl('assets/images/tariffs/hand-spaceman.webp'),
     offer: 'Скидка 50% на один билет любого тарифа для представителя компании, которая впервые участвует в DEBT TECH.',
     agreement: 'Скидка предоставляется по согласованию с организаторами.',
     note: 'Стоимость актуальна до 25 сентября',
@@ -221,8 +221,8 @@ export const content = {
     title: 'DEBT TECH 2026',
     description: 'Ежегодная форум-выставка о технологиях на рынке долговых активов',
     titleLines: ['Ежегодная', 'форум-выставка', 'о технологиях', 'на рынке долговых', 'активов'],
-    planetImage: assetUrl('assets/images/about-forum/planet-v3.png'),
-    shuttleImage: assetUrl('assets/images/about-forum/shuttle-v3.png'),
+    planetImage: assetUrl('assets/images/about-forum/planet-v3.webp'),
+    shuttleImage: assetUrl('assets/images/about-forum/shuttle-v3.webp'),
     logoImage: assetUrl('assets/debttech-logo.svg'),
     meetingLines: ['До встречи', '13 ноября в Москве'],
     features: [

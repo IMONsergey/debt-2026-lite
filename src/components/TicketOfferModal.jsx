@@ -20,7 +20,7 @@ export function TicketOfferModal({ logo, countdownTarget, onClose, onBuy }) {
     >
       <section
         className="ticket-offer-modal__dialog"
-        style={{ '--ticket-offer-background': `url("${assetUrl('assets/images/ticket-offer-background.png')}")` }}
+        style={{ '--ticket-offer-background': `url("${assetUrl('assets/images/ticket-offer-background.webp')}")` }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="ticket-offer-title"
@@ -30,7 +30,7 @@ export function TicketOfferModal({ logo, countdownTarget, onClose, onBuy }) {
       >
         <img
           className="ticket-offer-modal__planet"
-          src={assetUrl('assets/images/ticket-offer-planet.png')}
+          src={assetUrl('assets/images/ticket-offer-planet.webp')}
           alt=""
           aria-hidden="true"
         />

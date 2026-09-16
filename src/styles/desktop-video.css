@@ -1,0 +1,266 @@
+/* desktop-video: component rules in cascade order. */
+.desktop-sidebar-video {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.desktop-sidebar-video__caption {
+  width: max-content;
+  color: #ffffff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.desktop-sidebar-video__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 68% 36%, rgba(67, 171, 255, 0.22), transparent 42%),
+    linear-gradient(135deg, rgba(7, 61, 128, 0.84), rgba(1, 8, 31, 0.98));
+  isolation: isolate;
+  transition:
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.desktop-sidebar-video__frame iframe {
+  position: absolute;
+  inset: -8px;
+  display: block;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #01081f;
+  pointer-events: none;
+}
+
+.fixed-menu.is-video-open {
+  overflow: visible;
+}
+
+.fixed-menu.is-video-open::before,
+.fixed-menu.is-video-open > .fixed-menu__brand,
+.fixed-menu.is-video-open .fixed-menu__info > :not(.desktop-sidebar-video) {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fixed-menu.is-video-open .desktop-sidebar-video__caption {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.desktop-sidebar-video__frame.is-open {
+  position: fixed;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: min(51.75vw, 900px, calc(100svh - 96px));
+  border-color: rgba(104, 193, 255, 0.34);
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.54);
+  transform: translate(-50%, -50%);
+  animation: desktop-video-player-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.desktop-sidebar-video__frame.is-open iframe {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.desktop-sidebar-video__open {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: rgba(0, 5, 20, 0.02);
+  cursor: pointer;
+}
+
+.desktop-sidebar-video__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(0, 5, 20, 0);
+  transition: background 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.desktop-sidebar-video__open:hover::after,
+.desktop-sidebar-video__open:focus-visible::after {
+  background: rgba(0, 5, 20, 0.16);
+}
+
+.desktop-sidebar-video__open:focus-visible {
+  outline: 2px solid rgba(104, 193, 255, 0.78);
+  outline-offset: 3px;
+}
+
+.desktop-sidebar-video__play {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  background: rgba(1, 8, 31, 0.48);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  opacity: 0.72;
+  transform: scale(0.94);
+  transition:
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.desktop-sidebar-video__play::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 52%;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid #ffffff;
+  transform: translate(-42%, -50%);
+}
+
+.desktop-sidebar-video__open:hover .desktop-sidebar-video__play,
+.desktop-sidebar-video__open:focus-visible .desktop-sidebar-video__play {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.desktop-video-modal {
+  position: fixed;
+  z-index: 12000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(32px, 4vw, 68px);
+  background: rgba(0, 5, 20, 0.88);
+  backdrop-filter: blur(10px);
+  animation: desktop-video-modal-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.desktop-video-modal__close {
+  position: fixed;
+  z-index: 2;
+  top: clamp(18px, 2vw, 30px);
+  right: clamp(18px, 2vw, 30px);
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  background: rgba(1, 8, 31, 0.58);
+  cursor: pointer;
+  transition:
+    border-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.desktop-video-modal__close::before,
+.desktop-video-modal__close::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background: #ffffff;
+}
+
+.desktop-video-modal__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.desktop-video-modal__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.desktop-video-modal__close:hover,
+.desktop-video-modal__close:focus-visible {
+  border-color: rgba(104, 193, 255, 0.82);
+  background: rgba(7, 71, 145, 0.62);
+  transform: scale(1.05);
+  outline: none;
+}
+
+@keyframes desktop-video-modal-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes desktop-video-player-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (max-width: 1180px) {
+  .desktop-sidebar-video {
+    display: none;
+  }
+}
+
+@media (min-width: 1181px) and (hover: hover) {
+  .desktop-sidebar-video__frame:not(.is-open):hover {
+    z-index: 2;
+    border-color: rgba(104, 193, 255, 0.46);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    transform: scale(1.03);
+  }
+}
+
+@media (min-width: 700px) and (max-width: 1180px) {
+  .mobile-hero-info .fixed-menu__cta--secondary {
+    grid-column: 7 / -1;
+    grid-row: 4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-sidebar-video__frame,
+.desktop-sidebar-video__open::after,
+.desktop-sidebar-video__play,
+.desktop-video-modal__close {
+    transition: none;
+  }
+
+  .desktop-video-modal,
+.desktop-sidebar-video__frame.is-open {
+    animation: none;
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "assets/hero-debttech-2026-adaptive.webp": {
+    "width": 1905,
+    "height": 1439,
+    "variants": []
+  },
+  "assets/hero-debttech-2026.webp": {
+    "width": 2160,
+    "height": 1439,
+    "variants": []
+  },
+  "assets/images/about-forum/planet-v3.webp": {
+    "width": 750,
+    "height": 750,
+    "variants": []
+  },
+  "assets/images/about-forum/shuttle-v3.webp": {
+    "width": 396,
+    "height": 396,
+    "variants": []
+  },
+  "assets/images/contacts-rocket.webp": {
+    "width": 1752,
+    "height": 1752,
+    "variants": []
+  },
+  "assets/images/gallery/01.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/02.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/03.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/04.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/05.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/06.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/07.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/08.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/09.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/10.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/11.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/12.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/13.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/14.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/15.webp": {
+    "width": 1400,
+    "height": 934,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/16.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/17.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/18.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/19.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/gallery/20.webp": {
+    "width": 1400,
+    "height": 933,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/organizer/navigator-preview.webp": {
+    "width": 704,
+    "height": 486,
+    "variants": [
+      640
+    ]
+  },
+  "assets/images/organizer/pko-300-2025.webp": {
+    "width": 1056,
+    "height": 729,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/analytics-finance-2022.webp": {
+    "width": 953,
+    "height": 538,
+    "variants": [
+      640
+    ]
+  },
+  "assets/images/other-conferences/analytics-finance-2023.webp": {
+    "width": 953,
+    "height": 538,
+    "variants": [
+      640
+    ]
+  },
+  "assets/images/other-conferences/debt-tech-2024.webp": {
+    "width": 953,
+    "height": 538,
+    "variants": [
+      640
+    ]
+  },
+  "assets/images/other-conferences/debt-tech-2025.webp": {
+    "width": 1680,
+    "height": 1120,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/dolg-talk-2025.webp": {
+    "width": 1516,
+    "height": 491,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/dolg-talk-2026.webp": {
+    "width": 1378,
+    "height": 532,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/dolg-talk-kazan-2025.webp": {
+    "width": 1547,
+    "height": 365,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/dolg-talk-kazan-2026.webp": {
+    "width": 1282,
+    "height": 925,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/dolg-talk-siberia-2026.webp": {
+    "width": 1680,
+    "height": 1260,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/other-conferences/petersburg-collectors-2021.webp": {
+    "width": 953,
+    "height": 538,
+    "variants": [
+      640
+    ]
+  },
+  "assets/images/tariffs/hand-spaceman.webp": {
+    "width": 754,
+    "height": 402,
+    "variants": []
+  },
+  "assets/images/ticket-offer-background.webp": {
+    "width": 1067,
+    "height": 1328,
+    "variants": []
+  },
+  "assets/images/ticket-offer-planet.webp": {
+    "width": 562,
+    "height": 479,
+    "variants": []
+  },
+  "assets/images/venue/event.webp": {
+    "width": 2048,
+    "height": 1365,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/venue/hall.webp": {
+    "width": 2048,
+    "height": 1365,
+    "variants": [
+      640,
+      960
+    ]
+  },
+  "assets/images/venue/lounge.webp": {
+    "width": 2048,
+    "height": 1365,
+    "variants": [
+      640,
+      960
+    ]
+  }
+}

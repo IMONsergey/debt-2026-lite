@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function useCountdown(target, fallbackItems) {
   const labels = useMemo(() => (fallbackItems ?? []).map((item) => item.label), [fallbackItems]);
 
-  function getItems() {
+  const getItems = useCallback(() => {
     const targetMs = Date.parse(target);
     if (!Number.isFinite(targetMs)) return fallbackItems ?? [];
 
@@ -18,7 +18,7 @@ export function useCountdown(target, fallbackItems) {
       value: String(value).padStart(2, '0'),
       label: labels[index] ?? ['дней', 'часов', 'минут', 'секунд'][index],
     }));
-  }
+  }, [target, fallbackItems, labels]);
 
   const [items, setItems] = useState(getItems);
 
@@ -26,7 +26,7 @@ export function useCountdown(target, fallbackItems) {
     setItems(getItems());
     const interval = window.setInterval(() => setItems(getItems()), 1000);
     return () => window.clearInterval(interval);
-  }, [target, labels]);
+  }, [getItems]);
 
   return items;
 }

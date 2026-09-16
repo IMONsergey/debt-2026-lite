@@ -1,10 +1,13 @@
+import { ResponsiveImage } from './ResponsiveImage.jsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCarouselResize } from '../hooks/useCarouselResize.js';
 import { typograf } from '../lib/typography.js';
 import { assetUrl } from '../lib/assets.js';
 
+const EMPTY_ITEMS = [];
+
 export function OtherConferencesSection({ archive }) {
-  const items = archive?.items ?? [];
+  const items = archive?.items ?? EMPTY_ITEMS;
   const loopItems = useMemo(() => {
     if (!items.length) return [];
 
@@ -141,7 +144,7 @@ export function OtherConferencesSection({ archive }) {
                 onFocus={() => setActiveIndex(index)}
                 tabIndex={item.copyIndex === 1 ? 0 : -1}
               >
-                <img src={item.image} alt="" loading="lazy" decoding="async" />
+                <ResponsiveImage src={item.image} alt="" loading="lazy" decoding="async"  sizes="(max-width: 699px) 92vw, (max-width: 1180px) 68vw, min(54vw, 950px)" />
                 <span className="conference-link-card__shade" aria-hidden="true" />
                 <span className="conference-link-card__title">
                   {(item.titleLines ?? [item.title]).map((line) => (
