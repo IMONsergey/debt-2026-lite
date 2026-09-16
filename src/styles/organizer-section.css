@@ -7,7 +7,7 @@
 
 .organizer-section__heading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
   gap: clamp(24px, 3vw, 48px);
   align-items: start;
 }
@@ -25,9 +25,9 @@
 
 .organizer-contact-strip {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
   min-width: 0;
   margin: 0;
   font-style: normal;
@@ -35,7 +35,7 @@
   text-transform: uppercase;
 }
 .organizer-contact-strip__label {
-  margin-bottom: 4px;
+  flex-basis: 100%;
   color: #9fb2cc;
   font-size: 14px;
   line-height: 1.4;
@@ -47,7 +47,8 @@
   width: fit-content;
   max-width: 100%;
   min-width: 0;
-  min-height: 32px;
+  min-height: 44px;
+  flex: 0 0 auto;
   font-size: clamp(18px, 1.35vw, 20px);
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -56,11 +57,11 @@
 .organizer-contact-strip__link:hover { color: #62b4ff; }
 .organizer-contact-strip__actions {
   display: flex;
+  flex: 0 0 auto;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 24px;
+  gap: 12px 16px;
   max-width: 100%;
-  margin-top: 8px;
 }
 .organizer-contact-strip__site { min-height: 44px; font-size: 16px; }
 .organizer-contact-strip__site img { width: 16px; height: 16px; }
@@ -201,8 +202,8 @@
   .organizer-card { padding: clamp(20px, 2.8vw, 32px); }
   .organizer-card--photo { padding: 0; }
 }
-@media (max-width: 899px) {
-  .organizer-section__heading { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+@media (max-width: 1320px) {
+  .organizer-section__heading { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
 @media (max-width: 639px) {
   .organizer-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
