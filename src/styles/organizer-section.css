@@ -108,7 +108,7 @@
 .organizer-card--brand > div { display: grid; gap: 12px; margin-block: auto; }
 .organizer-card h3 {
   margin: 0;
-  font: 500 clamp(20px, 7cqi, 28px) / 1.2 'IBM Plex Sans', Arial, sans-serif;
+  font: 500 clamp(20px, 7cqi, 28px) / 1.3 'IBM Plex Sans', Arial, sans-serif;
   text-transform: uppercase;
 }
 .organizer-card p {

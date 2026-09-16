@@ -123,7 +123,7 @@
   min-height: 4.8em;
   margin: 0;
   color: #e2edff;
-  font-size: clamp(11px, 1.08cqi, 15px);
+  font-size: clamp(14px, 1.25cqi, 16px);
   font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.06em;
@@ -162,7 +162,7 @@
   min-width: 0;
   gap: 9px;
   color: #e2edff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.35;
   text-transform: uppercase;
@@ -213,7 +213,7 @@
   gap: 10px;
   margin-block: 18px 24px;
   color: #dbe8ff;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
   cursor: pointer;
 }
@@ -331,7 +331,7 @@
   }
 
   .corporate-discount__description {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .corporate-packages__form-title {
@@ -349,7 +349,7 @@
   }
 
   .corporate-packages__title {
-    font-size: clamp(16px, 5cqi, 23px);
+    font-size: clamp(20px, 5cqi, 23px);
   }
 
   .corporate-packages__cards {
