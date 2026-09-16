@@ -16,16 +16,18 @@ export function OrganizerSection({ organizer }) {
           <span className="organizer-contact-strip__label">{typograf(contacts.label)}</span>
           <a className="organizer-contact-strip__link" href={contacts.phoneHref}>{contacts.phone}</a>
           <a className="organizer-contact-strip__link" href={`mailto:${contacts.email}`}>{contacts.email}</a>
-          <a className="organizer-contact-strip__link organizer-contact-strip__site" href={contacts.websiteHref} target="_blank" rel="noreferrer">
-            <span>{typograf(contacts.websiteLabel)}</span>
-            <img src={assetUrl('assets/icons/arrow-up.svg')} width="16" height="16" alt="" aria-hidden="true" />
-          </a>
-          <div className="organizer-contact-strip__socials">
-            {channels.map((channel) => (
-              <a key={channel.id} href={channel.href} target="_blank" rel="noreferrer" aria-label={`Открыть ${channel.label}`} title={channel.label}>
-                <ChannelIcon id={channel.id} />
-              </a>
-            ))}
+          <div className="organizer-contact-strip__actions">
+            <a className="organizer-contact-strip__link organizer-contact-strip__site" href={contacts.websiteHref} target="_blank" rel="noreferrer">
+              <span>{typograf(contacts.websiteLabel)}</span>
+              <img src={assetUrl('assets/icons/arrow-up.svg')} width="16" height="16" alt="" aria-hidden="true" />
+            </a>
+            <div className="organizer-contact-strip__socials">
+              {channels.map((channel) => (
+                <a key={channel.id} href={channel.href} target="_blank" rel="noreferrer" aria-label={`Открыть ${channel.label}`} title={channel.label}>
+                  <ChannelIcon id={channel.id} />
+                </a>
+              ))}
+            </div>
           </div>
         </address>
       </div>

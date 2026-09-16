@@ -24,10 +24,10 @@
 }
 
 .organizer-contact-strip {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 24px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   min-width: 0;
   margin: 0;
   font-style: normal;
@@ -35,7 +35,7 @@
   text-transform: uppercase;
 }
 .organizer-contact-strip__label {
-  grid-column: 1 / -1;
+  margin-bottom: 4px;
   color: #9fb2cc;
   font-size: 14px;
   line-height: 1.4;
@@ -48,12 +48,21 @@
   max-width: 100%;
   min-width: 0;
   min-height: 32px;
-  font-size: clamp(16px, 1.2vw, 20px);
+  font-size: clamp(18px, 1.35vw, 20px);
   line-height: 1.4;
   overflow-wrap: anywhere;
   transition: color 220ms ease;
 }
 .organizer-contact-strip__link:hover { color: #62b4ff; }
+.organizer-contact-strip__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  max-width: 100%;
+  margin-top: 8px;
+}
+.organizer-contact-strip__site { min-height: 44px; font-size: 16px; }
 .organizer-contact-strip__site img { width: 16px; height: 16px; }
 .organizer-contact-strip__socials { display: flex; flex-wrap: wrap; gap: 10px; }
 .organizer-contact-strip__socials a {
@@ -188,7 +197,6 @@
 }
 @media (max-width: 1180px) {
   .organizer-section { width: auto; margin: 0; padding-inline: var(--adaptive-inline); }
-  .organizer-contact-strip__link { font-size: clamp(16px, 2.1vw, 20px); }
   .organizer-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
   .organizer-card { padding: clamp(20px, 2.8vw, 32px); }
   .organizer-card--photo { padding: 0; }
@@ -200,10 +208,6 @@
   .organizer-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .organizer-card { min-height: 310px; padding: 24px; }
   .organizer-card--photo { min-height: 0; aspect-ratio: 16 / 10; padding: 0; }
-}
-@media (max-width: 479px) {
-  .organizer-contact-strip { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .organizer-contact-strip__socials { margin-top: 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .organizer-card--link, .organizer-contact-strip a { transition: none; }
