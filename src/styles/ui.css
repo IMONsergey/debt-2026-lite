@@ -1,0 +1,51 @@
+/* Shared CTA geometry from the preview cleanup branch. Layout stays with each section. */
+.ui-button {
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--ui-cta-height);
+  max-width: 100%;
+  gap: 18px;
+  padding: 12px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--ui-cta-radius);
+  color: #fff;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: normal;
+  transition: border-color 220ms ease, background-color 220ms ease, filter 220ms ease;
+}
+.ui-button > span { min-width: 0; }
+.ui-button > img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  object-fit: contain;
+}
+.ui-button--primary { background: linear-gradient(90deg, #155ecf 0%, #0788e4 100%); }
+.ui-button--secondary { border-color: var(--ui-cta-border); background: var(--ui-cta-bg); }
+@media (hover: hover) and (pointer: fine) {
+  .ui-button--primary:not(:disabled):hover { filter: brightness(1.1); }
+  .ui-button--secondary:not(:disabled):hover { border-color: var(--ui-cta-border-hover); background: var(--ui-cta-bg-hover); }
+}
+.ui-button:focus-visible { outline: 2px solid #68c1ff; outline-offset: 4px; }
+.ui-button:not(:disabled):active { filter: brightness(0.94); }
+.ui-button:disabled { opacity: 0.6; cursor: wait; }
+
+/* Small screens can zoom and scroll dialogs without clipping headings or fields. */
+.application-modal__dialog:focus { outline: none; }
+.application-modal__dialog,
+.ticket-offer-modal__dialog { min-width: 0; scroll-padding-block: 24px; }
+.application-modal__heading h2 { overflow-wrap: anywhere; }
+.application-modal__form input,
+.application-modal__form select,
+.application-modal__form textarea { min-width: 0; font-size: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-button { transition: none; }
+}

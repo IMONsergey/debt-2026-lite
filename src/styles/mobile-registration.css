@@ -14,27 +14,14 @@
     left: 50%;
     display: flex;
     width: min(360px, calc(100vw - 28px));
-    min-height: var(--ui-cta-height);
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    padding: 12px 18px;
-    border: 1px solid var(--ui-cta-border);
-    border-radius: var(--ui-cta-radius);
-    background: rgba(2, 17, 52, 0.82);
     box-shadow: 0 12px 34px rgba(0, 0, 0, 0.2), inset 0 0 24px rgba(67, 171, 255, 0.05);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    color: #fff;
-    font-family: 'IBM Plex Sans', Arial, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.25;
     text-align: left;
     letter-spacing: 0.03em;
-    text-transform: uppercase;
     transform: translateX(-50%);
-    transition: border-color 220ms ease, background-color 220ms ease;
   }
 
   .mobile-registration:hover,
@@ -55,11 +42,5 @@
 @media (max-width: 699px) {
   .mobile-registration {
     width: min(330px, calc(100vw - 24px));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mobile-registration {
-    transition: none;
   }
 }

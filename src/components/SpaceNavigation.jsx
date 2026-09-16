@@ -1,6 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import '../styles/space-navigation.css';
 
 const destinations = [
   { id: 'about-forum', targetId: 'about-forum', label: 'О форуме', spy: true },

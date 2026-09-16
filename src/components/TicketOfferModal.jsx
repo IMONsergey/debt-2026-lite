@@ -1,77 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useDialog } from '../hooks/useDialog.js';
+import { useRef } from 'react';
+import { useCountdown } from '../hooks/useCountdown.js';
 import { createPortal } from 'react-dom';
 import { assetUrl } from '../lib/assets.js';
 
-const DEFAULT_LABELS = ['дней', 'часов', 'минут', 'секунд'];
-
-function getCountdownItems(target) {
-  const targetMs = Date.parse(target);
-  const totalSeconds = Number.isFinite(targetMs)
-    ? Math.max(0, Math.floor((targetMs - Date.now()) / 1000))
-    : 0;
-  const values = [
-    Math.floor(totalSeconds / 86400),
-    Math.floor((totalSeconds % 86400) / 3600),
-    Math.floor((totalSeconds % 3600) / 60),
-    totalSeconds % 60,
-  ];
-
-  return values.map((value, index) => ({
-    value: String(value).padStart(2, '0'),
-    label: DEFAULT_LABELS[index],
-  }));
-}
-
 export function TicketOfferModal({ logo, countdownTarget, onClose, onBuy }) {
   const dialogRef = useRef(null);
-  const [countdown, setCountdown] = useState(() => getCountdownItems(countdownTarget));
+  const countdown = useCountdown(countdownTarget);
 
-  useEffect(() => {
-    setCountdown(getCountdownItems(countdownTarget));
-    const interval = window.setInterval(() => {
-      setCountdown(getCountdownItems(countdownTarget));
-    }, 1000);
-
-    return () => window.clearInterval(interval);
-  }, [countdownTarget]);
-
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    const previouslyFocused = document.activeElement;
-    document.body.style.overflow = 'hidden';
-    dialogRef.current?.focus({ preventScroll: true });
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        onClose();
-        return;
-      }
-
-      if (event.key !== 'Tab') return;
-      const controls = [...dialogRef.current.querySelectorAll('button:not([disabled]), a[href]')];
-      if (!controls.length) return;
-      const firstControl = controls[0];
-      const lastControl = controls[controls.length - 1];
-
-      if (event.shiftKey && (
-        document.activeElement === firstControl
-        || document.activeElement === dialogRef.current
-      )) {
-        event.preventDefault();
-        lastControl.focus();
-      } else if (!event.shiftKey && document.activeElement === lastControl) {
-        event.preventDefault();
-        firstControl.focus();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-      previouslyFocused?.focus?.({ preventScroll: true });
-    };
-  }, [onClose]);
+  useDialog({ dialogRef, onClose });
 
   return createPortal(
     <div
@@ -126,7 +63,7 @@ export function TicketOfferModal({ logo, countdownTarget, onClose, onBuy }) {
           ))}
         </div>
 
-        <button className="ticket-offer-modal__buy" type="button" onClick={onBuy}>
+        <button className="ui-button ui-button--primary ticket-offer-modal__buy" type="button" onClick={onBuy}>
           <span>Купить билет</span>
           <img
             className="ticket-offer-modal__buy-icon"

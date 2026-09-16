@@ -107,10 +107,10 @@
 
 .contact-info__group { min-width: 0; }
 .contact-info h3 {
-  min-height: 44px;
+  min-height: 3em;
   max-width: 300px;
   margin: 0 0 24px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.6;
   text-transform: uppercase;
@@ -136,8 +136,8 @@
 .contact-info__resources a {
   width: fit-content;
   max-width: 100%;
-  font-family: 'Unbounded', Arial, sans-serif;
-  font-size: 23px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: clamp(20px, 1.7vw, 26px);
   font-weight: 500;
   line-height: 1.45;
   text-transform: uppercase;

@@ -10,10 +10,6 @@
   gap: var(--menu-info-gap);
 }
 
-.hero-only-view .venue-card + .route-link {
-  margin-top: 0;
-}
-
 /* One-time soft entrance for elements that are already visible when the page opens. */
 .hero-only-view .fixed-menu__brand,
 .hero-only-view .fixed-menu__info > :not(.desktop-sidebar-video),
@@ -64,8 +60,7 @@
 }
 
 /* Small ambient movement on compact UI only; large photos/video/hero background stay static. */
-.hero-only-view .fixed-menu__brand img,
-.hero-only-view .hero-landing-footer__brand img {
+.hero-only-view .fixed-menu__brand img {
   animation: soft-element-float 7s ease-in-out infinite;
   transform-origin: 50% 50%;
 }
@@ -87,24 +82,12 @@
 }
 
 /* Smooth micro-interactions. */
-.hero-only-view .route-link,
-.hero-only-view .gallery-carousel__arrow,
-.hero-only-view .hero-landing-footer__brand {
+.hero-only-view .gallery-carousel__arrow {
   transition:
     transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 260ms ease,
     border-color 260ms ease,
     background-color 260ms ease;
-}
-
-.hero-only-view .route-link:hover,
-.hero-only-view .route-link:focus-visible {
-  transform: translate3d(0, -2px, 0);
-}
-
-.hero-only-view .hero-landing-footer__brand:hover,
-.hero-only-view .hero-landing-footer__brand:focus-visible {
-  transform: translate3d(0, -2px, 0) scale(1.015);
 }
 
 .hero-only-view .gallery-slide img {
@@ -119,25 +102,9 @@
   transform: scale(1.012);
 }
 
-.hero-only-view .route-link__icon {
-  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.hero-only-view .route-link:hover .route-link__icon,
-.hero-only-view .route-link:focus-visible .route-link__icon {
-  transform: translate3d(2px, -2px, 0);
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .about-forum-section__features p,
   .about-forum-section__stat,
-  .about-tags__card,
-  .venue-section__photo,
-  .gallery-strip__item,
   .contact-link {
     transition:
       transform 440ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -153,20 +120,6 @@ html {
   .contact-link:hover,
   .contact-link:focus-visible {
     transform: translate3d(0, -3px, 0);
-  }
-
-  .venue-section__photo:hover,
-  .gallery-strip__item:hover,
-  .gallery-strip__item:focus-visible {
-    transform: translate3d(0, -4px, 0) scale(1.006);
-    filter: saturate(1.05);
-  }
-
-  .about-tags__card.is-active {
-    transition:
-      transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 420ms ease,
-      filter 420ms ease;
   }
 }
 
@@ -222,7 +175,6 @@ html {
   }
 
   .hero-only-view .fixed-menu__brand img,
-  .hero-only-view .hero-landing-footer__brand img,
   .hero-only-view .countdown__item {
     animation-duration: 8s;
   }
@@ -235,20 +187,14 @@ html {
   .hero-only-view .hero-bottom p,
   .hero-only-view .countdown,
   .hero-only-view .fixed-menu__brand img,
-  .hero-only-view .hero-landing-footer__brand img,
   .hero-only-view .countdown__item {
     animation: none !important;
   }
 
-  .hero-only-view .fixed-menu__cta,
-  .hero-only-view .route-link,
-  .hero-only-view .gallery-section__link,
   .hero-only-view .gallery-carousel__arrow,
-  .hero-only-view .hero-landing-footer__brand,
-  .hero-only-view .gallery-slide img,
-  .hero-only-view .fixed-menu__cta-icon,
-  .hero-only-view .route-link__icon,
-  .hero-only-view .gallery-section__link img {
+.hero-only-view .gallery-slide img,
+.hero-only-view .fixed-menu__cta-icon,
+.hero-only-view .gallery-section__link img {
     transition: none !important;
   }
 
@@ -257,15 +203,8 @@ html {
   }
 
   .about-forum-section__features p,
-  .about-forum-section__stat,
-  .about-tags__card,
-  .venue-section__route,
-  .venue-section__photo,
-  .gallery-strip__item,
-  .gallery-section__link,
-  .mobile-registration,
-  .contact-link,
-  .fixed-menu__cta {
+.about-forum-section__stat,
+.contact-link {
     transition: none !important;
   }
 }

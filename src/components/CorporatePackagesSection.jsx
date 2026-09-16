@@ -1,51 +1,14 @@
+import { formatPhoneValue, validateContactFields, createLeadPayload, sendLead } from '../lib/forms.js';
 import { useState } from 'react';
 import { assetUrl } from '../lib/assets.js';
 import { typograf } from '../lib/typography.js';
 import { MAX_CORPORATE_PARTICIPANTS } from '../lib/corporate-pricing.js';
-import '../styles/corporate-packages.css';
 
 const discounts = [
   { percent: 10, description: 'На третьего и четвертого участника', width: 180 },
   { percent: 20, description: 'На пятого и последующих участников', width: 196 },
 ];
 const FORM_ID = 'corporate-package-form';
-
-function formatPhoneValue(value) {
-  let digits = value.replace(/\D/g, '');
-
-  if (digits.startsWith('9')) {
-    digits = `7${digits.slice(0, 10)}`;
-  } else if (digits.startsWith('8')) {
-    digits = `7${digits.slice(1, 11)}`;
-  } else {
-    digits = digits.slice(0, 15);
-  }
-
-  if (!digits) return '';
-  if (!digits.startsWith('7')) return `+${digits}`;
-
-  const local = digits.slice(1, 11);
-  const parts = [];
-  if (local.slice(0, 3)) parts.push(local.slice(0, 3));
-  if (local.slice(3, 6)) parts.push(local.slice(3, 6));
-
-  const tail = [local.slice(6, 8), local.slice(8, 10)].filter(Boolean).join('-');
-  return `+7${parts.length ? ` ${parts.join(' ')}` : ''}${tail ? `-${tail}` : ''}`;
-}
-
-function validatePhone(form) {
-  const phoneInput = form.elements.phone;
-  const phoneDigits = phoneInput?.value.replace(/\D/g, '') ?? '';
-  phoneInput?.setCustomValidity('');
-
-  if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-    phoneInput?.setCustomValidity('Введите корректный телефон: от 10 до 15 цифр.');
-    phoneInput?.reportValidity();
-    return false;
-  }
-
-  return true;
-}
 
 export function CorporatePackagesSection({ tariffs, privacyHref, config }) {
   const items = tariffs?.items ?? [];
@@ -64,53 +27,18 @@ export function CorporatePackagesSection({ tariffs, privacyHref, config }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (status === 'sending' || !validatePhone(event.currentTarget)) return;
+    if (status === 'sending' || !validateContactFields(event.currentTarget)) return;
 
     const tariff = items.find(item => item.id === tariffId);
-    const endpoint = document
-      .querySelector('meta[name="debt-tech-forms-endpoint"]')
-      ?.getAttribute('content')
-      ?.trim();
-
-    if (!endpoint) {
-      setStatus('success');
-      return;
-    }
-
-    const formData = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(formData.entries());
-    payload.form_id = FORM_ID;
-    payload.event_id = config?.eventId ?? 'debt-tech-2026';
-    payload.tariff_id = tariff.id;
-    payload.tariff_name = tariff.title;
-    payload.tariff_price = tariff.price;
-    payload.consent = formData.get('consent') === 'yes';
-    payload.source_page = window.location.href;
-    payload.submitted_at = new Date().toISOString();
-
-    const searchParams = new URLSearchParams(window.location.search);
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach((key) => {
-      if (searchParams.has(key)) payload[key] = searchParams.get(key);
+    const payload = createLeadPayload(new FormData(event.currentTarget), {
+      formId: FORM_ID, eventId: config?.eventId ?? 'debt-tech-2026', tariff, sourceUrl: window.location.href,
     });
 
     setStatus('sending');
     setMessage('');
 
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success === false) {
-        throw new Error(result.message || 'Не удалось отправить заявку');
-      }
-
+      await sendLead(payload, { endpoint: document.querySelector('meta[name="debt-tech-forms-endpoint"]')?.content?.trim() });
       setStatus('success');
     } catch (error) {
       setStatus('error');
@@ -191,7 +119,7 @@ export function CorporatePackagesSection({ tariffs, privacyHref, config }) {
                 <input type="checkbox" name="consent" value="yes" required onChange={resetStatus} />
                 <span>Заполняя форму заявки, я соглашаюсь с <a href={privacyHref} target="_blank" rel="noreferrer">политикой обработки персональных данных</a>.</span>
               </label>
-              <button className="corporate-packages__submit" type="submit" disabled={status === 'sending'}>
+              <button className="ui-button ui-button--primary corporate-packages__submit" type="submit" disabled={status === 'sending'}>
                 <span>{status === 'sending' ? 'Отправляем…' : 'Рассчитать стоимость'}</span>
                 <img src={assetUrl('assets/icons/arrow-up.svg')} width="16" height="16" alt="" aria-hidden="true" />
               </button>

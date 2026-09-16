@@ -1,3 +1,4 @@
+import { useDialog } from '../hooks/useDialog.js';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { typograf } from '../lib/typography.js';
@@ -76,6 +77,7 @@ export function SidebarInfo({
 function SidebarVideo({ video, onOpenChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const openButtonRef = useRef(null);
+  const dialogRef = useRef(null);
 
   useEffect(() => {
     onOpenChange?.(isOpen);
@@ -83,23 +85,7 @@ function SidebarVideo({ video, onOpenChange }) {
 
   useEffect(() => () => onOpenChange?.(false), [onOpenChange]);
 
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') setIsOpen(false);
-    };
-
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-      openButtonRef.current?.focus({ preventScroll: true });
-    };
-  }, [isOpen]);
+  useDialog({ dialogRef, open: isOpen, onClose: () => setIsOpen(false) });
 
   if (!video?.embedUrl) return null;
 
@@ -132,7 +118,7 @@ function SidebarVideo({ video, onOpenChange }) {
       </div>
 
       {isOpen && createPortal(
-        <div className="desktop-video-modal" role="dialog" aria-modal="true" aria-label={video.title} onClick={() => setIsOpen(false)}>
+        <div ref={dialogRef} tabIndex={-1} className="desktop-video-modal" role="dialog" aria-modal="true" aria-label={video.title} onClick={() => setIsOpen(false)}>
           <div className="desktop-sidebar-video__frame is-open" onClick={(event) => event.stopPropagation()}>
             <iframe
               src={video.embedUrl}
@@ -157,7 +143,7 @@ function SidebarVideo({ video, onOpenChange }) {
 }
 
 function SidebarCta({ cta, secondary = false, onOpenApplication }) {
-  const className = `fixed-menu__cta${secondary ? ' fixed-menu__cta--secondary' : ''}`;
+  const className = `ui-button ui-button--${secondary ? 'secondary' : 'primary'} fixed-menu__cta${secondary ? ' fixed-menu__cta--secondary' : ''}`;
   const content = (
     <>
       <span>{typograf(cta.label)}</span>

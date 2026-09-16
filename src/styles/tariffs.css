@@ -175,9 +175,9 @@
   background: rgba(255, 255, 255, 0.075);
   color: #ffffff;
   font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: clamp(11px, 0.86vw, 14px);
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1.35;
   text-transform: uppercase;
   transition:
     background-color 360ms ease,
@@ -222,9 +222,9 @@
   max-width: 100%;
   color: rgba(221, 240, 255, 0.78);
   font-family: 'IBM Plex Sans', Arial, sans-serif;
-  font-size: clamp(11px, 0.78vw, 13px);
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1.15;
+  line-height: 1.35;
 }
 
 .tariff-card__footer strong {
@@ -375,11 +375,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tariff-card__button,
   .tariff-card__button img,
-  .tariff-card,
-  .tariff-card__bg,
-  .tariff-card__features li {
+.tariff-card,
+.tariff-card__bg,
+.tariff-card__features li {
     transition: none;
   }
 }

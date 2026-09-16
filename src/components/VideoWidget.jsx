@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import '../styles/video-widget.css';
 
 const DESKTOP_QUERY = '(min-width: 1181px)';
 
