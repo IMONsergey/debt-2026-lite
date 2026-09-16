@@ -1,6 +1,6 @@
 /* One vertical rhythm for the content sections; adjacent half-gaps add up. */
 :root {
-  --section-half-gap: 56px;
+  --section-half-gap: 64px;
   --section-heading-gap: 40px;
   --section-title-size: clamp(30px, 2.4vw, 40px);
 }
@@ -24,7 +24,7 @@
 
 @media (max-width: 1180px) {
   :root {
-    --section-half-gap: 44px;
+    --section-half-gap: 48px;
     --section-heading-gap: 32px;
     --section-title-size: clamp(26px, 3.1vw, 32px);
   }
@@ -32,7 +32,7 @@
 
 @media (max-width: 699px) {
   :root {
-    --section-half-gap: 32px;
+    --section-half-gap: 36px;
     --section-heading-gap: 24px;
     --section-title-size: clamp(22px, 5.5vw, 26px);
   }
