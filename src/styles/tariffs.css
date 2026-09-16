@@ -4,7 +4,6 @@
   width: var(--desktop-content-width);
   margin-left: calc(var(--desktop-content-left) - var(--edge));
   padding: clamp(84px, 7vw, 124px) 0 clamp(126px, 11vw, 190px);
-  border-bottom: 1px solid rgba(67, 171, 255, 0.14);
   background: transparent;
 }
 

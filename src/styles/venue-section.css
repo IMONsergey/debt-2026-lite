@@ -3,7 +3,6 @@
   width: var(--desktop-content-width);
   margin-left: calc(var(--desktop-content-left) - var(--edge));
   padding: clamp(84px, 7vw, 118px) 0 clamp(88px, 7.2vw, 124px);
-  border-bottom: 1px solid rgba(67, 171, 255, 0.16);
 }
 
 .venue-section h2 {
