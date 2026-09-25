@@ -114,7 +114,7 @@ export function TicketOfferModal({ logo, countdownTarget, onClose, onBuy }) {
         </h2>
         <span className="ticket-offer-modal__booking-title">Раннее бронирование</span>
         <p id="ticket-offer-description">
-          Успейте приобрести билеты со скидкой <strong>до 25 сентября</strong>
+          Успейте приобрести билеты со скидкой <strong>до 01 октября</strong>
         </p>
 
         <div className="ticket-offer-modal__countdown" aria-label="До окончания скидки">

@@ -178,7 +178,7 @@ const content = {
     handImage: assetUrl('assets/images/tariffs/hand-spaceman.png'),
     offer: 'Скидка 50% на один билет любого тарифа для представителя компании, которая впервые участвует в DEBT TECH.',
     agreement: 'Скидка предоставляется по согласованию с организаторами.',
-    note: 'Стоимость актуальна до 25 сентября',
+    note: 'Стоимость актуальна до 01 октября',
     ctaLabel: 'Принять участие',
     ctaModal: 'early-registration',
     items: [
@@ -384,7 +384,7 @@ export default function App() {
       {ticketOfferReady && !ticketOfferDismissed && !activeForm ? (
         <TicketOfferModal
           logo={assetUrl('assets/images/ticket-offer-logo.svg')}
-          countdownTarget="2026-09-25T00:00:00+03:00"
+          countdownTarget="2026-10-01T00:00:00+03:00"
           onClose={() => setTicketOfferDismissed(true)}
           onBuy={handleTicketOfferBuy}
         />
